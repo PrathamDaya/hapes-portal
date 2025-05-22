@@ -1,579 +1,346 @@
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    background-color: #fff0f5; /* Lavender blush - a soft, loving pink */
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* Align to top to see header */
-    min-height: 100vh;
-    padding-top: 20px; /* Add some padding at the top */
-    color: #5c3b4c; /* Plum color for text */
-}
-
-#appContainer {
-    width: 100%;
-    max-width: 700px; /* Slightly wider for better layout */
-}
-
-.screen {
-    display: none;
-    width: 100%;
-    animation: fadeIn 0.5s ease-in-out;
-}
-
-.screen.active {
-    display: block;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* Main Home Page Styles */
-#homeScreen .main-header {
-    text-align: center;
-    margin-bottom: 30px;
-}
-#homeScreen .main-header h1 {
-    color: #d95792; /* Deeper pink */
-    font-size: 2.8em;
-    font-weight: bold;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
-}
-
-.options-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 25px;
-    padding: 20px;
-}
-
-.main-option {
-    background-color: #ff85c1; /* Vibrant Pink */
-    color: white;
-    padding: 30px;
-    border-radius: 15px; /* Rounded boxes */
-    cursor: pointer;
-    font-size: 1.5em; /* Larger font */
-    text-align: center;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 120px; /* Ensure consistent height */
-}
-
-.main-option:hover {
-    transform: translateY(-5px) scale(1.03);
-    box-shadow: 0 8px 20px rgba(190, 70, 130, 0.3);
-    background-color: #ff6bab; /* Slightly darker on hover */
-}
-
-.main-footer {
-    text-align: center;
-    margin-top: 40px;
-    color: #a0607f;
-    font-size: 0.9em;
-}
-
-
-/* General Container for Portals */
-.container {
-    background-color: #ffffff; /* White background for content */
-    border-radius: 20px; /* More rounded */
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    padding: 25px 35px; /* More padding */
-    width: 100%;
-    max-width: 650px; /* Max width for portal content */
-    text-align: center;
-    margin: 20px auto; /* Center the container */
-}
-
-.container header {
-    margin-bottom: 25px;
-    position: relative;
-}
-
-.container header h1 {
-    color: #c71585; /* MediumVioletRed */
-    font-size: 2em;
-}
-
-.back-to-home-btn {
-    background-color: #ffb6c1; /* LightPink */
-    color: #8c004b; /* Dark pink text */
-    border: 1px solid #ffacc5;
-    padding: 8px 15px;
-    border-radius: 20px; /* Pill shape */
-    cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
-.back-to-home-btn:hover {
-    background-color: #ff9eb2;
-    transform: scale(1.05);
-}
-
-
-.page {
-    display: none;
-}
-
-.page.active {
-    display: block;
-    animation: fadeInPage 0.4s ease-out;
-}
-
-@keyframes fadeInPage {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-/* Page 1 (Feelings Options) Styles */
-#feelingsPage1 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
-
-.option-box {
-    background-color: #ff69b4; /* Hot pink boxes */
-    color: white;
-    padding: 20px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 1.2em;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: transform 0.3s ease-in-out, background-color 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.option-box:hover {
-    transform: scale(1.05);
-    background-color: #e6007e; /* Darker on hover */
-}
-
-.option-box.view-all {
-    grid-column: 1 / -1; /* Span full width */
-    background-color: #9370DB; /* MediumPurple */
-}
-
-.option-box.view-all:hover {
-    background-color: #7B68EE; /* MediumSlateBlue */
-}
-
-
-/* Page 2 (Feelings Message) & Other Headers */
-#feelingsPage2 h2, #diaryEntryPage h2, #diaryConfirmationPage h2, #feelingsPage3 h2, #diaryViewPage h2,
-#feelingsViewEntriesPage h2, #allDiaryEntriesPage h2 {
-    color: #8c004b; /* Dark pink header text */
-    margin-bottom: 20px;
-}
-
-.notebook {
-    position: relative;
-    background-color: #fffaf0; /* FloralWhite, softer */
-    border: 1px solid #ffe4e1; /* MistyRose border */
-    border-radius: 8px;
-    padding: 25px;
-    margin-bottom: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.05);
-}
-
-.notebook textarea, #diaryThoughts {
-    width: calc(100% - 20px); /* Adjust for padding */
-    min-height: 150px;
-    padding: 15px;
-    border: 1px dashed #ffc0cb; /* Pink dashed border */
-    box-sizing: border-box;
-    font-family: 'Comic Sans MS', cursive, sans-serif; /* Cursive font */
-    font-size: 1.1em;
-    outline: none;
-    background-color: transparent; /* Transparent background */
-    border-radius: 5px;
-    color: #5c3b4c;
-}
-
-#diaryThoughts {
-    margin-bottom: 20px;
-}
-
-.ribbon {
-    width: 60px;
-    height: 20px;
-    background-color: #e6007e; /* Magenta ribbon */
-    position: absolute;
-    opacity: 0.8;
-}
-
-.ribbon.top-left { top: -10px; left: 10px; transform: rotate(-45deg); }
-.ribbon.bottom-right { bottom: -10px; right: 10px; transform: rotate(45deg); }
-
-.heart {
-    font-size: 1.5em;
-    position: absolute;
-    color: #ff1493; /* Deep pink heart */
-}
-.heart.top-right { top: 10px; right: 10px; }
-.heart.bottom-left { bottom: 10px; left: 10px; }
-
-button {
-    background-color: #ff69b4;
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    border-radius: 25px; /* Pill shape */
-    cursor: pointer;
-    font-size: 1em;
-    margin: 8px 5px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    font-weight: bold;
-}
-
-button:hover {
-    background-color: #e6007e; /* Darker pink */
-    transform: scale(1.03);
-}
-
-/* Page 3 (Feelings Confirmation) Styles */
-#feelings-animation-container {
-    position: relative;
-    width: 150px;
-    height: 100px;
-    margin: 20px auto;
-}
-
-#feelings-message-box {
-    width: 80px;
-    height: 50px;
-    background-color: #f8f8f8;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 0.8em;
-    font-family: cursive;
-    color: #333;
-    animation: foldSend 2s forwards;
-    transform-origin: top center;
-}
-
-#feelings-mail-icon {
-    font-size: 2em;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    animation: slideMail 2s forwards;
-    opacity: 0;
-}
-
-#feelings-thank-you-message, #diaryConfirmationPage p {
-    color: #8c004b;
-    margin-top: 20px;
-    font-size: 1.1em;
-}
-#diaryConfirmationPage p {
-    margin-bottom: 10px;
-}
-
-
-/* Diary Styles */
-#calendarControls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-#calendarControls h3 {
-    color: #c71585;
-    margin: 0 15px;
-    font-size: 1.4em;
-}
-#calendarControls button {
-    background-color: #ffb6c1;
-    color: #800040;
-    padding: 8px 12px;
-    font-size: 0.9em;
-}
-#calendarControls button:hover {
-    background-color: #ff9aad;
-}
-
-
-#calendarGrid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 8px;
-    background-color: #fff7fa;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
-}
-
-.calendar-day {
-    background-color: #ffe4e1;
-    color: #794054;
-    padding: 12px 5px;
-    text-align: center;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    font-weight: bold;
-    font-size: 0.95em;
-    border: 1px solid transparent;
-}
-.calendar-day:hover, .calendar-day.today:hover {
-    background-color: #ffb6c1;
-    transform: scale(1.05);
-    color: white;
-}
-.calendar-day.empty {
-    background-color: transparent;
-    cursor: default;
-}
-.calendar-day.today {
-    background-color: #ff9eb2;
-    color: white;
-    border: 1px solid #ff80a0;
-    font-weight: bold;
-}
-.calendar-day.has-entry {
-    background-color: #d95792;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    border: 1px solid #c71585;
-}
-.calendar-day.has-entry:hover {
-    background-color: #c71585;
-    transform: scale(1.05);
-}
-
-.calendar-day-header {
-    font-weight: bold;
-    text-align: center;
-    padding: 10px 0;
-    color: #8c004b;
-    font-size: 0.9em;
-}
-
-.info-text {
-    margin-top: 15px;
-    font-size: 0.9em;
-    color: #777;
-}
-
-button.view-all-button {
-    margin-top: 20px;
-    background-color: #9370DB;
-    display: block;
-    width: fit-content;
-    margin-left: auto;
-    margin-right: auto;
-}
-button.view-all-button:hover {
-    background-color: #7B68EE;
-}
-
-
-#diaryEntryPage h2, #diaryConfirmationPage h2, #diaryViewPage h2 {
-    color: #c71585;
-    margin-bottom: 25px;
-}
-#diaryEntryTitle, #diaryViewPage h2 {
-    font-size: 1.8em;
-}
-#diaryDateDisplay, #viewDiaryDateDisplay {
-    font-weight: bold;
-    color: #ff69b4;
-}
-
-.diary-form-group {
-    margin-bottom: 20px;
-    text-align: left;
-}
-.diary-form-group label {
-    display: block;
-    margin-bottom: 8px;
-    color: #8c004b;
-    font-weight: bold;
-}
-
-/* Styles for Diary View Page */
-.diary-entry-content {
-    background-color: #fffaf0;
-    border: 1px solid #ffe4e1;
-    border-radius: 8px;
-    padding: 25px;
-    margin-bottom: 20px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.05);
-    text-align: left;
-    color: #5c3b4c;
-    word-wrap: break-word;
-}
-.notebook-content {
-    font-family: 'Comic Sans MS', cursive, sans-serif;
-    font-size: 1.1em;
-    min-height: 100px;
-    border-bottom: 1px dashed #ffc0cb;
-    padding-bottom: 15px;
-    margin-bottom: 15px;
-}
-
-/* Styles for all entries list (both feelings and diary) */
-.entries-list-container {
-    max-height: 450px; /* MODIFIED: Adjusted height slightly */
-    overflow-y: auto;
-    border: 1px solid #ffe4e1;
-    border-radius: 8px;
-    padding: 5px; /* MODIFIED: Reduced padding as table might have its own */
-    background-color: #fffaf0;
-    margin-top: 20px;
-    text-align: left;
-}
-
-/* Individual list items (used for diary list, feelings uses table now) */
-.diary-entry-list-item {
-    background-color: #ffffff;
-    border: 1px solid #ffc0cb;
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 15px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
-.diary-entry-list-item p {
-    margin: 5px 0;
-    color: #5c3b4c;
-}
-
-/* Emotion tags (used in feelings table) */
-.emotion-tag {
-    display: inline-block;
-    padding: 3px 8px;
-    border-radius: 5px;
-    color: white;
-    font-weight: bold;
-    font-size: 0.9em;
-    /* margin-left: 5px; Removed as it might not be needed in table cell */
-}
-.emotion-tag.grievance { background-color: #DC143C; }
-.emotion-tag.appreciate { background-color: #3CB371; }
-.emotion-tag.sad { background-color: #4682B4; }
-.emotion-tag.happy { background-color: #FFD700; color: #333;}
-
-
-/* --- NEW STYLES FOR FEELINGS TABLE --- */
-.feelings-table {
-    width: 100%;
-    border-collapse: collapse; /* Removes double borders */
-    margin-top: 0; /* Container has margin already */
-    font-size: 0.9em; /* Adjust as needed */
-}
-
-.feelings-table th, .feelings-table td {
-    border: 1px solid #ffc0cb; /* Light pink border for cells */
-    padding: 10px; /* Cell padding */
-    text-align: left;
-    color: #5c3b4c; /* Plum color for text */
-    vertical-align: top; /* Align content to top of cell */
-}
-
-.feelings-table th {
-    background-color: #ffb6c1; /* LightPink background for table headers */
-    color: #8c004b; /* Dark pink text for table headers */
-    font-weight: bold;
-}
-
-.feelings-table tr:nth-child(even) {
-    background-color: #fff7fa; /* Very light pink for alternate rows for readability */
-}
-
-.feelings-table td .emotion-tag { /* Ensure emotion tags within table cells have no extra margin */
-    margin-left: 0;
-}
-/* --- END OF NEW STYLES FOR FEELINGS TABLE --- */
-
-
-/* Footer Styles */
-.portal-footer {
-    margin-top: 30px;
-    color: #8c004b;
-    font-size: 0.9em;
-    border-top: 1px dashed #ffc0cb;
-    padding-top: 15px;
-}
-
-
-@keyframes foldSend {
-    0% { transform: rotateX(0deg) translateY(0); opacity: 1; }
-    50% { transform: rotateX(90deg) translateY(-20px); opacity: 0.7; }
-    100% { transform: rotateX(0deg) translateY(50px) scale(0.5); opacity: 0; }
-}
-
-@keyframes slideMail {
-    0% { transform: translateX(0); opacity: 0; }
-    50% { opacity: 0.5; }
-    100% { transform: translateX(50px); opacity: 1; }
-}
-
-/* Responsive Design */
-@media (max-width: 600px) {
-    .container {
-        width: 95%;
-        padding: 20px 15px;
-    }
-    #feelingsPage1 {
-        grid-template-columns: 1fr;
-    }
-    .option-box {
-        margin-bottom: 15px;
-    }
-    #calendarControls {
-        flex-direction: column;
-        gap: 10px;
-    }
-    #calendarControls h3 { font-size: 1.2em;}
-    .calendar-day { padding: 10px 3px; font-size: 0.85em;}
-    .main-option { font-size: 1.3em; padding: 25px; }
-    #homeScreen .main-header h1 { font-size: 2.2em;}
-    .container header h1 {font-size: 1.8em;}
-    .back-to-home-btn { top: 10px; left: 10px; position: relative;}
-
-    .feelings-table, .feelings-table th, .feelings-table td {
-        font-size: 0.85em; /* Slightly smaller font for table on small screens */
-        padding: 6px;
-    }
-    .feelings-table th {
-        white-space: nowrap; /* Prevent headers from wrapping too much */
+<script>
+// IMPORTANT: REPLACE THIS WITH YOUR ACTUAL DEPLOYED WEB APP URL from Google Apps Script
+const scriptURL = 'https://script.google.com/macros/s/AKfycbzH4whliZSRjcTeoA_8UQAzM9OmtNohfqiQKmeoJZWXa_xQOHg_e11bTRavjcjZqtzn/exec'; // <<< ENSURE THIS IS YOUR CORRECT, NEWLY DEPLOYED URL
+const screens = document.querySelectorAll('.screen');
+const feelingsPages = document.querySelectorAll('#feelingsPortalScreen .page');
+const diaryPages = document.querySelectorAll('#diaryScreen .page');
+
+let currentEmotion = '';
+let calendarCurrentDate = new Date();
+let diaryEntries = {}; // Stores diary entries fetched from the sheet, keyed by YYYY-MM-DD
+
+// --- Main Navigation ---
+function navigateToApp(screenId) {
+    screens.forEach(screen => screen.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+
+    if (screenId === 'feelingsPortalScreen') {
+        navigateToFeelingsPage('feelingsPage1');
+    } else if (screenId === 'diaryScreen') {
+        fetchDiaryEntries().then(() => {
+            renderCalendar(calendarCurrentDate);
+            navigateToDiaryPage('diaryCalendarPage');
+        });
     }
 }
 
-@media (max-width: 480px) {
-    #calendarGrid { gap: 5px; padding: 10px; }
-    .calendar-day { font-size: 0.8em; }
-    button { padding: 10px 20px; font-size: 0.9em;}
-    .back-to-home-btn { padding: 6px 12px; font-size: 0.8em;}
-    .notebook textarea, #diaryThoughts, .diary-entry-content { font-size: 1em;}
+// --- Hetu's Feelings Portal ---
+function navigateToFeelingsPage(pageId, emotion = '') {
+    feelingsPages.forEach(page => page.classList.remove('active'));
+    const targetPage = document.getElementById(pageId);
+    if (targetPage) targetPage.classList.add('active');
+    else { console.error('Feelings page not found:', pageId); return; }
 
-    .feelings-table, .feelings-table th, .feelings-table td {
-        font-size: 0.8em;
-        padding: 4px;
+    if (emotion) {
+        currentEmotion = emotion;
+        document.getElementById('selectedEmotion').textContent = emotion;
     }
-    .emotion-tag {
-        padding: 2px 5px;
-        font-size: 0.8em;
+
+    if (pageId === 'feelingsPage2') {
+        document.getElementById('feelingsMessage').value = ''; // Clear message on new entry
     }
 }
+
+async function submitFeelingsEntry() {
+    const feelingsMessage = document.getElementById('feelingsMessage').value.trim();
+    if (!feelingsMessage) {
+        alert('Please write something before submitting!');
+        return;
+    }
+
+    const submitBtn = document.getElementById('submitFeelingsBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+
+    const formData = new FormData();
+    formData.append('formType', 'feelingsEntry');
+    formData.append('emotion', currentEmotion);
+    formData.append('message', feelingsMessage);
+
+    try {
+        const response = await fetch(scriptURL, {
+            method: 'POST',
+            body: formData,
+        });
+        const result = await response.json();
+
+        if (result.status === 'success') {
+            navigateToFeelingsPage('feelingsConfirmationPage');
+        } else {
+            alert('Error saving entry: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error!', error.message);
+        alert('Could not submit feelings entry. Please try again. Error: ' + error.message);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit';
+    }
+}
+
+async function fetchAllFeelingsEntries() {
+    const tableBody = document.getElementById('feelingsEntriesTableBody');
+    if (!tableBody) {
+        console.error('Feelings table body not found.');
+        return;
+    }
+    tableBody.innerHTML = '<tr><td colspan="3" class="loading-indicator">Loading entries...</td></tr>';
+    navigateToFeelingsPage('allFeelingsEntriesPage');
+
+    try {
+        const response = await fetch(`${scriptURL}?action=getFeelingsEntries`);
+        const serverData = await response.json();
+
+        if (serverData.status === 'success' && serverData.data) {
+            tableBody.innerHTML = ''; // Clear loading indicator
+            if (serverData.data.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="3">No feelings entries recorded yet.</td></tr>';
+            } else {
+                serverData.data.forEach(entry => {
+                    const row = tableBody.insertRow();
+                    const timestampCell = row.insertCell();
+                    const emotionCell = row.insertCell();
+                    const messageCell = row.insertCell();
+
+                    timestampCell.textContent = entry.timestamp;
+                    emotionCell.textContent = entry.emotion;
+                    messageCell.textContent = entry.message;
+                });
+            }
+        } else {
+            tableBody.innerHTML = `<tr><td colspan="3">Error loading entries: ${serverData.message || 'Unknown response'}</td></tr>`;
+            alert('Error loading entries: ' + (serverData.message || 'Unknown response'));
+        }
+    } catch (error) {
+        console.error('Failed to fetch feelings entries:', error);
+        tableBody.innerHTML = '<tr><td colspan="3">Error loading entries.</td></tr>';
+        alert('Error loading feelings entries.\n' + error.message);
+    }
+}
+
+// --- Hetu's Diary ---
+function navigateToDiaryPage(pageId) {
+    diaryPages.forEach(page => page.classList.remove('active'));
+    const targetPage = document.getElementById(pageId);
+    if (targetPage) targetPage.classList.add('active');
+    else { console.error('Diary page not found:', pageId); return; }
+}
+
+async function fetchDiaryEntries() {
+    try {
+        const response = await fetch(`${scriptURL}?action=getDiaryEntries`);
+        const serverData = await response.json();
+
+        if (serverData.status === 'success' && serverData.data) {
+            diaryEntries = {}; // Clear previous entries
+            serverData.data.forEach(entry => {
+                // Ensure date is in YYYY-MM-DD format for key
+                let formattedDate = entry.date;
+                if (entry.date instanceof Date) {
+                    formattedDate = entry.date.toISOString().split('T')[0];
+                }
+                diaryEntries[formattedDate] = entry;
+            });
+        } else {
+            console.error('Error fetching diary entries:', serverData.message || 'Unknown response');
+            alert('Error loading diary entries: ' + (serverData.message || 'Unknown response'));
+        }
+    } catch (error) {
+        console.error('Failed to fetch diary entries:', error);
+        alert('Error loading diary entries.\n' + error.message);
+    }
+}
+
+
+function renderCalendar(date) {
+    const monthYearDisplay = document.getElementById('monthYear');
+    const calendarGrid = document.getElementById('calendarGrid');
+
+    monthYearDisplay.textContent = date.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+    calendarGrid.innerHTML = '';
+
+    const firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+    const daysInMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+    const startDayOfWeek = firstDayOfMonth.getDay(); // 0 for Sunday, 1 for Monday
+
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    dayNames.forEach(dayName => {
+        const dayNameDiv = document.createElement('div');
+        dayNameDiv.classList.add('calendar-day');
+        dayNameDiv.textContent = dayName;
+        calendarGrid.appendChild(dayNameDiv);
+    });
+
+    // Adjust for Monday start: if startDayOfWeek is 0 (Sunday), we need 6 empty slots before Monday
+    // If it's 1 (Monday), 0 empty slots.
+    const emptySlots = (startDayOfWeek === 0) ? 6 : startDayOfWeek - 1; // Assuming Monday is 1st day of week for your display
+
+    for (let i = 0; i < emptySlots; i++) {
+        const emptyDiv = document.createElement('div');
+        emptyDiv.classList.add('calendar-day', 'empty');
+        calendarGrid.appendChild(emptyDiv);
+    }
+
+    const today = new Date();
+    today.setHours(0,0,0,0); // Normalize today's date
+
+    for (let i = 1; i <= daysInMonth; i++) {
+        const dayDiv = document.createElement('div');
+        dayDiv.classList.add('calendar-day', 'current-month');
+        dayDiv.textContent = i;
+
+        const currentDay = new Date(date.getFullYear(), date.getMonth(), i);
+        currentDay.setHours(0,0,0,0); // Normalize current day
+
+        if (currentDay.getTime() === today.getTime()) {
+            dayDiv.classList.add('today');
+        }
+
+        // Format date for lookup in diaryEntries (YYYY-MM-DD)
+        const dayString = currentDay.toISOString().split('T')[0];
+        if (diaryEntries[dayString]) {
+            dayDiv.classList.add('has-entry');
+        }
+
+        dayDiv.addEventListener('click', () => {
+            selectDiaryDate(dayString);
+        });
+        calendarGrid.appendChild(dayDiv);
+    }
+}
+
+function selectDiaryDate(dateString) {
+    // Remove previous selection
+    document.querySelectorAll('.calendar-day.selected-day').forEach(day => {
+        day.classList.remove('selected-day');
+    });
+
+    // Add selection to clicked day
+    const selectedDayElement = Array.from(document.querySelectorAll('.calendar-day.current-month')).find(day => {
+        const dayNum = parseInt(day.textContent);
+        const dayDate = new Date(calendarCurrentDate.getFullYear(), calendarCurrentDate.getMonth(), dayNum);
+        return dayDate.toISOString().split('T')[0] === dateString;
+    });
+
+    if (selectedDayElement) {
+        selectedDayElement.classList.add('selected-day');
+    }
+
+    document.getElementById('selectedDiaryDate').textContent = dateString;
+    document.getElementById('viewDiaryDate').textContent = dateString;
+
+    if (diaryEntries[dateString]) {
+        // If entry exists, populate view page
+        document.getElementById('viewDiaryThoughts').textContent = diaryEntries[dateString].thoughts;
+        document.getElementById('diaryThoughts').value = diaryEntries[dateString].thoughts; // Also pre-fill for editing
+        navigateToDiaryPage('viewDiaryEntryPage');
+    } else {
+        // If no entry, populate edit page
+        document.getElementById('diaryThoughts').value = ''; // Clear for new entry
+        navigateToDiaryPage('diaryEntryPage');
+    }
+}
+
+
+async function submitDiaryEntry() {
+    const selectedDate = document.getElementById('selectedDiaryDate').textContent;
+    const diaryThoughts = document.getElementById('diaryThoughts').value.trim();
+
+    if (!selectedDate) {
+        alert('Please select a date from the calendar first!');
+        return;
+    }
+    if (!diaryThoughts) {
+        alert('Please write your thoughts before saving!');
+        return;
+    }
+
+    const saveBtn = document.getElementById('saveDiaryEntryBtn');
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
+
+    const formData = new FormData();
+    formData.append('formType', 'diaryEntry');
+    formData.append('date', selectedDate); // YYYY-MM-DD format
+    formData.append('thoughts', diaryThoughts);
+
+    try {
+        const response = await fetch(scriptURL, {
+            method: 'POST',
+            body: formData,
+        });
+        const result = await response.json();
+
+        if (result.status === 'success') {
+            // Update local cache and re-render calendar to show entry
+            diaryEntries[selectedDate] = { date: selectedDate, thoughts: diaryThoughts };
+            renderCalendar(calendarCurrentDate); // Re-render to show 'has-entry' mark
+            navigateToDiaryPage('diaryConfirmationPage');
+        } else {
+            alert('Error saving diary entry: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error!', error.message);
+        alert('Could not submit diary entry. Please try again. Error: ' + error.message);
+    } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = 'Save Entry';
+    }
+}
+
+async function fetchAllDiaryEntriesList() {
+    const listContainer = document.getElementById('allDiaryEntriesList');
+    if (!listContainer) {
+        console.error('All diary entries list container not found.');
+        return;
+    }
+    listContainer.innerHTML = '<p class="loading-indicator">Loading entries...</p>';
+
+    try {
+        const response = await fetch(`${scriptURL}?action=getDiaryEntries`);
+        const serverData = await response.json();
+
+        if (serverData.status === 'success' && serverData.data) {
+            listContainer.innerHTML = ''; // Clear loading indicator
+            if (serverData.data.length === 0) {
+                listContainer.innerHTML = '<p>No diary entries recorded yet.</p>';
+            } else {
+                // Sort entries by date descending
+                serverData.data.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+                serverData.data.forEach(entry => {
+                    const entryDiv = document.createElement('div');
+                    const formattedDate = new Date(entry.date).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                    entryDiv.innerHTML = `<h3>${formattedDate}</h3><p>${entry.thoughts || 'No thoughts.'}</p><hr>`;
+                    listContainer.appendChild(entryDiv);
+                });
+            }
+        } else if (serverData.status === 'success' && (!serverData.data || serverData.data.length === 0)) {
+            listContainer.innerHTML = '<p>No diary entries recorded yet.</p>';
+        } else {
+            listContainer.innerHTML = `<p>Could not load entries: ${serverData.message || 'Unknown response'}</p>`;
+        }
+        navigateToDiaryPage('allDiaryEntriesPage');
+    } catch (error) {
+        console.error('Failed to fetch all diary entries list:', error);
+        if (listContainer) listContainer.innerHTML = '<p>Error loading all diary entries.</p>';
+        alert('Error loading all diary entries.\n' + error.message);
+    }
+}
+
+// --- Initialization ---
+document.addEventListener('DOMContentLoaded', () => {
+    navigateToApp('homeScreen');
+    const prevMonthBtn = document.getElementById('prevMonthBtn');
+    const nextMonthBtn = document.getElementById('nextMonthBtn');
+
+    if (prevMonthBtn) prevMonthBtn.addEventListener('click', () => {
+        calendarCurrentDate.setMonth(calendarCurrentDate.getMonth() - 1);
+        fetchDiaryEntries().then(() => renderCalendar(calendarCurrentDate));
+    });
+    if (nextMonthBtn) nextMonthBtn.addEventListener('click', () => {
+        calendarCurrentDate.setMonth(calendarCurrentDate.getMonth() + 1);
+        fetchDiaryEntries().then(() => renderCalendar(calendarCurrentDate));
+    });
+});
+</script>
