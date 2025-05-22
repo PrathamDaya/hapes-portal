@@ -1,5 +1,5 @@
 // IMPORTANT: REPLACE THIS WITH YOUR ACTUAL DEPLOYED WEB APP URL from Google Apps Script
-const scriptURL = 'https://script.google.com/macros/s/AKfycbzH4whliZSRjcTeoA_8UQAzM9OmtNohfqiQKmeoJZWXa_xQOHg_e11bTRavjcjZqtzn/exec'; // <<< REPLACE WITH YOUR URL
+const scriptURL = 'https://script.google.com/macros/s/AKfycbzH4whliZSRjcTeoA_8UQAzM9OmtNohfqiQKmeoJZWXa_xQOHg_e11bTRavjcjZqtzn/exec';
 const screens = document.querySelectorAll('.screen');
 const feelingsPages = document.querySelectorAll('#feelingsPortalScreen .page');
 const diaryPages = document.querySelectorAll('#diaryScreen .page');
@@ -8,18 +8,45 @@ let currentEmotion = '';
 let calendarCurrentDate = new Date();
 let diaryEntries = {};
 
-// --- Main Navigation ---
+function navigateToApp(screenId) {
+    screens.forEach(screen => screen.classList.remove('active'));
+    document.getElementById(screenId).classList.add('active');
+
+    if (screenId === 'feelingsPortalScreen') {
+        navigateToFeelingsPage('feelingsPage1');
+    } else if (screenId === 'diaryScreen') {
+        fetchDiaryEntries().then(() => {
+            renderCalendar(calendarCurrentDate);
+            navigateToDiaryPage('diaryCalendarPage');
+        });
+    }
+}
+
+function navigateToDiaryPage(pageId) {
+    diaryPages.forEach(p => p.classList.remove('active'));
+    const page = document.getElementById(pageId);
+    if (page) page.classList.add('active');
+}
+
+function openDiaryEntry(dateString) {
+    document.getElementById('selectedDate').value = dateString;
+    const date = new Date(dateString);
+    if (isNaN(date)) return alert('Invalid date.');
+
+    document.getElementById('diaryDateDisplay').textContent = date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    document.getElementById('diaryEntryTitle').textContent = `Diary for ${date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}`;
+    document.getElementById('diaryThoughts').value = '';
+    navigateToDiaryPage('diaryEntryPage');
+}
+
 function viewDiaryEntry(dateString) {
     const entry = diaryEntries[dateString];
     if (!entry) return alert('No entry for ' + dateString);
 
-    const dateParts = dateString.split('-');
-    if (dateParts.length !== 3) return alert('Invalid date for view: ' + dateString);
+    const date = new Date(dateString);
+    if (isNaN(date)) return alert('Invalid date.');
 
-    const dateObj = new Date(+dateParts[0], +dateParts[1] - 1, +dateParts[2]);
-    if (isNaN(dateObj)) return alert('Invalid date object for view: ' + dateString);
-
-    document.getElementById('viewDiaryDateDisplay').textContent = dateObj.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    document.getElementById('viewDiaryDateDisplay').textContent = date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
     document.getElementById('viewDiaryThoughts').textContent = entry.thoughts || 'No thoughts.';
     navigateToDiaryPage('diaryViewPage');
 }
@@ -53,23 +80,6 @@ function submitDiaryEntry() {
             submitBtn.textContent = originalText;
             submitBtn.disabled = false;
         });
-}
-
-function navigateToDiaryPage(pageId) {
-    diaryPages.forEach(p => p.classList.remove('active'));
-    const page = document.getElementById(pageId);
-    if (page) page.classList.add('active');
-}
-
-function openDiaryEntry(dateString) {
-    document.getElementById('selectedDate').value = dateString;
-    const date = new Date(dateString);
-    if (isNaN(date)) return alert('Invalid date.');
-
-    document.getElementById('diaryDateDisplay').textContent = date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    document.getElementById('diaryEntryTitle').textContent = `Diary for ${date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}`;
-    document.getElementById('diaryThoughts').value = '';
-    navigateToDiaryPage('diaryEntryPage');
 }
 
 async function fetchDiaryEntries() {
@@ -133,69 +143,35 @@ function renderCalendar(date) {
     }
 }
 
-function navigateToFeelingsPage(pageId, emotion = '') {
-    feelingsPages.forEach(p => p.classList.remove('active'));
-    const page = document.getElementById(pageId);
-    if (page) page.classList.add('active');
-
-    currentEmotion = emotion;
-    if (pageId === 'feelingsPage2' && emotion) {
-        const heading = document.querySelector('#feelingsPage2 h2');
-        if (heading) heading.textContent = `You selected: ${emotion}. Please let me know your thoughts.`;
-    }
-    if (pageId === 'feelingsPage3') {
-        const box = document.getElementById('feelings-message-box');
-        const input = document.getElementById('feelingsMessage');
-        if (box && input) box.textContent = input.value.substring(0, 20) + '...';
-    }
-}
-
-function submitFeelingsEntry() {
-    const message = document.getElementById('feelingsMessage').value.trim();
-    if (!message) return alert('Please enter your thoughts.');
-
-    const formData = new FormData();
-    formData.append('formType', 'feelingsEntry');
-    formData.append('emotion', currentEmotion);
-    formData.append('message', message);
-
-    const btn = document.getElementById('submitFeelingsBtn');
-    const originalText = btn.textContent;
-    btn.textContent = 'Submitting...';
-    btn.disabled = true;
-
-    fetch(scriptURL, { method: 'POST', body: formData, mode: 'cors' })
-        .then(res => res.ok ? res.json() : res.text().then(t => { throw new Error(`HTTP ${res.status}: ${t}`); }))
-        .then(data => {
-            if (data.status === 'error') throw new Error(data.message || 'Unknown server error.');
-            navigateToFeelingsPage('feelingsPage3');
-            document.getElementById('feelingsMessage').value = '';
-        })
-        .catch(err => alert('Error: ' + err.message))
-        .finally(() => {
-            btn.textContent = originalText;
-            btn.disabled = false;
-        });
-}
-
-// ✅ This was the issue: it must be outside the DOMContentLoaded block
-function navigateToApp(screenId) {
-    screens.forEach(screen => screen.classList.remove('active'));
-    document.getElementById(screenId).classList.add('active');
-
-    if (screenId === 'feelingsPortalScreen') {
-        navigateToFeelingsPage('feelingsPage1');
-    } else if (screenId === 'diaryScreen') {
-        fetchDiaryEntries().then(() => {
-            renderCalendar(calendarCurrentDate);
-            navigateToDiaryPage('diaryCalendarPage');
-        });
+async function fetchAndDisplayAllDiaryEntries() {
+    const container = document.getElementById('allDiaryEntriesList');
+    container.innerHTML = '<p>Loading entries...</p>';
+    try {
+        const res = await fetch(`${scriptURL}?action=getDiaryEntries`, { method: 'GET', mode: 'cors' });
+        const data = await res.json();
+        container.innerHTML = '';
+        if (data.status === 'success' && Array.isArray(data.data) && data.data.length > 0) {
+            const sorted = data.data.sort((a, b) => new Date(b.date) - new Date(a.date));
+            sorted.forEach(entry => {
+                const div = document.createElement('div');
+                div.classList.add('diary-entry-list-item');
+                const date = new Date(entry.date);
+                const formattedDate = date.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                div.innerHTML = `<h3>${formattedDate}</h3><p>${entry.thoughts || 'No thoughts.'}</p><hr>`;
+                container.appendChild(div);
+            });
+        } else {
+            container.innerHTML = '<p>No diary entries recorded yet.</p>';
+        }
+        navigateToDiaryPage('allDiaryEntriesPage');
+    } catch (err) {
+        console.error(err);
+        container.innerHTML = '<p>Error loading all diary entries.</p>';
+        alert('Error loading all diary entries.\n' + err.message);
     }
 }
 
-// --- Page Load ---
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('DOM ready.');
     navigateToApp('homeScreen');
 
     const prevBtn = document.getElementById('prevMonthBtn');
@@ -209,4 +185,3 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchDiaryEntries().then(() => renderCalendar(calendarCurrentDate));
     });
 });
-
