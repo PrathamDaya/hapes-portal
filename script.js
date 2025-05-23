@@ -1,7 +1,4 @@
 // --- FULLY FIXED script.js ---
-// Your original code is preserved, only the placement of navigateToApp was corrected
-// and the DOMContentLoaded block is closed properly.
-
 // IMPORTANT: REPLACE THIS WITH YOUR ACTUAL DEPLOYED WEB APP URL from Google Apps Script
 const scriptURL = 'https://script.google.com/macros/s/AKfycbzH4whliZSRjcTeoA_8UQAzM9OmtNohfqiQKmeoJZWXa_xQOHg_e11bTRavjcjZqtzn/exec'; // <<< REPLACE WITH YOUR URL
 const screens = document.querySelectorAll('.screen');
@@ -33,6 +30,7 @@ function viewDiaryEntry(dateString) {
         return;
     }
 
+    // FIX: Explicitly specify date components to avoid time/timezone
     document.getElementById('viewDiaryDateDisplay').textContent = dateObj.toLocaleDateString('en-US', {
         weekday: 'long',
         year: 'numeric',
@@ -149,6 +147,7 @@ async function fetchAndDisplayAllDiaryEntries() {
                 if (dateParts.length === 3) {
                     const entryDateObj = new Date(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2]));
                     if (!isNaN(entryDateObj.getTime())) {
+                        // FIX: Explicitly format date for display in all entries list
                         formattedDate = entryDateObj.toLocaleDateString('en-US', {
                             weekday: 'long',
                             year: 'numeric',
@@ -344,7 +343,26 @@ async function fetchAndDisplayFeelingsEntries() {
             data.data.forEach(entry => {
                 const row = tbody.insertRow();
                 const cellTimestamp = row.insertCell();
-                cellTimestamp.textContent = entry.timestamp || 'N/A';
+
+                // FIX: Format feelings entry timestamp to exclude GMT offset if present,
+                // but keep hour/minute for this section as originally intended.
+                if (entry.timestamp) {
+                    const entryDateTime = new Date(entry.timestamp);
+                    if (!isNaN(entryDateTime.getTime())) {
+                        cellTimestamp.textContent = entryDateTime.toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: true // To display AM/PM
+                        });
+                    } else {
+                        cellTimestamp.textContent = entry.timestamp; // Fallback
+                    }
+                } else {
+                    cellTimestamp.textContent = 'N/A';
+                }
 
                 const cellEmotion = row.insertCell();
                 const emotionSpan = document.createElement('span');
@@ -500,6 +518,7 @@ function openDiaryEntry(dateString) {
     
     console.log('Parsed dateObj for display in openDiaryEntry:', dateObj.toString());
 
+    // FIX: Explicitly specify date components to avoid time/timezone
     document.getElementById('diaryDateDisplay').textContent = dateObj.toLocaleDateString('en-US', {
         weekday: 'long',
         year: 'numeric',
