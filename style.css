@@ -69,7 +69,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 120px;
+    min-height: 120px; /* Kept for general option boxes like main ones */
 }
 
 .option-box:hover {
@@ -293,6 +293,14 @@ button:disabled {
 .option-box.appreciate, .emotion-tag.appreciate { background-color: #a0e6a0; color: #006400; border-color: #70c470; }
 .option-box.sad, .emotion-tag.sad { background-color: #a0c0ff; color: #000080; border-color: #7090ff; }
 .option-box.happy, .emotion-tag.happy { background-color: #ffe080; color: #996b00; border-color: #ffd040; }
+
+/* Styles for feelings portal options (reverted to previous smaller size) */
+#feelingsPortalScreen .option-box {
+    font-size: 1.1em; /* Smaller font size */
+    padding: 15px 20px; /* Smaller padding */
+    min-height: auto; /* Remove fixed min-height for flexibility */
+    height: 70px; /* Set a specific height to make them uniformly small */
+}
 
 /* Styles for view entries list */
 .entries-list-container {
