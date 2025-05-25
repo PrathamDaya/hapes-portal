@@ -34,44 +34,37 @@
                 <main>
                     <section id="feelingsPage1" class="page active">
                         <div class="option-box grievance" onclick="navigateToFeelingsPage('feelingsPage2', 'Grievance')">Grievance</div>
-                        <div class="option-box appreciate" onclick="navigateToFeelingsPage('feelingsPage2', 'Appreciate')">Appreciate</div>
-                        <div class="option-box sad" onclick="navigateToFeelingsPage('feelingsPage2', 'Sad')">Sad</div>
                         <div class="option-box happy" onclick="navigateToFeelingsPage('feelingsPage2', 'Happy')">Happy</div>
-                        <div class="option-box view-all" onclick="fetchAndDisplayFeelingsEntries()">View All Entries</div>
+                        <div class="option-box sad" onclick="navigateToFeelingsPage('feelingsPage2', 'Sad')">Sad</div>
+                        <div class="option-box excited" onclick="navigateToFeelingsPage('feelingsPage2', 'Excited')">Excited</div>
+                        <div class="option-box confused" onclick="navigateToFeelingsPage('feelingsPage2', 'Confused')">Confused</div>
+                        <div class="option-box loved" onclick="navigateToFeelingsPage('feelingsPage2', 'Loved')">Loved</div>
+                        <div class="option-box angry" onclick="navigateToFeelingsPage('feelingsPage2', 'Angry')">Angry</div>
+                        <div class="option-box thankful" onclick="navigateToFeelingsPage('feelingsPage2', 'Thankful')">Thankful</div>
+                        <div class="option-box worried" onclick="navigateToFeelingsPage('feelingsPage2', 'Worried')">Worried</div>
+                        <div class="option-box proud" onclick="navigateToFeelingsPage('feelingsPage2', 'Proud')">Proud</div>
+                        <div class="option-box calm" onclick="navigateToFeelingsPage('feelingsPage2', 'Calm')">Calm</div>
+                        <div class="option-box playful" onclick="navigateToFeelingsPage('feelingsPage2', 'Playful')">Playful</div>
                     </section>
 
                     <section id="feelingsPage2" class="page">
-                        <h2>Please let me know your thoughts</h2>
+                        <h2>You selected: <span id="selectedEmotionDisplay"></span></h2>
                         <div class="notebook">
-                            <textarea id="feelingsMessage" placeholder="Write here..."></textarea>
-                            <div class="ribbon top-left"></div>
-                            <div class="ribbon bottom-right"></div>
-                            <div class="heart top-right">💖</div>
-                            <div class="heart bottom-left">💖</div>
+                            <textarea id="feelingsMessage" placeholder="Write more about your feelings here..."></textarea>
+                            <button onclick="submitFeelings()">Submit Feelings</button>
                         </div>
-                        <button id="submitFeelingsBtn" onclick="submitFeelingsEntry()">Submit</button>
                         <button onclick="navigateToFeelingsPage('feelingsPage1')">Back</button>
                     </section>
 
-                    <section id="feelingsPage3" class="page">
-                        <h2>Thank you Hetu!</h2>
+                    <section id="feelingsConfirmationPage" class="page">
                         <div id="feelings-animation-container">
-                            <div id="feelings-message-box"></div>
                             <div id="feelings-mail-icon">✉️</div>
+                            <div id="feelings-message-box">Sent!</div>
                         </div>
-                        <p id="feelings-thank-you-message">Prath will look at it.</p>
-                        <button onclick="navigateToFeelingsPage('feelingsPage1')">Back to Feelings Home</button>
-                         <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Main Home</button>
+                        <p id="feelings-thank-you-message">Thank you for sharing your feelings, Hetu! I've received your message. Always here for you ❤️</p>
+                        <button onclick="navigateToFeelingsPage('feelingsPage1', true)">Add Another Feeling</button>
+                        <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Main Home</button>
                     </section>
-
-                    <section id="feelingsViewEntriesPage" class="page">
-                        <h2>All Your Feelings Entries</h2>
-                        <div id="feelingsEntriesList" class="entries-list-container">
-                            <p>Loading entries...</p>
-                        </div>
-                        <button onclick="navigateToFeelingsPage('feelingsPage1')">Back to Feelings Home</button>
-                    </section>
-
                 </main>
                 <footer class="portal-footer">
                     <p>&copy; 2025 For Hetu with Love</p>
@@ -82,45 +75,50 @@
         <section id="diaryScreen" class="screen">
             <div class="container">
                 <header>
-                     <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
+                    <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
                     <h1>Hetu's Diary</h1>
                 </header>
                 <main>
                     <section id="diaryCalendarPage" class="page active">
-                        <h2>Select a Date</h2>
-                        <div id="calendarControls">
-                            <button id="prevMonthBtn">&lt; Prev</button>
-                            <h3 id="currentMonthYear">Month Year</h3>
-                            <button id="nextMonthBtn">Next &gt;</button>
+                        <h2>Select a Date or View Entries</h2>
+                        <div class="calendar-nav">
+                            <button onclick="changeMonth(-1)">Previous Month</button>
+                            <span id="currentMonthYear"></span>
+                            <button onclick="changeMonth(1)">Next Month</button>
                         </div>
-                        <div id="calendarGrid"></div>
-                        <p class="info-text">Click on a date to write your entry, or click a colored date to view its entry.</p>
-                        <button class="view-all-button" onclick="fetchAndDisplayAllDiaryEntries()">View All Diary Entries</button>
+                        <div id="calendarGrid" class="calendar-grid">
+                            </div>
+                        <button onclick="navigateToDiaryPage('allDiaryEntriesPage')">View All Entries</button>
                     </section>
 
                     <section id="diaryEntryPage" class="page">
-                        <h2 id="diaryEntryTitle">New Diary Entry</h2>
-                        <input type="hidden" id="selectedDate">
-                        <div class="diary-form-group">
-                            <label for="diaryThoughts">Your thoughts for <span id="diaryDateDisplay">the day</span>:</label>
-                            <textarea id="diaryThoughts" placeholder="Write your beautiful thoughts here..."></textarea>
+                        <h2 id="diaryDateDisplay"></h2>
+                        <h3 id="diaryEntryTitle"></h3>
+                        <div class="notebook">
+                            <textarea id="diaryThoughts" placeholder="Write down your thoughts for the day..."></textarea>
+                            <input type="hidden" id="selectedDate">
+                            <button onclick="submitDiaryEntry()">Save Entry</button>
                         </div>
-                        <button onclick="submitDiaryEntry()">Save Entry</button>
                         <button onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Calendar</button>
                     </section>
 
-                    <section id="diaryViewPage" class="page">
-                        <h2>Diary Entry for <span id="viewDiaryDateDisplay"></span></h2>
-                        <div class="diary-entry-content">
-                            <p id="viewDiaryThoughts" class="notebook-content"></p>
-                            </div>
+                    <section id="viewDiaryEntryPage" class="page">
+                        <h2 id="viewDiaryDateDisplay"></h2>
+                        <h3 id="viewDiaryEntryTitle"></h3>
+                        <div class="notebook">
+                            <p id="viewDiaryThoughts"></p>
+                        </div>
                         <button onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Calendar</button>
+                        <button onclick="navigateToDiaryPage('allDiaryEntriesPage')">View All Entries</button>
                     </section>
 
                     <section id="diaryConfirmationPage" class="page">
-                        <h2>Diary entry saved!</h2>
-                        <p>Thank you for sharing your moment, Hetu!</p>
-                        <p>Prath will cherish this. ❤️</p>
+                        <div id="feelings-animation-container">
+                            <div id="feelings-mail-icon">✉️</div>
+                            <div id="feelings-message-box">Saved!</div>
+                        </div>
+                        <p>Your diary entry has been saved!</p>
+                        <button onclick="navigateToDiaryPage('diaryEntryPage', true)">Write Another Entry</button>
                         <button onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Calendar</button>
                         <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Main Home</button>
                     </section>
