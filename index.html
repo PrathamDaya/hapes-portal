@@ -6,16 +6,16 @@
     <title>For my Hetu</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Specific styles for the Miss You button */
-        .miss-you-button {
+        /* Specific styles for the Bunny button */
+        .bunny-button {
             background: linear-gradient(45deg, #ffc0cb, #ff80a0); /* Cute pink gradient */
             color: white;
-            font-size: 1.5em;
+            font-size: 1.5em; /* Adjust font size if any text was intended (now just bunny) */
             font-weight: bold;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px; /* Space between text and bunny */
+            gap: 0px; /* No gap as only bunny is left */
             box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* More prominent shadow */
             transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
             border: 1px solid #ff6699;
@@ -24,21 +24,21 @@
             min-height: 120px; /* Keep consistent */
         }
 
-        .miss-you-button:hover {
+        .bunny-button:hover {
             transform: translateY(-8px) scale(1.02);
             box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
             background: linear-gradient(45deg, #ff80a0, #ffc0cb); /* Subtle hover effect */
         }
 
-        .miss-you-button .bunny-face {
+        .bunny-button .bunny-face {
             display: inline-block;
-            font-size: 1.8em; /* Slightly larger bunny */
+            font-size: 3em; /* Make the bunny significantly larger */
             line-height: 1; /* Ensure no extra space around character */
             animation: bounce 0.8s infinite alternate ease-in-out; /* Subtle bounce */
         }
 
         /* Spinning animation for the bunny */
-        .miss-you-button .bunny-face.spinning {
+        .bunny-button .bunny-face.spinning {
             animation: spin 2s linear infinite; /* Spin continuously when active */
         }
 
@@ -108,6 +108,18 @@
             display: none; /* Hidden by default */
             backdrop-filter: blur(3px); /* Subtle blur effect */
         }
+
+        /* Styles for feelings portal options (reverted to previous size) */
+        .option-box.grievance,
+        .option-box.appreciate,
+        .option-box.sad,
+        .option-box.happy {
+            font-size: 1.4em; /* Match main-option font size */
+            padding: 30px; /* Restore larger padding */
+            min-height: 120px; /* Restore minimum height */
+            /* Add specific colors from previous style if needed, otherwise inherit from .option-box */
+        }
+
     </style>
 </head>
 <body>
@@ -123,8 +135,7 @@
                 <div class="option-box main-option" onclick="navigateToApp('diaryScreen')">
                     📅 Hetu's Diary 📅
                 </div>
-                <div class="option-box miss-you-button" onclick="showMissYouPopup()">
-                    <span>I Miss You</span>
+                <div class="option-box bunny-button" onclick="showMissYouPopup()">
                     <span class="bunny-face">🐰</span>
                 </div>
             </main>
@@ -247,9 +258,7 @@
     </div>
     
     <div id="missYouPopup">
-        <p>Pratham misses you too, I love you my chikoo! 🥰</p>
-        <p>Sending virtual huggies 🤗 and kissy 😘 to my darling!</p>
-        <button onclick="closeMissYouPopup()">Okay ❤️</button>
+        <p id="missYouMessage"></p> <button onclick="closeMissYouPopup()">Okay ❤️</button>
     </div>
 
     <div id="overlay"></div>
@@ -267,14 +276,27 @@
             }
         });
 
-        // Functions for the new Miss You button and popup
+        const missYouMessages = [
+            "I love you my chikoo! 🥰",
+            "Sending virtual huggies 🤗 to my darling!",
+            "Sending virtual kissy 😘 to my darling!",
+            "Pratham misses you too! ❤️",
+            "Thinking of you, always! ✨",
+            "You're the best! 💖"
+        ];
+
         function showMissYouPopup() {
-            const bunnyFace = document.querySelector('.miss-you-button .bunny-face');
+            const bunnyFace = document.querySelector('.bunny-button .bunny-face');
             bunnyFace.classList.add('spinning'); // Start spinning
 
             // Stop spinning and show popup after 2 seconds
             setTimeout(() => {
                 bunnyFace.classList.remove('spinning'); // Stop spinning
+                
+                // Get a random message
+                const randomIndex = Math.floor(Math.random() * missYouMessages.length);
+                document.getElementById('missYouMessage').innerHTML = missYouMessages[randomIndex];
+
                 document.getElementById('missYouPopup').style.display = 'block';
                 document.getElementById('overlay').style.display = 'block';
             }, 2000); // Spin for 2 seconds
