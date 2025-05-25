@@ -1,6 +1,6 @@
 // --- FULLY FIXED script.js ---
 // IMPORTANT: REPLACE THIS WITH YOUR ACTUAL DEPLOYED WEB APP URL from Google Apps Script
-const scriptURL = 'https://script.google.com/macros/s/AKfycbzH4whliZSRjcTeoA_8UQAzM9OmtNohfqiQKmeoJZWXa_xQOHg_e11bTRavjcjZqtzn/exec'; // <<< REPLACE WITH YOUR NEW URL!
+const scriptURL = 'https://script.google.com/macros/s/AKfycbzH4whliZSRjcTeoA_8UQAzM9OmtNohfqiQKmeoJZWXa_xQOHg_e11bTRavjcjZqtzn/exec'; // <<< REPLACE WITH YOUR URL
 const screens = document.querySelectorAll('.screen');
 const feelingsPages = document.querySelectorAll('#feelingsPortalScreen .page');
 const diaryPages = document.querySelectorAll('#diaryScreen .page');
@@ -10,157 +10,505 @@ let calendarCurrentDate = new Date();
 let diaryEntries = {};
 
 // --- Main Navigation ---
-function navigateToApp(screenId) {
-    screens.forEach(screen => {
-        screen.classList.remove('active');
+function viewDiaryEntry(dateString) {
+    const entry = diaryEntries[dateString];
+    if (!entry) {
+        alert('No entry for ' + dateString);
+        return;
+    }
+
+    const dateParts = dateString.split('-');
+    if (dateParts.length !== 3) {
+        alert('Invalid date for view: ' + dateString);
+        return;
+    }
+    
+    const dateObj = new Date(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2]));
+
+    if (isNaN(dateObj.getTime())) {
+        alert('Invalid date object for view: ' + dateString);
+        return;
+    }
+
+    // FIX: Explicitly specify date components to avoid time/timezone
+    document.getElementById('viewDiaryDateDisplay').textContent = dateObj.toLocaleDateString('en-US', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
     });
+    
+    document.getElementById('viewDiaryThoughts').textContent = entry.thoughts || 'No thoughts.';
+    navigateToDiaryPage('diaryViewPage');
+}
+
+function submitDiaryEntry() {
+    const thoughts = document.getElementById('diaryThoughts').value.trim();
+    const date = document.getElementById('selectedDate').value; // Should be YYYY-MM-DD
+
+    if (!date) {
+        alert('No date selected.');
+        return;
+    }
+    if (!thoughts) {
+        alert('Please write some thoughts.');
+        return;
+    }
+
+    // Validate that we have the script URL configured
+    if (scriptURL.includes('YOUR_SCRIPT_ID_HERE')) {
+        alert('Please update the scriptURL in script.js with your Google Apps Script web app URL.');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('formType', 'diaryEntry');
+    formData.append('date', date);
+    formData.append('thoughts', thoughts);
+
+    const submitBtn = document.querySelector('#diaryEntryPage button[onclick="submitDiaryEntry()"]');
+    const originalBtnText = submitBtn.textContent;
+    submitBtn.textContent = 'Saving...';
+    submitBtn.disabled = true;
+
+    console.log('Submitting diary entry:', { date: date, thoughts: thoughts });
+
+    fetch(scriptURL, {
+        method: 'POST',
+        body: formData,
+        mode: 'cors'
+    })
+        .then(response => {
+            console.log('Diary response status:', response.status);
+            if (!response.ok) {
+                return response.text().then(text => {
+                    console.error('Diary error response:', text);
+                    throw new Error(`HTTP error! ${response.status}, ${text}`)
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Diary server response:', data);
+            if (data.status === 'error') {
+                throw new Error(data.message || 'Error saving diary from server.');
+            }
+            console.log('Diary Entry Success!', data);
+            fetchDiaryEntries().then(() => {
+                renderCalendar(calendarCurrentDate);
+                navigateToDiaryPage('diaryConfirmationPage');
+            });
+        })
+        .catch(error => {
+            console.error('Diary Entry Error!', error);
+            alert('Error saving diary entry.\n' + error.message);
+        })
+        .finally(() => {
+            if (submitBtn) {
+                submitBtn.textContent = originalBtnText;
+                submitBtn.disabled = false;
+            }
+        });
+}
+
+async function fetchAndDisplayAllDiaryEntries() {
+    console.log('Fetching all diary entries list...');
+    const listContainer = document.getElementById('allDiaryEntriesList');
+    if (!listContainer) {
+        console.error('"allDiaryEntriesList" not found.');
+        return;
+    }
+    listContainer.innerHTML = '<p>Loading entries...</p>';
+
+    try {
+        const response = await fetch(`${scriptURL}?action=getDiaryEntries`, {
+            method: 'GET',
+            mode: 'cors'
+        });
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('All diary entries fetch error:', errorText);
+            throw new Error(`HTTP error! ${response.status}, ${errorText}`);
+        }
+        
+        const serverData = await response.json();
+        console.log('All diary entries data:', serverData);
+        listContainer.innerHTML = '';
+
+        if (serverData.status === 'success' && serverData.data && serverData.data.length > 0) {
+            const sortedEntries = serverData.data.sort((a, b) => new Date(b.date) - new Date(a.date));
+            sortedEntries.forEach(entry => {
+                const entryDiv = document.createElement('div');
+                entryDiv.classList.add('diary-entry-list-item');
+                let formattedDate = 'Unknown Date'; // Default fallback
+
+                // IMPROVED FIX for Point 4: Robust date parsing
+                const entryDateObj = new Date(entry.date);
+                if (!isNaN(entryDateObj.getTime())) {
+                    formattedDate = entryDateObj.toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+                } else if (entry.date) {
+                    formattedDate = `Invalid Date: ${entry.date}`; // Show invalid date if it's there
+                }
+                
+                entryDiv.innerHTML = `<h3>${formattedDate}</h3><p>${entry.thoughts || 'No thoughts.'}</p><hr>`;
+                listContainer.appendChild(entryDiv);
+            });
+        } else if (serverData.status === 'success' && (!serverData.data || serverData.data.length === 0)) {
+            listContainer.innerHTML = '<p>No diary entries recorded yet.</p>';
+        } else {
+            listContainer.innerHTML = `<p>Could not load entries: ${serverData.message || 'Unknown response'}</p>`;
+        }
+        navigateToDiaryPage('allDiaryEntriesPage');
+    } catch (error) {
+        console.error('Failed to fetch all diary entries list:', error);
+        if (listContainer) {
+            listContainer.innerHTML = '<p>Error loading all diary entries.</p>';
+        }
+        alert('Error loading all diary entries.\n' + error.message);
+    }
+}
+
+// --- Initialization ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Check if script URL is configured
+    if (scriptURL.includes('YOUR_SCRIPT_ID_HERE')) {
+        console.warn('⚠️ IMPORTANT: Please update the scriptURL in script.js with your Google Apps Script web app URL.');
+    }
+    
+    navigateToApp('homeScreen'); // Call navigateToApp after DOM is loaded and script is parsed
+    
+    const prevMonthBtn = document.getElementById('prevMonthBtn');
+    const nextMonthBtn = document.getElementById('nextMonthBtn');
+
+    if (prevMonthBtn) {
+        prevMonthBtn.addEventListener('click', () => {
+            calendarCurrentDate.setMonth(calendarCurrentDate.getMonth() - 1);
+            fetchDiaryEntries().then(() => renderCalendar(calendarCurrentDate));
+        });
+    }
+    
+    if (nextMonthBtn) {
+        nextMonthBtn.addEventListener('click', () => {
+            calendarCurrentDate.setMonth(calendarCurrentDate.getMonth() + 1);
+            fetchDiaryEntries().then(() => renderCalendar(calendarCurrentDate));
+        });
+    }
+}); // Corrected: Closing brace for DOMContentLoaded
+
+// --- Main Navigation Function (Moved outside DOMContentLoaded) ---
+function navigateToApp(screenId) {
+    screens.forEach(screen => screen.classList.remove('active'));
     document.getElementById(screenId).classList.add('active');
 
-    // Reset to first page when entering a portal
     if (screenId === 'feelingsPortalScreen') {
-        navigateToFeelingsPage('feelingsPage1', true); // Pass true to reset form
+        navigateToFeelingsPage('feelingsPage1');
     } else if (screenId === 'diaryScreen') {
-        navigateToDiaryPage('diaryCalendarPage');
-        renderCalendar(calendarCurrentDate.getFullYear(), calendarCurrentDate.getMonth());
-        fetchDiaryEntries(); // Fetch fresh entries when entering diary portal
+        fetchDiaryEntries().then(() => {
+            renderCalendar(calendarCurrentDate);
+            navigateToDiaryPage('diaryCalendarPage');
+        });
     }
 }
 
-// --- Feelings Portal Navigation & Logic ---
-function navigateToFeelingsPage(pageId, resetForm = false) {
-    feelingsPages.forEach(page => {
-        page.classList.remove('active');
-    });
-    document.getElementById(pageId).classList.add('active');
+// --- Hetu's Feelings Portal ---
+function navigateToFeelingsPage(pageId, emotion = '') {
+    feelingsPages.forEach(page => page.classList.remove('active'));
+    const targetPage = document.getElementById(pageId);
+    if (targetPage) targetPage.classList.add('active');
+    else { console.error('Feelings page not found:', pageId); return; }
 
-    if (resetForm && pageId === 'feelingsPage1') {
-        document.getElementById('feelingsMessage').value = ''; // Clear message
-        currentEmotion = ''; // Clear selected emotion
-    } else if (pageId === 'feelingsPage2') {
-        document.getElementById('feelingsMessage').focus();
-    }
-}
-
-function selectEmotion(emotion) {
     currentEmotion = emotion;
-    document.getElementById('selectedEmotionDisplay').textContent = emotion;
-    navigateToFeelingsPage('feelingsPage2');
+    if (pageId === 'feelingsPage2' && emotion) {
+        const heading = document.querySelector('#feelingsPage2 h2');
+        if (heading) heading.textContent = `You selected: ${emotion}. Please let me know your thoughts.`;
+    }
+    if (pageId === 'feelingsPage3') {
+        const messageBox = document.getElementById('feelings-message-box');
+        const messageTextarea = document.getElementById('feelingsMessage');
+        if (messageBox && messageTextarea) messageBox.textContent = messageTextarea.value.substring(0, 20) + '...';
+    }
 }
 
-async function submitFeelings() {
-    const message = document.getElementById('feelingsMessage').value.trim();
+function submitFeelingsEntry() {
+    const messageInput = document.getElementById('feelingsMessage');
+    const message = messageInput.value.trim();
 
+    // FIX for Point 1 & 5: Validate that an emotion is selected
     if (!currentEmotion) {
         alert('Please select an emotion first!');
         return;
     }
 
-    const formData = new URLSearchParams();
+    if (!message) {
+        alert('Please enter your thoughts.');
+        return;
+    }
+
+    // Validate that we have the script URL configured
+    if (scriptURL.includes('YOUR_SCRIPT_ID_HERE')) {
+        alert('Please update the scriptURL in script.js with your Google Apps Script web app URL.');
+        return;
+    }
+
+    const formData = new FormData();
     formData.append('formType', 'feelingsEntry');
     formData.append('emotion', currentEmotion);
     formData.append('message', message);
 
-    try {
-        const response = await fetch(scriptURL, {
-            method: 'POST',
-            body: formData,
-            // Google Apps Script expects application/x-www-form-urlencoded for e.parameter
-            // For JSON parsing (e.postData.contents) you would set 'Content-Type': 'application/json'
-            // and `body: JSON.stringify({type: 'feeling', emotion: currentEmotion, message: message})`
+    const submitBtn = document.getElementById('submitFeelingsBtn');
+    const originalBtnText = submitBtn.textContent;
+    submitBtn.textContent = 'Submitting...';
+    submitBtn.disabled = true;
+
+    console.log('Submitting feelings entry:', { emotion: currentEmotion, message: message });
+
+    fetch(scriptURL, {
+        method: 'POST',
+        body: formData,
+        mode: 'cors'
+    })
+        .then(response => {
+            console.log('Response status:', response.status);
+            if (!response.ok) {
+                return response.text().then(text => {
+                    console.error('Error response:', text);
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${text}`)
+                });
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Server response:', data);
+            if (data.status === 'error') {
+                throw new Error(data.message || 'Unknown error from server submitting feelings.');
+            }
+            console.log('Feelings Entry Success!', data);
+            navigateToFeelingsPage('feelingsPage3');
+            if (messageInput) messageInput.value = '';
+        })
+        .catch(error => {
+            console.error('Feelings Entry Error!', error);
+            alert('There was an error submitting your entry. Please check the console for details.\n' + error.message);
+        })
+        .finally(() => {
+            if (submitBtn) {
+                submitBtn.textContent = originalBtnText;
+                submitBtn.disabled = false;
+            }
         });
+}
 
-        const result = await response.json();
-        console.log('Feelings submission result:', result);
+async function fetchAndDisplayFeelingsEntries() {
+    console.log('Fetching feelings entries...');
+    const feelingsListContainer = document.getElementById('feelingsEntriesList');
+    if (!feelingsListContainer) {
+        console.error('"feelingsEntriesList" not found.');
+        navigateToFeelingsPage('feelingsPage1');
+        return;
+    }
+    feelingsListContainer.innerHTML = '<p>Loading entries...</p>';
 
-        if (result.status === 'success') {
-            navigateToFeelingsPage('feelingsConfirmationPage');
-            // Animate mail icon and message box
-            const mailIcon = document.getElementById('feelings-mail-icon');
-            const messageBox = document.getElementById('feelings-message-box');
-            mailIcon.style.transform = 'translateY(0) scale(1)';
-            messageBox.style.opacity = '0';
-            setTimeout(() => {
-                mailIcon.style.transform = 'translateY(-20px) scale(1.2)';
-                messageBox.style.opacity = '1';
-                messageBox.textContent = 'Sent!'; // Ensure text is correct
-            }, 100); // Small delay for initial animation
-            setTimeout(() => {
-                mailIcon.style.transform = 'translateY(0) scale(1)';
-            }, 1000); // Reset after animation
+    try {
+        const response = await fetch(`${scriptURL}?action=getFeelingsEntries`, {
+            method: 'GET',
+            mode: 'cors'
+        });
+        
+        console.log('Fetch response status:', response.status);
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Fetch error response:', errorText);
+            throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+        }
+        
+        const data = await response.json();
+        console.log('Received feelings data from server:', data);
+
+        feelingsListContainer.innerHTML = ''; // Clear loading
+
+        if (data.status === 'success' && data.data && data.data.length > 0) {
+            const table = document.createElement('table');
+            table.classList.add('feelings-table');
+            const thead = table.createTHead();
+            const headerRow = thead.insertRow();
+            const headers = ['Date & Time', 'Emotion', 'Message'];
+            headers.forEach(text => {
+                const th = document.createElement('th');
+                th.textContent = text;
+                headerRow.appendChild(th);
+            });
+
+            const tbody = table.createTBody();
+            data.data.forEach(entry => {
+                const row = tbody.insertRow();
+                const cellTimestamp = row.insertCell();
+
+                // FIX: Format feelings entry timestamp to exclude GMT offset if present,
+                // but keep hour/minute for this section as originally intended.
+                if (entry.timestamp) {
+                    const entryDateTime = new Date(entry.timestamp);
+                    if (!isNaN(entryDateTime.getTime())) {
+                        cellTimestamp.textContent = entryDateTime.toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: true // To display AM/PM
+                        });
+                    } else {
+                        cellTimestamp.textContent = entry.timestamp; // Fallback
+                    }
+                } else {
+                    cellTimestamp.textContent = 'N/A';
+                }
+
+                const cellEmotion = row.insertCell();
+                const emotionSpan = document.createElement('span');
+                emotionSpan.classList.add('emotion-tag', entry.emotion ? entry.emotion.toLowerCase() : '');
+                emotionSpan.textContent = entry.emotion || 'N/A';
+                cellEmotion.appendChild(emotionSpan);
+
+                const cellMessage = row.insertCell();
+                cellMessage.textContent = entry.message || 'No message';
+            });
+            feelingsListContainer.appendChild(table);
+        } else if (data.status === 'success' && (!data.data || data.data.length === 0)) {
+            feelingsListContainer.innerHTML = '<p>No feelings entries recorded yet.</p>';
         } else {
-            alert('Error submitting feelings: ' + (result.message || 'Unknown error.'));
-            console.error('Submission error:', result.message);
+            feelingsListContainer.innerHTML = `<p>Could not load entries: ${data.message || 'Unknown server response'}</p>`;
+        }
+        navigateToFeelingsPage('feelingsViewEntriesPage');
+    } catch (error) {
+        console.error('Failed to fetch feelings entries:', error);
+        if (feelingsListContainer) {
+            feelingsListContainer.innerHTML = `<p>Error loading entries: ${error.message}</p>`;
+        }
+        alert('Error loading past feelings entries.\n' + error.message);
+        navigateToFeelingsPage('feelingsPage1');
+    }
+}
+
+// --- Hetu's Diary ---
+function navigateToDiaryPage(pageId) {
+    diaryPages.forEach(page => page.classList.remove('active'));
+    const targetPage = document.getElementById(pageId);
+    if (targetPage) targetPage.classList.add('active');
+    else console.error('Diary page not found:', pageId);
+}
+
+async function fetchDiaryEntries() {
+    console.log('Fetching diary entries...');
+    try {
+        const response = await fetch(`${scriptURL}?action=getDiaryEntries`, {
+            method: 'GET',
+            mode: 'cors'
+        });
+        
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Diary fetch error:', errorText);
+            throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
+        }
+        
+        const data = await response.json();
+        console.log('Diary entries response:', data);
+        
+        if (data.status === 'success') {
+            diaryEntries = {};
+            if (data.data) {
+                data.data.forEach(entry => {
+                    diaryEntries[entry.date] = entry;
+                });
+            }
+            console.log('Diary entries loaded:', diaryEntries);
+        } else {
+            console.error('Error fetching diary entries from server:', data.message);
         }
     } catch (error) {
-        console.error('Network or script error:', error);
-        alert('Could not submit feelings. Please try again later.');
+        console.error('Failed to fetch diary entries (network/fetch error):', error);
     }
 }
 
-// --- Diary Portal Navigation & Logic ---
-function navigateToDiaryPage(pageId, resetForm = false) {
-    diaryPages.forEach(page => {
-        page.classList.remove('active');
-    });
-    document.getElementById(pageId).classList.add('active');
-
-    if (pageId === 'diaryCalendarPage') {
-        renderCalendar(calendarCurrentDate.getFullYear(), calendarCurrentDate.getMonth());
-        fetchDiaryEntries(); // Refresh entries when going back to calendar
-    } else if (pageId === 'diaryEntryPage' && resetForm) {
-        document.getElementById('diaryThoughts').value = '';
-        document.getElementById('diaryEntryTitle').textContent = `Diary for ${new Date(document.getElementById('selectedDate').value).toLocaleDateString('en-US', { month: 'long', day: 'numeric'})}`;
-        document.getElementById('diaryThoughts').focus();
-    }
-}
-
-function renderCalendar(year, month) {
-    const monthNames = ["January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    ];
-    document.getElementById('currentMonthYear').textContent = `${monthNames[month]} ${year}`;
-
+function renderCalendar(date) {
     const calendarGrid = document.getElementById('calendarGrid');
-    calendarGrid.innerHTML = ''; // Clear previous days
+    const monthYearDisplay = document.getElementById('currentMonthYear');
+    if (!calendarGrid || !monthYearDisplay) {
+        console.error("Calendar elements not found.");
+        return;
+    }
 
-    const firstDay = new Date(year, month, 1).getDay(); // 0 for Sunday, 1 for Monday
-    const daysInMonth = new Date(year, month + 1, 0).getDate(); // Get last day of month
+    calendarGrid.innerHTML = '';
+    const month = date.getMonth();
+    const year = date.getFullYear();
+    monthYearDisplay.textContent = `${date.toLocaleString('default', { month: 'long' })} ${year}`;
 
-    // Add empty cells for days before the 1st
-    for (let i = 0; i < firstDay; i++) {
+    const firstDayOfMonth = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    
+    daysOfWeek.forEach(day => {
+        const dayHeaderEl = document.createElement('div');
+        dayHeaderEl.classList.add('calendar-day-header');
+        dayHeaderEl.textContent = day;
+        calendarGrid.appendChild(dayHeaderEl);
+    });
+
+    for (let i = 0; i < firstDayOfMonth; i++) {
         const emptyCell = document.createElement('div');
         emptyCell.classList.add('calendar-day', 'empty');
         calendarGrid.appendChild(emptyCell);
     }
 
-    // Add day cells
+    const today = new Date();
+    // FIX for Point 3: Compare year, month, and day explicitly
+    const todayYear = today.getFullYear();
+    const todayMonth = today.getMonth();
+    const todayDate = today.getDate();
+
     for (let day = 1; day <= daysInMonth; day++) {
-        const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         const dayCell = document.createElement('div');
         dayCell.classList.add('calendar-day');
         dayCell.textContent = day;
-        dayCell.dataset.date = dateString;
+        const cellDate = new Date(year, month, day);
 
-        if (diaryEntries[dateString]) {
+        // Use local components for YYYY-MM-DD format
+        const localYear = cellDate.getFullYear();
+        const localMonth = String(cellDate.getMonth() + 1).padStart(2, '0');
+        const localDay = String(cellDate.getDate()).padStart(2, '0');
+        const formattedCellDate = `${localYear}-${localMonth}-${localDay}`;
+
+        dayCell.dataset.date = formattedCellDate;
+
+        // FIX for Point 3: Compare year, month, and day explicitly
+        if (cellDate.getFullYear() === todayYear &&
+            cellDate.getMonth() === todayMonth &&
+            cellDate.getDate() === todayDate) {
+            dayCell.classList.add('today');
+        }
+
+        if (diaryEntries[formattedCellDate]) {
             dayCell.classList.add('has-entry');
+            dayCell.title = 'Diary entry exists.';
         }
 
         dayCell.addEventListener('click', () => {
-            if (diaryEntries[dateString]) {
-                // If an entry exists, view it
+            console.log('Clicked date from dataset:', dayCell.dataset.date);
+            if (diaryEntries[dayCell.dataset.date]) {
                 viewDiaryEntry(dayCell.dataset.date);
             } else {
-                // Otherwise, open a new entry form
                 openDiaryEntry(dayCell.dataset.date);
             }
         });
         calendarGrid.appendChild(dayCell);
     }
-}
-
-function changeMonth(delta) {
-    calendarCurrentDate.setMonth(calendarCurrentDate.getMonth() + delta);
-    renderCalendar(calendarCurrentDate.getFullYear(), calendarCurrentDate.getMonth());
 }
 
 function openDiaryEntry(dateString) {
@@ -196,173 +544,8 @@ function openDiaryEntry(dateString) {
     document.getElementById('diaryEntryTitle').textContent = `Diary for ${dateObj.toLocaleDateString('en-US', {
         month: 'long',
         day: 'numeric'
-    })}`; // Simplified title
-    
-    // Pre-fill if existing entry
-    const existingEntry = diaryEntries[dateString];
-    if (existingEntry) {
-        document.getElementById('diaryThoughts').value = existingEntry.thoughts;
-    } else {
-        document.getElementById('diaryThoughts').value = '';
-    }
-
-    navigateToDiaryPage('diaryEntryPage');
-    document.getElementById('diaryThoughts').focus(); // Focus on textarea
-}
-
-async function submitDiaryEntry() {
-    const date = document.getElementById('selectedDate').value;
-    const thoughts = document.getElementById('diaryThoughts').value.trim();
-
-    if (!date) {
-        alert('Date not selected!');
-        return;
-    }
-    if (!thoughts) {
-        alert('Please write your thoughts for the day!');
-        return;
-    }
-
-    const formData = new URLSearchParams();
-    formData.append('formType', 'diaryEntry');
-    formData.append('date', date);
-    formData.append('thoughts', thoughts);
-
-    try {
-        const response = await fetch(scriptURL, {
-            method: 'POST',
-            body: formData
-        });
-
-        const result = await response.json();
-        console.log('Diary submission result:', result);
-
-        if (result.status === 'success') {
-            // Update local diaryEntries cache
-            diaryEntries[date] = {
-                date: date,
-                thoughts: thoughts,
-                created: result.data.created // Get the formatted created timestamp from backend
-            };
-            renderCalendar(calendarCurrentDate.getFullYear(), calendarCurrentDate.getMonth()); // Re-render calendar to show new entry
-            navigateToDiaryPage('diaryConfirmationPage');
-             // Animate mail icon and message box
-            const mailIcon = document.getElementById('feelings-mail-icon'); // Re-using feelings animation
-            const messageBox = document.getElementById('feelings-message-box'); // Re-using feelings animation
-            mailIcon.style.transform = 'translateY(0) scale(1)';
-            messageBox.style.opacity = '0';
-            setTimeout(() => {
-                mailIcon.style.transform = 'translateY(-20px) scale(1.2)';
-                messageBox.style.opacity = '1';
-                messageBox.textContent = 'Saved!'; // Ensure text is correct
-            }, 100); // Small delay for initial animation
-            setTimeout(() => {
-                mailIcon.style.transform = 'translateY(0) scale(1)';
-            }, 1000); // Reset after animation
-
-        } else {
-            alert('Error submitting diary entry: ' + (result.message || 'Unknown error.'));
-            console.error('Submission error:', result.message);
-        }
-    } catch (error) {
-        console.error('Network or script error:', error);
-        alert('Could not submit diary entry. Please try again later.');
-    }
-}
-
-async function fetchDiaryEntries() {
-    try {
-        const response = await fetch(`${scriptURL}?action=getDiaryEntries`);
-        const result = await response.json();
-        console.log('Fetched diary entries:', result);
-
-        if (result.status === 'success' && result.data) {
-            diaryEntries = {}; // Clear existing
-            result.data.forEach(entry => {
-                diaryEntries[entry.date] = entry;
-            });
-            renderCalendar(calendarCurrentDate.getFullYear(), calendarCurrentDate.getMonth()); // Re-render calendar to show new entries
-        } else {
-            console.error('Failed to fetch diary entries:', result.message);
-        }
-    } catch (error) {
-        console.error('Error fetching diary entries:', error);
-    }
-}
-
-function viewDiaryEntry(dateString) {
-    const entry = diaryEntries[dateString];
-    if (!entry) {
-        alert('No entry found for this date.');
-        return;
-    }
-
-    const dateParts = dateString.split('-');
-    const dateObj = new Date(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2]));
-
-    document.getElementById('viewDiaryDateDisplay').textContent = dateObj.toLocaleDateString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
-    document.getElementById('viewDiaryEntryTitle').textContent = `Diary for ${dateObj.toLocaleDateString('en-US', {
-        month: 'long',
-        day: 'numeric'
     })}`;
-    document.getElementById('viewDiaryThoughts').textContent = entry.thoughts;
-
-    navigateToDiaryPage('viewDiaryEntryPage');
+    
+    document.getElementById('diaryThoughts').value = '';
+    navigateToDiaryPage('diaryEntryPage');
 }
-
-
-async function fetchAndDisplayAllDiaryEntries() {
-    const entriesListDiv = document.getElementById('allDiaryEntriesList');
-    entriesListDiv.innerHTML = '<p>Loading entries...</p>'; // Show loading
-
-    try {
-        const response = await fetch(`${scriptURL}?action=getDiaryEntries`);
-        const result = await response.json();
-
-        if (result.status === 'success' && result.data && result.data.length > 0) {
-            entriesListDiv.innerHTML = ''; // Clear loading message
-            // Sort by date (newest first) for display
-            result.data.sort((a, b) => new Date(b.date) - new Date(a.date));
-
-            result.data.forEach(entry => {
-                const entryDiv = document.createElement('div');
-                entryDiv.classList.add('diary-entry-item');
-                // Format date for display
-                const displayDate = new Date(entry.date + 'T00:00:00').toLocaleDateString('en-US', { // Add T00:00:00 to avoid timezone issues
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
-                entryDiv.innerHTML = `
-                    <h3>${displayDate}</h3>
-                    <p>${entry.thoughts}</p>
-                    <small>Created/Updated: ${entry.created}</small>
-                `;
-                entriesListDiv.appendChild(entryDiv);
-            });
-        } else {
-            entriesListDiv.innerHTML = '<p>No diary entries found yet.</p>';
-        }
-    } catch (error) {
-        console.error('Error fetching and displaying all diary entries:', error);
-        entriesListDiv.innerHTML = '<p>Failed to load entries. Please try again.</p>';
-    }
-}
-
-
-// Initial setup when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    navigateToApp('homeScreen'); // Start on home screen
-    renderCalendar(calendarCurrentDate.getFullYear(), calendarCurrentDate.getMonth()); // Initialize calendar
-    fetchDiaryEntries(); // Fetch entries on load
-    // Attach event listener for "View All Entries" button dynamically if not done in HTML
-    document.querySelector('#diaryCalendarPage button[onclick="navigateToDiaryPage(\'allDiaryEntriesPage\')"]').addEventListener('click', fetchAndDisplayAllDiaryEntries);
-});
-
-// Test if JavaScript is working - also in HTML, but good to have here
-console.log('script.js loaded and executing!');
