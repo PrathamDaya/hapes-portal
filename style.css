@@ -40,779 +40,482 @@ body {
     padding: 20px;
 }
 #homeScreen .main-header h1 {
-    color: #d95792; /* Deeper pink */
-    font-family: 'Pacifico', cursive; /* A more elegant, playful font */
-    font-size: 3.5em; /* Larger, more prominent title */
-    font-weight: normal; /* Pacifico looks better without bold */
-    text-shadow: 2px 2px 5px rgba(0,0,0,0.1); /* Stronger shadow */
-    letter-spacing: 2px;
-    background: linear-gradient(45deg, #ff69b4, #d95792); /* Gradient for title */
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #d94a6b; /* Stronger pink for heading */
+    font-size: 2.8em;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+    margin: 0;
 }
 
 .options-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Slightly larger min-width */
-    gap: 30px; /* Increased gap */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    padding: 20px;
+    justify-content: center;
+    align-items: start;
+}
+
+.option-box {
+    background: #fff;
+    border-radius: 20px;
     padding: 30px;
-    background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
-    border-radius: 25px; /* More rounded */
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Softer, larger shadow */
+    text-align: center;
+    font-size: 1.4em;
+    color: #d94a6b;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    border: 1px solid #ffe0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 120px; /* Kept for general option boxes like main ones */
+}
+
+.option-box:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
 }
 
 .main-option {
-    background: linear-gradient(45deg, #ff85c1, #ff6bab); /* Gradient background */
-    color: white;
-    padding: 35px; /* More padding */
-    border-radius: 20px; /* More rounded boxes */
-    cursor: pointer;
-    font-size: 1.6em; /* Larger font */
-    text-align: center;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Stronger shadow */
-    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smoother, more complex transition */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 140px; /* Ensure consistent height */
-    position: relative;
-    overflow: hidden;
-    font-weight: 600;
+    font-weight: bold;
+    letter-spacing: 0.5px;
 }
 
-.main-option::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.1);
-    transform: scale(0);
-    opacity: 0;
-    border-radius: 50%;
-    transition: transform 0.6s ease-out, opacity 0.6s ease-out;
-}
-
-.main-option:hover {
-    transform: translateY(-8px) scale(1.05); /* More pronounced lift and scale */
-    box-shadow: 0 12px 25px rgba(190, 70, 130, 0.4); /* Enhanced shadow on hover */
-    background: linear-gradient(45deg, #ff6bab, #e6007e); /* Darker gradient on hover */
-}
-
-.main-option:hover::before {
-    transform: scale(2);
-    opacity: 1;
-}
-
-/* New style for the Bunny Button */
-.bunny-option {
-    background: linear-gradient(45deg, #a770e0, #7b68ee); /* Purple gradient */
-    color: white;
-    padding: 35px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-size: 1.6em;
-    text-align: center;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 140px;
-    position: relative;
-    overflow: hidden;
-    font-weight: 600;
-}
-
-.bunny-option:hover {
-    transform: translateY(-8px) scale(1.05);
-    box-shadow: 0 12px 25px rgba(130, 70, 190, 0.4);
-    background: linear-gradient(45deg, #7b68ee, #6a5acd); /* Darker purple on hover */
-}
-
-
-.main-footer {
+#homeScreen .main-footer, .portal-footer {
     text-align: center;
     margin-top: 50px;
-    color: #a0607f;
-    font-size: 0.95em;
-    opacity: 0.8;
+    color: #a07a8b;
+    font-size: 0.9em;
 }
 
-
-/* General Container for Portals */
+/* Common Portal Styles */
 .container {
-    background-color: #ffffff; /* White background for content */
-    border-radius: 30px; /* Even more rounded */
-    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.12); /* Deeper shadow */
-    padding: 30px 40px; /* More padding */
-    width: 100%;
-    max-width: 700px; /* Max width for portal content */
+    background: #fff;
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 30px;
     text-align: center;
-    margin: 30px auto; /* Center the container */
-    position: relative;
-    overflow: hidden;
-    border: 1px solid #ffe4e1; /* Soft border */
+    width: 100%;
+    box-sizing: border-box;
+    position: relative; /* For back-to-home-btn positioning */
 }
 
 .container header {
     margin-bottom: 30px;
-    position: relative;
     padding-bottom: 15px;
-    border-bottom: 1px dashed #ffe4e1; /* Dotted line separator */
+    border-bottom: 1px solid #eee;
+    position: relative;
 }
 
 .container header h1 {
-    color: #c71585; /* MediumVioletRed */
-    font-family: 'Pacifico', cursive; /* Consistent elegant font */
-    font-size: 2.5em;
-    font-weight: normal;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.08);
+    color: #d94a6b;
+    font-size: 2.2em;
+    margin: 0;
 }
 
 .back-to-home-btn {
-    background-color: #ffb6c1; /* LightPink */
-    color: #8c004b; /* Dark pink text */
-    border: none; /* No border */
-    padding: 10px 18px;
-    border-radius: 25px; /* Pill shape */
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background: #f0f0f0;
+    color: #666;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 15px;
     cursor: pointer;
     font-size: 1em;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smoother transition */
-    position: absolute;
-    top: 5px; /* Adjust positioning */
-    left: 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    font-weight: 600;
+    transition: background 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
 .back-to-home-btn:hover {
-    background-color: #ff9eb2;
-    transform: translateY(-2px) scale(1.08); /* Slight lift and scale */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    background: #e0e0e0;
 }
-
 
 .page {
     display: none;
-    animation: slideInFromRight 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards; /* Animated page transitions */
+    padding: 20px 0;
+    animation: fadeIn 0.5s ease-out forwards;
 }
 
 .page.active {
     display: block;
 }
 
-@keyframes slideInFromRight {
-    from { opacity: 0; transform: translateX(30px); }
-    to { opacity: 1; transform: translateX(0); }
-}
-
-/* Page 1 (Feelings Options) Styles */
-#feelingsPage1 {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Smaller min-width for options */
-    gap: 20px; /* Slightly reduced gap */
-}
-
-.option-box {
-    background: linear-gradient(45deg, #ff69b4, #ff1493); /* Hot pink gradient */
-    color: white;
-    padding: 20px; /* Reduced padding */
-    border-radius: 15px; /* Rounded corners */
-    cursor: pointer;
-    font-size: 1.1em; /* Smaller font */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smoother transition */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    font-weight: 600;
-    min-height: 100px; /* Ensure consistent height for smaller buttons */
-}
-
-.option-box.feelings-option {
-    min-height: 80px; /* Even smaller for individual feelings options */
-    font-size: 1em;
-    padding: 15px;
-}
-
-
-.option-box:hover {
-    transform: translateY(-5px) scale(1.06); /* More pronounced lift and scale */
-    background: linear-gradient(45deg, #e6007e, #c71585); /* Darker gradient on hover */
-    box-shadow: 0 6px 15px rgba(0,0,0,0.2);
-}
-
-.option-box.view-all {
-    grid-column: 1 / -1; /* Span full width */
-    background: linear-gradient(45deg, #9370DB, #7B68EE); /* Purple gradient */
-    font-size: 1.3em; /* Slightly larger for view all */
-    min-height: 120px; /* Taller for view all */
-}
-
-.option-box.view-all:hover {
-    background: linear-gradient(45deg, #7B68EE, #6A5ACD); /* Darker purple on hover */
-}
-
-
-/* Page 2 (Feelings Message) & Other Headers */
-#feelingsPage2 h2, #diaryEntryPage h2, #diaryConfirmationPage h2, #feelingsPage3 h2, #diaryViewPage h2,
-#feelingsViewEntriesPage h2, #allDiaryEntriesPage h2 {
-    color: #8c004b; /* Dark pink header text */
-    margin-bottom: 25px;
-    font-family: 'Open Sans', sans-serif;
-    font-weight: 600;
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .notebook {
-    position: relative;
-    background-color: #fffaf0; /* FloralWhite, softer */
-    border: 2px dashed #ffe4e1; /* Thicker dashed border */
-    border-radius: 12px;
-    padding: 30px; /* More padding */
-    margin-bottom: 25px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08); /* Softer shadow */
-    overflow: hidden; /* For ribbon/heart positioning */
+    background: #fdfdfd;
+    border: 1px solid #e0e0e0;
+    border-radius: 15px;
+    padding: 25px;
+    margin: 20px auto;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
+    max-width: 500px;
 }
 
-.notebook textarea, #diaryThoughts {
-    width: calc(100% - 30px); /* Adjust for padding */
-    min-height: 180px; /* Taller textarea */
-    padding: 18px;
-    border: 1px solid #ffc0cb; /* Solid pink border */
-    box-sizing: border-box;
-    font-family: 'Handlee', cursive; /* A friendly, handwritten font */
-    font-size: 1.15em; /* Slightly larger font */
-    outline: none;
-    background-color: #fffdfa; /* Very light background */
+.notebook textarea {
+    width: calc(100% - 20px);
+    min-height: 150px;
+    padding: 10px;
+    border: 1px solid #ccc;
     border-radius: 8px;
-    color: #5c3b4c;
-    resize: vertical; /* Allow vertical resizing */
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1.1em;
+    color: #444;
+    resize: vertical;
+    margin-bottom: 15px;
+    box-sizing: border-box; /* Include padding in width */
 }
 
-.notebook textarea:focus, #diaryThoughts:focus {
-    border-color: #ff69b4;
-    box-shadow: 0 0 8px rgba(255, 105, 180, 0.4);
-}
-
-#diaryThoughts {
-    margin-bottom: 25px;
-}
-
-.ribbon {
-    width: 80px; /* Larger ribbon */
-    height: 25px;
-    background: linear-gradient(45deg, #e6007e, #ff1493); /* Magenta gradient */
-    position: absolute;
-    opacity: 0.9;
-    z-index: 1; /* Ensure ribbon is above notebook */
-}
-
-.ribbon.top-left { top: -12px; left: 15px; transform: rotate(-30deg); border-radius: 0 0 10px 10px; }
-.ribbon.bottom-right { bottom: -12px; right: 15px; transform: rotate(30deg); border-radius: 10px 10px 0 0; }
-
-.heart {
-    font-size: 2em; /* Larger hearts */
-    position: absolute;
-    color: #ff1493; /* Deep pink heart */
-    animation: pulse 1.5s infinite ease-in-out; /* Pulsing animation */
-}
-.heart.top-right { top: 15px; right: 15px; }
-.heart.bottom-left { bottom: 15px; left: 15px; }
-
-@keyframes pulse {
-    0% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.1); opacity: 0.8; }
-    100% { transform: scale(1); opacity: 1; }
+.notebook textarea:focus {
+    outline: none;
+    border-color: #d94a6b;
+    box-shadow: 0 0 5px rgba(217, 74, 107, 0.3);
 }
 
 button {
-    background: linear-gradient(45deg, #ff69b4, #ff1493); /* Gradient for buttons */
+    background: linear-gradient(45deg, #ff80a0, #d94a6b); /* Pink gradient */
     color: white;
     border: none;
-    padding: 14px 28px; /* More padding */
-    border-radius: 30px; /* More pill-shaped */
+    padding: 12px 25px;
+    border-radius: 25px;
     cursor: pointer;
     font-size: 1.1em;
-    margin: 10px 8px;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smoother transition */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     font-weight: bold;
-    letter-spacing: 0.5px;
+    margin: 10px 5px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 button:hover {
-    background: linear-gradient(45deg, #e6007e, #c71585); /* Darker gradient on hover */
-    transform: translateY(-3px) scale(1.04); /* More pronounced lift and scale */
-    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
 }
 
-/* Page 3 (Feelings Confirmation) Styles */
-#feelings-animation-container {
-    position: relative;
-    width: 200px; /* Larger container */
-    height: 150px; /* Taller container */
-    margin: 30px auto;
-    perspective: 800px; /* For 3D transform */
-}
-
-#feelings-message-box {
-    width: 100px; /* Larger message box */
-    height: 70px;
-    background-color: #f8f8f8;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    position: absolute;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 0.9em;
-    font-family: 'Handlee', cursive;
-    color: #333;
-    animation: foldMessage 2s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards; /* More dynamic animation */
-    transform-origin: top center;
+button:active {
+    transform: translateY(0);
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-#feelings-mail-icon {
-    font-size: 3em; /* Larger mail icon */
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    color: #ff69b4; /* Pink mail icon */
-    animation: slideMail 2s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards 0.5s, /* Delayed start */
-               bounceMail 0.8s infinite ease-in-out 2.5s; /* Bounce after initial animation */
-    opacity: 0;
-}
-
-@keyframes foldMessage {
-    0% { transform: translateX(-50%) rotateX(0deg); opacity: 1; }
-    30% { transform: translateX(-50%) rotateX(90deg) translateY(-10px); opacity: 0.8; }
-    60% { transform: translateX(-50%) rotateX(0deg) translateY(40px) scale(0.7); opacity: 0.5; }
-    100% { transform: translateX(-50%) rotateX(0deg) translateY(80px) scale(0.3); opacity: 0; }
-}
-
-@keyframes slideMail {
-    0% { transform: translateX(-50%) translateY(50px); opacity: 0; }
-    100% { transform: translateX(-50%) translateY(0); opacity: 1; }
-}
-
-@keyframes bounceMail {
-    0%, 100% { transform: translateX(-50%) translateY(0); }
-    50% { transform: translateX(-50%) translateY(-10px); }
-}
-
-
-#feelings-thank-you-message, #diaryConfirmationPage p {
-    color: #8c004b;
-    margin-top: 25px;
-    font-size: 1.2em;
-    font-weight: 500;
-}
-#diaryConfirmationPage p {
-    margin-bottom: 15px;
-}
-
-
-/* Diary Styles */
-#calendarControls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-    background-color: #fdf5f6; /* Lighter background for controls */
-    padding: 15px 20px;
-    border-radius: 15px;
-    box-shadow: inset 0 0 8px rgba(0,0,0,0.05);
-}
-#calendarControls h3 {
-    color: #c71585;
-    margin: 0 20px;
-    font-size: 1.6em;
-    font-weight: 600;
-    font-family: 'Open Sans', sans-serif;
-}
-#calendarControls button {
-    background-color: #ffb6c1;
-    color: #800040;
-    padding: 10px 15px;
-    font-size: 1em;
-    border-radius: 20px;
-    box-shadow: none; /* Remove extra shadow */
-}
-#calendarControls button:hover {
-    background-color: #ff9aad;
-    transform: translateY(-1px) scale(1.03);
-}
-
-
-#calendarGrid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 10px; /* Increased gap */
-    background-color: #fff7fa;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: inset 0 0 12px rgba(0,0,0,0.08); /* More prominent inner shadow */
-}
-
-.calendar-day {
-    background-color: #ffe4e1;
-    color: #794054;
-    padding: 15px 5px; /* More padding */
-    text-align: center;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Smoother transition */
-    font-weight: bold;
-    font-size: 1em;
-    border: 1px solid transparent;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
-.calendar-day:hover, .calendar-day.today:hover {
-    background-color: #ffb6c1;
-    transform: translateY(-3px) scale(1.07); /* More pronounced lift and scale */
-    color: white;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-.calendar-day.empty {
-    background-color: rgba(255, 255, 255, 0.4); /* Faded empty cells */
-    cursor: default;
+button:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
     box-shadow: none;
     transform: none;
 }
+
+.back-btn, .view-all-btn {
+    background: #f0f0f0;
+    color: #666;
+    border: 1px solid #ddd;
+}
+
+.back-btn:hover, .view-all-btn:hover {
+    background: #e0e0e0;
+}
+
+.confirmation-box {
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    padding: 40px 20px;
+    margin: 30px auto;
+    max-width: 450px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+#feelings-animation-container {
+    width: 200px;
+    height: 150px;
+    margin: 0 auto 20px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#feelings-mail-icon {
+    font-size: 3em;
+    color: #d94a6b;
+    position: relative;
+    animation: bounceIn 1s forwards;
+    display: inline-block;
+    z-index: 2;
+}
+
+#feelings-message-box {
+    background: #fff;
+    border: 1px solid #d94a6b;
+    border-radius: 10px;
+    padding: 10px 15px;
+    position: absolute;
+    font-size: 0.8em;
+    color: #5c3b4c;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    animation: messageBoxRise 1.5s 0.5s forwards;
+    max-width: 150px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 1;
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0); opacity: 0; }
+    50% { transform: scale(1.2); opacity: 1; }
+    70% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+
+@keyframes messageBoxRise {
+    0% { opacity: 0; transform: translate(-50%, 0%); }
+    100% { opacity: 1; transform: translate(-50%, -120%); } /* Rise above mail icon */
+}
+
+#feelings-thank-you-message, #diaryConfirmationPage p {
+    font-size: 1.1em;
+    color: #5c3b4c;
+    margin-bottom: 30px;
+    font-weight: 500;
+}
+
+/* Emotion specific styling for feeling tags */
+.option-box.grievance, .emotion-tag.grievance { background-color: #ff9999; color: #a00000; border-color: #ff6666; }
+.option-box.appreciate, .emotion-tag.appreciate { background-color: #a0e6a0; color: #006400; border-color: #70c470; }
+.option-box.sad, .emotion-tag.sad { background-color: #a0c0ff; color: #000080; border-color: #7090ff; }
+.option-box.happy, .emotion-tag.happy { background-color: #ffe080; color: #996b00; border-color: #ffd040; }
+
+/* Styles for feelings portal options container */
+.feelings-options-grid { /* New class for the feelings options container */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* 2 columns, responsive */
+    gap: 15px; /* Space between buttons */
+    padding: 10px 0;
+    justify-content: center;
+}
+
+/* Styles for feelings portal options (reverted to previous smaller size) */
+#feelingsPortalScreen .option-box {
+    font-size: 1.1em; /* Smaller font size */
+    padding: 15px 20px; /* Smaller padding */
+    min-height: auto; /* Remove fixed min-height for flexibility */
+    height: 70px; /* Set a specific height to make them uniformly small */
+}
+
+/* Styles for view entries list */
+.entries-list-container {
+    max-height: 400px;
+    overflow-y: auto;
+    background: #fcfcfc;
+    border: 1px solid #eee;
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 20px;
+    text-align: left;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);
+}
+
+.feelings-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.feelings-table th, .feelings-table td {
+    border: 1px solid #eee;
+    padding: 12px;
+    text-align: left;
+    vertical-align: top;
+}
+
+.feelings-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+    color: #d94a6b;
+}
+
+.feelings-table tr:nth-child(even) {
+    background-color: #fbfbfb;
+}
+
+.emotion-tag {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 0.9em;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* Diary Calendar Styles */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background: #f8f8f8;
+    padding: 15px 20px;
+    border-radius: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.calendar-header h2 {
+    margin: 0;
+    color: #d94a6b;
+    font-size: 1.8em;
+}
+
+.calendar-header button {
+    background: #f0f0f0;
+    color: #666;
+    border: 1px solid #ddd;
+    padding: 8px 15px;
+    border-radius: 10px;
+    font-size: 1.2em;
+    min-width: 50px; /* Ensure buttons have a minimum width */
+}
+
+.calendar-header button:hover {
+    background: #e0e0e0;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    padding: 20px;
+    background: #fdfdfd;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.calendar-day-header {
+    font-weight: bold;
+    color: #d94a6b;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 0.9em;
+}
+
+.calendar-day {
+    background: #fcfcfc;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    aspect-ratio: 1 / 1; /* Make cells square */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+    color: #5c3b4c;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+
+.calendar-day.empty {
+    background: #f0f0f0;
+    cursor: default;
+    box-shadow: none;
+    border-color: #ddd;
+}
+
+.calendar-day:not(.empty):hover {
+    background: #ffe6f0;
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+
 .calendar-day.today {
-    background: linear-gradient(45deg, #ff9eb2, #ff80a0); /* Gradient for today */
+    background: linear-gradient(45deg, #ff9eb2, #ff80a0); /* Pink gradient for today */
     color: white;
     border: 1px solid #ff80a0;
     font-weight: bold;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
+
 .calendar-day.has-entry {
-    background: linear-gradient(45deg, #d95792, #c71585); /* Gradient for entries */
+    background: #d94a6b; /* Darker pink for entries */
     color: white;
     font-weight: bold;
-    cursor: pointer;
-    border: 1px solid #c71585;
+    border: 1px solid #c03a5b;
     box-shadow: 0 2px 5px rgba(0,0,0,0.15);
 }
+
 .calendar-day.has-entry:hover {
-    background: linear-gradient(45deg, #c71585, #b20070); /* Darker gradient on hover */
-    transform: translateY(-3px) scale(1.07);
+    background: #c03a5b;
 }
 
-.calendar-day-header {
+/* Diary Entry Page */
+.date-display {
+    font-size: 1.2em;
+    color: #d94a6b;
     font-weight: bold;
-    text-align: center;
-    padding: 12px 0;
-    color: #8c004b;
-    font-size: 1em;
-    border-bottom: 1px dashed #ffe4e1;
-    margin-bottom: 5px;
+    margin-bottom: 20px;
 }
 
-.info-text {
-    margin-top: 20px;
-    font-size: 0.95em;
-    color: #777;
-    opacity: 0.9;
-}
-
-button.view-all-button {
-    margin-top: 25px;
-    background: linear-gradient(45deg, #9370DB, #7B68EE); /* Purple gradient */
-    display: block;
-    width: fit-content;
-    margin-left: auto;
-    margin-right: auto;
-}
-button.view-all-button:hover {
-    background: linear-gradient(45deg, #7B68EE, #6A5ACD); /* Darker purple */
-}
-
-
-#diaryEntryPage h2, #diaryConfirmationPage h2, #diaryViewPage h2 {
-    color: #c71585;
-    margin-bottom: 30px;
-    font-family: 'Pacifico', cursive;
-    font-weight: normal;
-    font-size: 2.2em;
-}
-#diaryEntryTitle, #diaryViewPage h2 {
-    font-size: 2em;
-}
-#diaryDateDisplay, #viewDiaryDateDisplay {
-    font-weight: bold;
-    color: #ff69b4;
-    font-family: 'Handlee', cursive;
-}
-
-.diary-form-group {
-    margin-bottom: 25px;
+.notebook.view-only p {
     text-align: left;
-}
-.diary-form-group label {
-    display: block;
-    margin-bottom: 10px;
-    color: #8c004b;
-    font-weight: bold;
     font-size: 1.1em;
+    color: #444;
+    line-height: 1.6;
+    white-space: pre-wrap; /* Preserve line breaks */
+    word-wrap: break-word; /* Break long words */
 }
 
-/* Styles for Diary View Page */
-.diary-entry-content {
-    background-color: #fffaf0;
-    border: 2px solid #ffe4e1;
-    border-radius: 12px;
-    padding: 30px;
-    margin-bottom: 25px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-    text-align: left;
-    color: #5c3b4c;
-    word-wrap: break-word;
-    min-height: 150px;
-}
-.notebook-content {
-    font-family: 'Handlee', cursive;
-    font-size: 1.15em;
-    min-height: 100px;
-    border-bottom: 1px dashed #ffc0cb;
-    padding-bottom: 15px;
-    margin-bottom: 15px;
-    line-height: 1.6; /* Improved readability */
-}
-
-/* Styles for all entries list (both feelings and diary) */
-.entries-list-container {
-    max-height: 500px; /* Taller scrollable area */
-    overflow-y: auto;
-    border: 2px solid #ffe4e1;
-    border-radius: 15px;
-    padding: 10px; /* Adjusted padding */
-    background-color: #fffaf0;
-    margin-top: 25px;
-    text-align: left;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
-}
-
-/* Individual list items (used for diary list, feelings uses table now) */
 .diary-entry-list-item {
-    background-color: #ffffff;
-    border: 1px solid #ffc0cb;
+    padding: 15px;
+    margin-bottom: 10px;
+    background: #fff;
+    border: 1px solid #f0f0f0;
     border-radius: 12px;
-    padding: 20px; /* More padding */
-    margin-bottom: 18px; /* Increased margin */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08); /* Softer shadow */
-    transition: transform 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
 }
-.diary-entry-list-item:hover {
-    transform: translateY(-3px);
-}
+
 .diary-entry-list-item h3 {
+    color: #d94a6b;
     margin-top: 0;
     margin-bottom: 10px;
-    color: #d95792;
-    font-size: 1.3em;
-    font-weight: 600;
-    font-family: 'Open Sans', sans-serif;
+    font-size: 1.2em;
 }
+
 .diary-entry-list-item p {
-    margin: 5px 0;
     color: #5c3b4c;
-    font-family: 'Handlee', cursive;
+    font-size: 0.95em;
     line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 
-/* Emotion tags (used in feelings table) */
-.emotion-tag {
-    display: inline-block;
-    padding: 5px 10px; /* More padding */
-    border-radius: 8px; /* More rounded */
-    color: white;
-    font-weight: bold;
-    font-size: 0.95em;
-    text-transform: capitalize; /* Capitalize emotion */
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-.emotion-tag.grievance { background-color: #DC143C; } /* Crimson */
-.emotion-tag.appreciate { background-color: #3CB371; } /* MediumSeaGreen */
-.emotion-tag.sad { background-color: #4682B4; } /* SteelBlue */
-.emotion-tag.happy { background-color: #FFD700; color: #333; } /* Gold */
-
-
-/* --- NEW STYLES FOR FEELINGS TABLE --- */
-.feelings-table {
-    width: 100%;
-    border-collapse: separate; /* Allows for border-spacing and rounded corners on cells */
-    border-spacing: 0 10px; /* Vertical spacing between rows */
-    margin-top: 0;
-    font-size: 1em;
+.diary-entry-list-item hr {
+    border: none;
+    border-top: 1px dashed #ffe0f0;
+    margin-top: 15px;
+    margin-bottom: 0;
 }
 
-.feelings-table th, .feelings-table td {
-    border: 1px solid #ffc0cb;
-    padding: 12px; /* Increased cell padding */
-    text-align: left;
-    color: #5c3b4c;
-    vertical-align: top;
-    background-color: #ffffff; /* White background for all cells */
-}
-
-.feelings-table th {
-    background-color: #ffb6c1;
-    color: #8c004b;
-    font-weight: bold;
-    position: sticky; /* Make header sticky */
-    top: 0;
-    z-index: 2; /* Ensure it stays above content */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Shadow for sticky header */
-}
-
-.feelings-table tbody tr {
-    transition: all 0.2s ease-in-out; /* Smooth transition for rows */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* Subtle shadow for rows */
-    border-radius: 8px; /* Rounded corners for rows */
-    overflow: hidden; /* Ensure content stays within rounded corners */
-}
-
-.feelings-table tbody tr:hover {
-    background-color: #fff0f5; /* Light highlight on hover */
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.feelings-table td:first-child { border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
-.feelings-table td:last-child { border-top-right-radius: 8px; border-bottom-right-radius: 8px; }
-
-/* Ensure the first and last cells of a row have rounded corners for the table effect */
-.feelings-table thead th:first-child { border-top-left-radius: 8px; }
-.feelings-table thead th:last-child { border-top-right-radius: 8px; }
-.feelings-table tbody tr:first-child td:first-child { border-top-left-radius: 8px; }
-.feelings-table tbody tr:first-child td:last-child { border-top-right-radius: 8px; }
-.feelings-table tbody tr:last-child td:first-child { border-bottom-left-radius: 8px; }
-.feelings-table tbody tr:last-child td:last-child { border-bottom-right-radius: 8px; }
-
-
-/* --- END OF NEW STYLES FOR FEELINGS TABLE --- */
-
-
-/* Footer Styles */
-.portal-footer {
-    margin-top: 35px;
-    color: #8c004b;
-    font-size: 0.95em;
-    border-top: 1px dashed #ffc0cb;
-    padding-top: 20px;
-    opacity: 0.9;
-}
-
-
-/* Responsive Design */
-@media (max-width: 768px) {
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+    }
     #appContainer {
-        padding: 10px;
-    }
-    .container {
-        padding: 25px 20px;
-        margin: 20px auto;
-    }
-    #homeScreen .main-header h1 {
-        font-size: 2.8em;
-    }
-    .main-option {
-        font-size: 1.4em;
-        padding: 30px;
-        min-height: 100px;
-    }
-    .container header h1 {
-        font-size: 2.2em;
-    }
-    .back-to-home-btn {
-        position: static; /* Make it flow with content */
-        margin-bottom: 15px;
-        display: block;
-        width: fit-content;
-        margin-left: auto;
-        margin-right: auto;
-    }
-    .notebook textarea, #diaryThoughts {
-        min-height: 120px;
-        font-size: 1.05em;
-    }
-    button {
-        padding: 12px 22px;
-        font-size: 1em;
-    }
-    #feelings-animation-container {
-        width: 90px;
-        height: 60px;
-        font-size: 0.85em;
-    }
-    #feelings-mail-icon {
-        font-size: 2.5em;
-    }
-    #feelings-thank-you-message, #diaryConfirmationPage p {
-        font-size: 1.1em;
-    }
-    #calendarControls {
-        flex-wrap: wrap; /* Allow wrapping */
-        justify-content: center;
-    }
-    #calendarControls h3 {
-        width: 100%;
-        text-align: center;
-        margin-bottom: 15px;
-    }
-    .calendar-day {
-        padding: 12px 5px;
-        font-size: 0.9em;
-    }
-    .diary-entry-content, .diary-entry-list-item {
-        padding: 18px;
-    }
-    .notebook-content {
-        font-size: 1.05em;
-    }
-    .entries-list-container {
-        max-height: 400px;
-    }
-    .feelings-table {
-        font-size: 0.9em;
-    }
-    .feelings-table th, .feelings-table td {
-        padding: 10px;
-    }
-    .emotion-tag {
-        padding: 4px 8px;
-        font-size: 0.85em;
-    }
-    #feelingsPage1 {
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Even smaller for mobile */
-        gap: 15px;
-    }
-    .option-box.feelings-option {
-        min-height: 70px;
-        font-size: 0.9em;
-        padding: 12px;
-    }
-    .option-box.view-all {
-        min-height: 100px;
-        font-size: 1.1em;
-    }
-}
-
-@media (max-width: 480px) {
-    #homeScreen .main-header h1 {
-        font-size: 2.5em;
+        padding: 0;
     }
     .options-grid {
+        grid-template-columns: 1fr;
         gap: 20px;
+        padding: 15px;
+    }
+    .option-box {
         padding: 20px;
     }
     .main-option {
@@ -841,8 +544,8 @@ button.view-all-button:hover {
         margin: 6px 4px;
     }
     #feelings-animation-container {
-        width: 70px;
-        height: 45px;
+        width: 150px;
+        height: 120px;
     }
     #feelings-message-box {
         width: 70px;
@@ -859,24 +562,36 @@ button.view-all-button:hover {
         gap: 8px;
         padding: 15px;
     }
+    .calendar-day-header {
+        font-size: 0.8em;
+        padding: 8px 0;
+    }
     .calendar-day {
-        padding: 10px 3px;
+        font-size: 0.9em;
+        border-radius: 8px;
+    }
+    .feelings-table th, .feelings-table td {
+        padding: 8px;
+        font-size: 0.9em;
+    }
+    .emotion-tag {
+        padding: 3px 8px;
         font-size: 0.8em;
     }
-    .diary-entry-content, .diary-entry-list-item {
-        padding: 15px;
-    }
-    .notebook-content {
+
+    /* Responsive adjustments for Miss You Popup */
+    #missYouPopup {
+        padding: 20px;
         font-size: 1em;
     }
-    .entries-list-container {
-        max-height: 350px;
+    #missYouPopup button {
+        padding: 10px 20px;
+        font-size: 0.9em;
     }
-    .feelings-table, .feelings-table th, .feelings-table td {
-        font-size: 0.8em;
-        padding: 8px;
+
+    /* Adjust feelings options grid for smaller screens */
+    .feelings-options-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); /* Adjust min width for smaller screens */
+        gap: 10px;
     }
 }
-
-/* Import Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Handlee&family=Open+Sans:wght@400;600;700&display=swap');
