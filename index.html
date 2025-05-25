@@ -5,6 +5,110 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>For my Hetu</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Specific styles for the Miss You button */
+        .miss-you-button {
+            background: linear-gradient(45deg, #ffc0cb, #ff80a0); /* Cute pink gradient */
+            color: white;
+            font-size: 1.5em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px; /* Space between text and bunny */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* More prominent shadow */
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+            border: 1px solid #ff6699;
+            cursor: pointer;
+            padding: 30px; /* Keep consistent with other options */
+            min-height: 120px; /* Keep consistent */
+        }
+
+        .miss-you-button:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+            background: linear-gradient(45deg, #ff80a0, #ffc0cb); /* Subtle hover effect */
+        }
+
+        .miss-you-button .bunny-face {
+            display: inline-block;
+            font-size: 1.8em; /* Slightly larger bunny */
+            line-height: 1; /* Ensure no extra space around character */
+            animation: bounce 0.8s infinite alternate ease-in-out; /* Subtle bounce */
+        }
+
+        /* Spinning animation for the bunny */
+        .miss-you-button .bunny-face.spinning {
+            animation: spin 2s linear infinite; /* Spin continuously when active */
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes bounce {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-5px); } /* Move up slightly */
+        }
+
+        /* Styles for the Miss You Pop-up */
+        #missYouPopup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #fff;
+            border: 2px solid #d94a6b;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            text-align: center;
+            z-index: 1001; /* Above overlay */
+            display: none; /* Hidden by default */
+            max-width: 400px;
+            width: 90%;
+            box-sizing: border-box;
+            font-size: 1.1em;
+            color: #5c3b4c;
+            line-height: 1.6;
+        }
+
+        #missYouPopup p {
+            margin: 10px 0;
+            font-weight: 500;
+        }
+
+        #missYouPopup button {
+            background: linear-gradient(45deg, #d94a6b, #ff80a0);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        #missYouPopup button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6); /* Darker overlay */
+            z-index: 1000; /* Below popup */
+            display: none; /* Hidden by default */
+            backdrop-filter: blur(3px); /* Subtle blur effect */
+        }
+    </style>
 </head>
 <body>
     <div id="appContainer">
@@ -18,6 +122,10 @@
                 </div>
                 <div class="option-box main-option" onclick="navigateToApp('diaryScreen')">
                     📅 Hetu's Diary 📅
+                </div>
+                <div class="option-box miss-you-button" onclick="showMissYouPopup()">
+                    <span>I Miss You</span>
+                    <span class="bunny-face">🐰</span>
                 </div>
             </main>
             <footer class="main-footer">
@@ -138,11 +246,17 @@
         </section>
     </div>
     
+    <div id="missYouPopup">
+        <p>Pratham misses you too, I love you my chikoo! 🥰</p>
+        <p>Sending virtual huggies 🤗 and kissy 😘 to my darling!</p>
+        <button onclick="closeMissYouPopup()">Okay ❤️</button>
+    </div>
+
+    <div id="overlay"></div>
+
     <script>
-        // Test if JavaScript is working
         console.log('HTML JavaScript is working!');
         
-        // Check if external script will load
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM loaded, checking for external script functions...');
             if (typeof navigateToApp === 'undefined') {
@@ -152,6 +266,24 @@
                 console.log('✅ script.js loaded successfully!');
             }
         });
+
+        // Functions for the new Miss You button and popup
+        function showMissYouPopup() {
+            const bunnyFace = document.querySelector('.miss-you-button .bunny-face');
+            bunnyFace.classList.add('spinning'); // Start spinning
+
+            // Stop spinning and show popup after 2 seconds
+            setTimeout(() => {
+                bunnyFace.classList.remove('spinning'); // Stop spinning
+                document.getElementById('missYouPopup').style.display = 'block';
+                document.getElementById('overlay').style.display = 'block';
+            }, 2000); // Spin for 2 seconds
+        }
+
+        function closeMissYouPopup() {
+            document.getElementById('missYouPopup').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
     </script>
     <script src="script.js"></script>
 </body>
