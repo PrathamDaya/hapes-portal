@@ -1,0 +1,921 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background: linear-gradient(to bottom right, #fceaff, #fff0f5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 15px;
+    color: #5c3b4c;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+#appContainer {
+    width: 100%;
+    max-width: 800px;
+    box-sizing: border-box;
+}
+
+.screen {
+    display: none;
+    width: 100%;
+    animation: fadeInScale 0.6s ease-out forwards;
+    transform-origin: center center;
+}
+
+.screen.active {
+    display: block;
+}
+
+@keyframes fadeInScale {
+    from { opacity: 0; transform: translateY(20px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Main Home Page Styles */
+#homeScreen .main-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 15px;
+}
+
+#homeScreen .main-header h1 {
+    color: #d94a6b;
+    font-size: clamp(2em, 6vw, 2.8em); /* Responsive font size */
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+    margin: 0;
+    line-height: 1.2;
+}
+
+.options-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 15px;
+    align-items: center;
+}
+
+.option-box {
+    background: #fff;
+    border-radius: 20px;
+    padding: 25px 20px;
+    text-align: center;
+    font-size: clamp(1.1em, 4vw, 1.4em);
+    color: #d94a6b;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    border: 1px solid #ffe0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80px;
+    width: 100%;
+    max-width: 320px;
+}
+
+.option-box:hover, .option-box:active {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+}
+
+.main-option {
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    min-height: 100px;
+}
+
+#homeScreen .main-footer, .portal-footer {
+    text-align: center;
+    margin-top: 30px;
+    color: #a07a8b;
+    font-size: 0.85em;
+    padding: 0 15px;
+}
+
+/* Bunny Button Styles (from inline style in HTML) */
+.bunny-button {
+    background: linear-gradient(45deg, #ffc0cb, #ff80a0); /* Cute pink gradient */
+    color: white;
+    font-size: 1.5em; /* Adjust font size if any text was intended (now just bunny) */
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0px; /* No gap as only bunny is left */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* More prominent shadow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    border: 1px solid #ff6699;
+    cursor: pointer;
+    padding: 30px; /* Keep consistent with other options */
+    min-height: 120px; /* Keep consistent */
+}
+
+.bunny-button:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(45deg, #ff80a0, #ffc0cb); /* Subtle hover effect */
+}
+
+.bunny-button .bunny-face {
+    display: inline-block;
+    font-size: 3em; /* Make the bunny significantly larger */
+    line-height: 1; /* Ensure no extra space around character */
+    animation: bounce 0.8s infinite alternate ease-in-out; /* Subtle bounce */
+}
+
+/* Spinning animation for the bunny (from inline style in HTML) */
+.bunny-button .bunny-face.spinning {
+    animation: spin 2s linear infinite; /* Spin continuously when active */
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes bounce { /* Combined from both inline and main CSS */
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-5px); } /* Move up slightly */
+}
+
+
+/* Common Portal Styles */
+.container {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 20px 15px;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    margin: 0 auto;
+}
+
+.container header {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    position: relative;
+}
+
+.container header h1 {
+    color: #d94a6b;
+    font-size: clamp(1.6em, 5vw, 2.2em);
+    margin: 0;
+    padding-top: 40px; /* Space for back button */
+    line-height: 1.2;
+}
+
+.back-to-home-btn {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background: #f0f0f0;
+    color: #666;
+    border: none;
+    padding: 12px 16px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    touch-action: manipulation; /* Better touch response */
+}
+
+.back-to-home-btn:hover, .back-to-home-btn:active {
+    background: #e0e0e0;
+}
+
+.page {
+    display: none;
+    padding: 15px 0;
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+.page.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.notebook {
+    background: #fdfdfd;
+    border: 1px solid #e0e0e0;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px auto;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
+    max-width: 100%;
+}
+
+.notebook textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1em;
+    color: #444;
+    resize: vertical;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    line-height: 1.5;
+}
+
+.notebook textarea:focus {
+    outline: none;
+    border-color: #d94a6b;
+    box-shadow: 0 0 8px rgba(217, 74, 107, 0.3);
+}
+
+button {
+    background: linear-gradient(45deg, #ff80a0, #d94a6b);
+    color: white;
+    border: none;
+    padding: 14px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    margin: 8px 4px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease; /* Added background transition */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    touch-action: manipulation;
+    min-height: 48px; /* Better touch target */
+}
+
+button:hover, button:active {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+button:disabled {
+    background: #cccccc;
+    color: #666666; /* Darker text color for disabled button */
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+.back-btn, .view-all-btn {
+    background: #f0f0f0;
+    color: #666;
+    border: 1px solid #ddd;
+}
+
+.back-btn:hover, .view-all-btn:hover, 
+.back-btn:active, .view-all-btn:active {
+    background: #e0e0e0;
+}
+
+.confirmation-box {
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    padding: 30px 20px;
+    margin: 20px auto;
+    max-width: 100%;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+/* Feelings Portal Specific Styles */
+/* Styles for feelings portal options (from inline style in HTML, merged with existing) */
+#feelingsPortalScreen .option-box {
+    font-size: clamp(1em, 4vw, 1.2em); /* Original */
+    padding: 20px 15px; /* Original */
+    min-height: 70px; /* Original */
+    max-width: 280px; /* Original */
+    margin: 8px auto; /* Original */
+    font-weight: 600; /* Original */
+    letter-spacing: 0.3px; /* Original */
+}
+/* Keeping the more specific settings for these if they differ or adding if they were in HTML only */
+.option-box.grievance,
+#feelingsPortalScreen .option-box.grievance { 
+    background-color: #ffb3b3; 
+    color: #cc0000; 
+    border-color: #ff8080; 
+    font-size: 1.4em; /* from inline */
+    padding: 30px; /* from inline */
+    min-height: 120px; /* from inline */
+}
+
+.option-box.appreciate,
+#feelingsPortalScreen .option-box.appreciate { 
+    background-color: #b3ffb3; 
+    color: #004d00; 
+    border-color: #80ff80; 
+    font-size: 1.4em; /* from inline */
+    padding: 30px; /* from inline */
+    min-height: 120px; /* from inline */
+}
+
+.option-box.sad,
+#feelingsPortalScreen .option-box.sad { 
+    background-color: #b3d9ff; 
+    color: #0033cc; 
+    border-color: #80c0ff; 
+    font-size: 1.4em; /* from inline */
+    padding: 30px; /* from inline */
+    min-height: 120px; /* from inline */
+}
+
+.option-box.happy,
+#feelingsPortalScreen .option-box.happy { 
+    background-color: #ffe6b3; 
+    color: #cc8800; 
+    border-color: #ffcc80; 
+    font-size: 1.4em; /* from inline */
+    padding: 30px; /* from inline */
+    min-height: 120px; /* from inline */
+}
+
+
+#feelingsPortalScreen .option-box:hover,
+#feelingsPortalScreen .option-box:active {
+    transform: translateY(-3px) scale(1.01);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Animation Styles */
+#feelings-animation-container {
+    width: clamp(120px, 30vw, 200px);
+    height: clamp(90px, 25vw, 150px);
+    margin: 0 auto 20px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#feelings-mail-icon {
+    font-size: clamp(2em, 8vw, 3em);
+    color: #d94a6b;
+    position: relative;
+    animation: bounceIn 1s forwards;
+    display: inline-block;
+    z-index: 2;
+}
+
+#feelings-message-box {
+    background: #fff;
+    border: 1px solid #d94a6b;
+    border-radius: 10px;
+    padding: 8px 12px;
+    position: absolute;
+    font-size: clamp(0.7em, 3vw, 0.8em);
+    color: #5c3b4c;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    animation: messageBoxRise 1.5s 0.5s forwards;
+    max-width: 140px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 1;
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0); opacity: 0; }
+    50% { transform: scale(1.2); opacity: 1; }
+    70% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+
+@keyframes messageBoxRise {
+    0% { opacity: 0; transform: translate(-50%, 0%); }
+    100% { opacity: 1; transform: translate(-50%, -120%); }
+}
+
+#feelings-thank-you-message, #diaryConfirmationPage p {
+    font-size: clamp(1em, 4vw, 1.1em);
+    color: #5c3b4c;
+    margin-bottom: 25px;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+/* Miss You Popup Styles (from inline style in HTML) */
+#missYouPopup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    border: 2px solid #d94a6b;
+    padding: 30px; /* from inline */
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    text-align: center;
+    z-index: 1001; /* Above overlay */
+    display: none; /* Hidden by default */
+    max-width: 400px; /* from inline */
+    width: 90%; /* from inline */
+    box-sizing: border-box;
+    font-size: 1.1em; /* from inline */
+    color: #5c3b4c;
+    line-height: 1.6;
+}
+
+#missYouPopup p {
+    margin: 10px 0;
+    font-weight: 500;
+}
+
+#missYouPopup button {
+    background: linear-gradient(45deg, #d94a6b, #ff80a0);
+    color: white;
+    border: none;
+    padding: 12px 25px; /* from inline */
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1em; /* from inline */
+    font-weight: bold;
+    margin-top: 20px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#missYouPopup button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+#overlay { /* from inline style in HTML */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6); /* Darker overlay */
+    z-index: 1000; /* Below popup */
+    display: none; /* Hidden by default */
+    backdrop-filter: blur(3px); /* Subtle blur effect */
+}
+
+
+/* Entries List Styles */
+.entries-list-container {
+    max-height: 350px;
+    overflow-y: auto;
+    background: #fcfcfc;
+    border: 1px solid #eee;
+    border-radius: 15px;
+    padding: 15px;
+    margin-top: 20px;
+    text-align: left;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);
+}
+
+.feelings-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 0.9em;
+}
+
+.feelings-table th, .feelings-table td {
+    border: 1px solid #eee;
+    padding: 10px 8px;
+    text-align: left;
+    vertical-align: top; /* Changed from middle to top for replies */
+    word-wrap: break-word;
+}
+
+.feelings-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+    color: #d94a6b;
+    font-size: 0.85em;
+}
+
+.feelings-table tr:nth-child(even) {
+    background-color: #fbfbfb;
+}
+
+.emotion-tag {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+/* Calendar Styles */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background: #f8f8f8;
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.calendar-header h2 {
+    margin: 0;
+    color: #d94a6b;
+    font-size: clamp(1.4em, 5vw, 1.8em);
+    text-align: center;
+    flex: 1;
+}
+
+.calendar-header button {
+    background: #f0f0f0;
+    color: #666;
+    border: 1px solid #ddd;
+    padding: 12px 15px;
+    border-radius: 12px;
+    font-size: 1.2em;
+    min-width: 50px;
+    min-height: 48px;
+    touch-action: manipulation;
+}
+
+.calendar-header button:hover, .calendar-header button:active {
+    background: #e0e0e0;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    padding: 15px;
+    background: #fdfdfd;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.calendar-day-header {
+    font-weight: bold;
+    color: #d94a6b;
+    text-align: center;
+    padding: 8px 0;
+    font-size: clamp(0.7em, 3vw, 0.9em);
+}
+
+.calendar-day {
+    background: #fcfcfc;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: clamp(0.8em, 3.5vw, 1.1em);
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+    color: #5c3b4c;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    min-height: 40px;
+    touch-action: manipulation;
+}
+
+.calendar-day.empty {
+    background: #f0f0f0;
+    cursor: default;
+    box-shadow: none;
+    border-color: #ddd;
+}
+
+.calendar-day:not(.empty):hover,
+.calendar-day:not(.empty):active {
+    background: #ffe6f0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+
+.calendar-day.today {
+    background: linear-gradient(45deg, #ff9eb2, #ff80a0);
+    color: white;
+    border: 1px solid #ff80a0;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.calendar-day.has-entry {
+    background: #d94a6b;
+    color: white;
+    font-weight: bold;
+    border: 1px solid #c03a5b;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+.calendar-day.has-entry:hover,
+.calendar-day.has-entry:active {
+    background: #c03a5b;
+}
+
+/* Diary Entry Styles */
+.date-display {
+    font-size: clamp(1em, 4vw, 1.2em);
+    color: #d94a6b;
+    font-weight: bold;
+    margin-bottom: 20px;
+    line-height: 1.3;
+}
+
+.notebook.view-only p {
+    text-align: left;
+    font-size: clamp(1em, 3.5vw, 1.1em);
+    color: #444;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.diary-entry-list-item {
+    padding: 15px;
+    margin-bottom: 15px;
+    background: #fff;
+    border: 1px solid #f0f0f0;
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+}
+
+.diary-entry-list-item h3 {
+    color: #d94a6b;
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: clamp(1.1em, 4vw, 1.2em);
+    line-height: 1.3;
+}
+
+.diary-entry-list-item p {
+    color: #5c3b4c;
+    font-size: clamp(0.9em, 3.5vw, 0.95em);
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin: 0 0 10px 0; /* Added margin for spacing */
+}
+
+.diary-entry-list-item hr {
+    border: none;
+    border-top: 1px dashed #ffe0f0;
+    margin-top: 15px;
+    margin-bottom: 0;
+}
+
+.diary-actions {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* --- ADDED STYLES FOR REPLY FUNCTIONALITY --- */
+.reply-btn {
+    background: linear-gradient(45deg, #4CAF50, #81C784); /* Greenish gradient */
+    color: white !important; /* Ensure text is white */
+    padding: 8px 15px;
+    font-size: 0.9em;
+    border-radius: 20px;
+    margin-top: 10px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.reply-btn:hover, .reply-btn:active {
+    background: linear-gradient(45deg, #388E3C, #66BB6A);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+}
+
+.reply-btn:disabled { /* Ensures disabled reply button matches general disabled button */
+    background: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.small-reply-btn {
+    padding: 6px 12px;
+    font-size: 0.8em;
+}
+
+.reply-display {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #e8f5e9; /* Light green background for replies */
+    border-left: 4px solid #66bb6a; /* Accent color */
+    border-radius: 4px;
+    font-size: 0.9em;
+    text-align: left; /* Ensure text is left-aligned */
+}
+
+.reply-display p {
+    margin: 5px 0 !important; /* Override general p if needed */
+    color: #333;
+    line-height: 1.4;
+}
+.reply-display strong {
+    color: #2e7d32; /* Darker green for Pratham's Reply label */
+}
+
+.reply-timestamp {
+    font-size: 0.8em;
+    color: #555;
+    font-style: italic;
+    margin-top: 3px !important;
+}
+
+/* Container for reply section in single diary view and list items */
+.reply-section-container { 
+    padding: 10px;
+    margin-top: 15px;
+    background-color: #fdfdfd; /* Slightly off-white */
+    border-radius: 8px;
+    border: 1px solid #f0f0f0;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
+}
+
+.diary-entry-list-item .entry-reply-section {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed #e0e0e0; /* Separator */
+}
+
+/* Adjustments for feelings table */
+.feelings-table td .reply-btn {
+    padding: 5px 10px;
+    font-size: 0.85em;
+    margin-top: 5px;
+}
+
+.feelings-table td .reply-display {
+    font-size: 0.85em;
+    padding: 8px;
+    margin-top: 5px;
+    background-color: #f0f9f0; /* Slightly different shade for table context */
+    border-left-color: #5cb85c;
+}
+
+.feelings-table td .reply-display p {
+    margin: 3px 0 !important;
+}
+/* --- END ADDED STYLES FOR REPLY FUNCTIONALITY --- */
+
+
+/* Additional mobile-specific improvements */
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    
+    .container {
+        padding: 15px 12px;
+        border-radius: 15px;
+    }
+    
+    .options-grid {
+        gap: 15px;
+        padding: 10px;
+    }
+    
+    .option-box {
+        padding: 20px 15px;
+        border-radius: 15px;
+    }
+    
+    .main-option {
+        min-height: 85px;
+    }
+    
+    .bunny-button { /* Copied from inline style */
+        min-height: 80px; /* Adjusted from 120px based on screen size */
+        padding: 20px; /* Adjusted */
+    }
+    
+    .notebook {
+        padding: 15px;
+        margin: 15px auto;
+    }
+    
+    .notebook textarea {
+        padding: 12px;
+        min-height: 100px;
+    }
+    
+    button {
+        padding: 12px 18px;
+        margin: 6px 3px;
+        font-size: 0.95em;
+    }
+    
+    .calendar-grid {
+        gap: 6px;
+        padding: 12px;
+    }
+    
+    .calendar-day {
+        min-height: 35px;
+        border-radius: 6px;
+    }
+    
+    .feelings-table th, .feelings-table td {
+        padding: 8px 6px;
+        font-size: 0.85em;
+    }
+    
+    .emotion-tag {
+        padding: 3px 6px;
+        font-size: 0.75em;
+    }
+    
+    .confirmation-box {
+        padding: 25px 15px;
+    }
+    
+    #missYouPopup { /* Copied from inline style */
+        padding: 20px 15px; /* Adjusted */
+        width: 90%;
+    }
+}
+
+/* Tablet styles */
+@media (min-width: 481px) and (max-width: 768px) {
+    .options-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    
+    .option-box {
+        max-width: none;
+    }
+    
+    .calendar-grid {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+}
+
+/* Desktop styles */
+@media (min-width: 769px) {
+    body {
+        padding: 20px;
+    }
+    
+    .options-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 30px;
+        padding: 20px;
+        max-width: none;
+    }
+    
+    .option-box { /* Includes specific .bunny-button styling for desktop from inline */
+        min-height: 120px;
+        padding: 30px;
+        font-size: 1.4em;
+        max-width: none;
+    }
+    
+    .main-option {
+        min-height: 120px;
+    }
+    
+    /* .bunny-button is covered by .option-box for desktop due to merged styles */
+    
+    .container {
+        padding: 30px;
+    }
+    
+    .notebook {
+        padding: 25px;
+        max-width: 500px;
+    }
+    
+    .notebook textarea {
+        min-height: 150px;
+        padding: 15px;
+        font-size: 1.1em;
+    }
+    
+    button {
+        padding: 12px 25px; /* General button padding for desktop */
+        font-size: 1.1em;
+        margin: 10px 5px;
+    }
+}
