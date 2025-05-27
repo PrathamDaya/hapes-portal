@@ -1,6 +1,6 @@
 // --- FULLY UPDATED script.js with User Login, Attribution & Reply Functionality ---
 // IMPORTANT: REPLACE THIS WITH YOUR ACTUAL DEPLOYED WEB APP URL from Google Apps Script
-const scriptURL = 'https://script.google.com/macros/s/AKfycbzH4whliZSRjcTeoA_8UQAzM9OmtNohfqiQKmeoJZWXa_xQOHg_e11bTRavjcjZqtzn/'; // <<< REPLACE WITH YOUR URL
+const scriptURL = 'https://script.google.com/macros/s/AKfycbzW9MHkB7IYia8ayzdOvbscyAeWIy1MaSZYi-cU_Nmh9jJ3o46zRP7LlKlqql_ecyxOwQ/exec'; // <<< REPLACE WITH YOUR URL
 
 // DOM Elements
 const loginContainer = document.getElementById('loginContainer');
