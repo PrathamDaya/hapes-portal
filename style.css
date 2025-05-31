@@ -1,1 +1,760 @@
+/* Existing styles from your provided style.css remain here */
+/* ... (previous styles for body, login, appContainer, headers, options, portals, diary, etc.) ... */
 
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background: linear-gradient(to bottom right, #fceaff, #fff0f5);
+    display: flex; 
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 15px;
+    color: #5c3b4c;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+#loginContainer {
+    display: flex; 
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%; 
+    padding: 20px;
+    box-sizing: border-box;
+    background: linear-gradient(to bottom right, #fde4f0, #fff5f8); 
+    animation: fadeInSimple 0.5s ease-out;
+}
+
+.login-box {
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-box h1 {
+    color: #8a4a6b;
+    margin-bottom: 25px;
+    font-size: 1.8em;
+}
+
+.login-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.login-options button {
+    padding: 15px 25px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.chikoo-btn {
+    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+    color: #fff;
+    border: 2px solid #ff7f7f;
+}
+
+.chikoo-btn:hover {
+    background: linear-gradient(135deg, #ff8a8e 0%, #f9c0b4 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.prath-btn {
+    background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+    color: #fff;
+    border: 2px solid #8e6ee6;
+}
+
+.prath-btn:hover {
+    background: linear-gradient(135deg, #917ccc 0%, #eac2eb 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* App Container & Header Info */
+#appContainer {
+    display: none; /* Controlled by JS */
+    width: 100%;
+    max-width: 900px;
+    background: #fff;
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+    animation: fadeIn 0.5s ease-out;
+    padding-bottom: 20px; /* Space for content below options */
+}
+
+.app-header-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    background: linear-gradient(to right, #e0bfe6, #d7e2f5);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    color: #5c3b4c;
+    font-weight: bold;
+    font-size: 0.95em;
+    border-top-left-radius: 25px;
+    border-top-right-radius: 25px;
+}
+
+.logout-btn {
+    background: #f7d9e4;
+    color: #a34e7a;
+    border: 1px solid #e0bfe6;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.logout-btn:hover {
+    background: #ffe3ec;
+}
+
+/* Screen Management */
+.screen {
+    display: none;
+    padding: 20px 30px;
+    animation: fadeIn 0.4s ease-out;
+    height: 100%; /* Ensure screens take full height for scrolling if needed */
+    box-sizing: border-box;
+}
+
+.screen.active {
+    display: block;
+}
+
+.main-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-top: 10px;
+}
+
+.main-header h1, .main-header h2 {
+    color: #8a4a6b;
+    font-size: 2.2em;
+    margin: 0;
+    line-height: 1.2;
+}
+
+/* Options Grid */
+.options-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    padding: 0 10px;
+}
+
+.option-box {
+    background: #f8f0f3;
+    border-radius: 18px;
+    padding: 25px;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    font-weight: bold;
+    color: #5c3b4c;
+    flex-basis: calc(50% - 20px); /* Two columns on larger screens */
+    max-width: 280px; /* Maximum width for each box */
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.1em;
+    min-height: 100px;
+    border: 1px solid #e0bfe6;
+}
+
+.option-box.main-option {
+    background: linear-gradient(135deg, #f7d9e4 0%, #e0bfe6 100%);
+    color: #7a3e6a;
+    border: none;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.option-box.main-option:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(135deg, #f9e1e7 0%, #e5cde9 100%);
+}
+
+.option-box.game-option {
+    background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+    color: #fff;
+    border: none;
+}
+.option-box.game-option:hover {
+    background: linear-gradient(135deg, #917ccc 0%, #eac2eb 100%);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+}
+
+.option-box.action-option {
+    background: linear-gradient(135deg, #98d1a1 0%, #c2fbe9 100%);
+    color: #fff;
+    border: none;
+}
+.option-box.action-option:hover {
+    background: linear-gradient(135deg, #88c091 0%, #b2e8d9 100%);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+}
+
+
+/* Game Selection specific styles */
+#gameSelectionScreen .options-grid.game-options-grid {
+    flex-direction: column; /* Stack games vertically by default */
+    align-items: center;
+}
+
+#gameSelectionScreen .option-box.game-choice {
+    width: 80%; /* Wider for game choices */
+    max-width: 350px; /* Limit max width */
+    background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%); /* Example color */
+    color: #fff;
+    font-size: 1.3em;
+    padding: 30px;
+    border: none;
+}
+#gameSelectionScreen .option-box.game-choice:hover {
+    background: linear-gradient(135deg, #ff8a8e 0%, #f9c0b4 100%);
+}
+
+/* Naughty Dare (Truth or Dare) Screen Styles */
+#truthOrDareScreen .game-content {
+    background: #fdf5f8;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-top: 20px;
+    text-align: center;
+    color: #6a405a;
+}
+
+#truthOrDareScreen p {
+    font-size: 1.1em;
+    margin-bottom: 20px;
+}
+
+#todResultArea {
+    min-height: 80px;
+    background: #fff;
+    border: 1px dashed #e0bfe6;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2em;
+    color: #8a4a6b;
+    font-weight: 500;
+    text-align: center;
+}
+
+.game-buttons button {
+    background: linear-gradient(45deg, #ff6b6b, #ff9b9b);
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 10px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin: 0 10px; /* Space between buttons if multiple */
+}
+
+.game-buttons button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(45deg, #ff5a5a, #ff8a8a);
+}
+
+/* Removed all styles for Letter Hunt Screen (#letterHuntScreen and its children) */
+/* No more #letterHuntTimerDisplay, #letterHuntScoresDisplay, #letterHuntTable, etc. */
+
+
+/* Feelings Portal Specific Styles */
+.portal-content, .diary-content {
+    padding: 20px;
+}
+
+.pagination-buttons {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.pagination-buttons button {
+    background: #e0bfe6;
+    color: #7a3e6a;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    margin: 0 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.pagination-buttons button:hover {
+    background: #ecd2ed;
+}
+
+.page {
+    display: none;
+    animation: fadeIn 0.4s ease-out;
+}
+
+.page.active-page {
+    display: block;
+}
+
+.emotion-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.emotion-btn {
+    background: #ffe3ec;
+    color: #a34e7a;
+    border: 1px solid #f7d9e4;
+    padding: 15px 25px;
+    border-radius: 10px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex: 1 1 calc(50% - 15px); /* Two buttons per row on small screens */
+    max-width: 180px; /* Max width for each emotion button */
+}
+
+.emotion-btn:hover {
+    background: #fff0f5;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+#feelingsPage2 h3, #diaryEntryPage h3, #diaryViewEntryPage h3 {
+    text-align: center;
+    color: #8a4a6b;
+    margin-bottom: 20px;
+}
+
+textarea {
+    width: calc(100% - 20px);
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #e0bfe6;
+    border-radius: 10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1em;
+    resize: vertical;
+    min-height: 100px;
+    box-sizing: border-box;
+    color: #5c3b4c;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #a18cd1;
+    box-shadow: 0 0 0 3px rgba(161, 140, 209, 0.2);
+}
+
+.submit-btn {
+    background: linear-gradient(45deg, #a18cd1, #fbc2eb);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: block;
+    width: fit-content;
+    margin: 0 auto;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(45deg, #917ccc, #eac2eb);
+}
+
+/* Calendar Styles */
+.calendar-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background: #f7d9e4;
+    padding: 10px 15px;
+    border-radius: 10px;
+}
+
+.calendar-nav button {
+    background: none;
+    border: none;
+    font-size: 1.5em;
+    color: #7a3e6a;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 5px;
+    transition: background-color 0.2s ease;
+}
+
+.calendar-nav button:hover {
+    background-color: #ffeef2;
+}
+
+#currentMonthYear {
+    font-size: 1.5em;
+    color: #8a4a6b;
+    margin: 0;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    text-align: center;
+    background: #fff;
+    border-radius: 15px;
+    padding: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.calendar-grid div {
+    padding: 10px 5px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    font-size: 0.9em;
+    color: #5c3b4c;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.calendar-grid .day-name {
+    font-weight: bold;
+    color: #7a3e6a;
+    background: #fceaff;
+    pointer-events: none; /* Make day names not clickable */
+}
+
+.calendar-grid .empty-day {
+    background: none;
+    pointer-events: none;
+    cursor: default;
+}
+
+.calendar-grid .day:hover:not(.empty-day):not(.has-entry) {
+    background-color: #fceaff;
+    transform: translateY(-1px);
+}
+
+.calendar-grid .day.current-day {
+    background-color: #d7e2f5;
+    font-weight: bold;
+    border: 1px solid #b7cceb;
+}
+
+.calendar-grid .day.has-entry {
+    background-color: #ffebf2; /* Lighter pink for entries */
+    border: 1px solid #f7d9e4;
+    font-weight: bold;
+    color: #8a4a6b;
+    cursor: pointer;
+    position: relative;
+}
+
+.calendar-grid .day.has-entry:hover {
+    background-color: #ffdded;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.calendar-grid .day.has-entry::after {
+    content: '📝'; /* Little emoji indicator */
+    font-size: 0.7em;
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+}
+
+
+#diaryViewAllEntriesContainer .diary-entry-card {
+    background: #fdf5f8;
+    border: 1px solid #f7d9e4;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    color: #5c3b4c;
+}
+
+.diary-entry-card h4 {
+    color: #8a4a6b;
+    margin-top: 0;
+    margin-bottom: 10px;
+    border-bottom: 1px dashed #e0bfe6;
+    padding-bottom: 5px;
+}
+
+.diary-entry-card p {
+    margin-bottom: 10px;
+    white-space: pre-wrap; /* Preserve line breaks from textarea */
+}
+
+.diary-entry-card .reply-text {
+    font-style: italic;
+    color: #a34e7a;
+    background: #ffeef2;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-top: 10px;
+    border-left: 4px solid #f7d9e4;
+}
+
+.diary-entry-card .view-entry-btn {
+    background: #e0bfe6;
+    color: #7a3e6a;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+    margin-top: 10px;
+}
+
+.diary-entry-card .view-entry-btn:hover {
+    background: #ecd2ed;
+}
+
+/* Reply Section */
+.reply-section {
+    background: #ffeef2;
+    border: 1px solid #f7d9e4;
+    border-radius: 12px;
+    padding: 15px;
+    margin-top: 20px;
+    color: #a34e7a;
+}
+
+.reply-section h4 {
+    color: #8a4a6b;
+    margin-top: 0;
+}
+
+.reply-section textarea {
+    background: #fff;
+    border: 1px solid #fceaff;
+}
+.reply-section .submit-btn {
+    background: linear-gradient(45deg, #ff9a9e, #fbc2eb);
+    color: white;
+}
+.reply-section .submit-btn:hover {
+    background: linear-gradient(45deg, #ff8a8e, #eac2eb);
+}
+
+
+/* Back Button */
+.back-button-container {
+    text-align: center;
+    margin-top: 30px;
+    padding-bottom: 20px;
+}
+
+.back-btn {
+    background: #d7e2f5;
+    color: #5c3b4c;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 10px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.back-btn:hover {
+    background: #c3d2e6;
+}
+
+/* Miss You Popup */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    display: none;
+}
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    z-index: 1000;
+    font-size: 1.5em;
+    color: #8a4a6b;
+    font-weight: bold;
+    max-width: 80%;
+    animation: zoomIn 0.3s ease-out;
+}
+
+.popup button {
+    background: linear-gradient(45deg, #ff9a9e, #fbc2eb);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 10px;
+    font-size: 1em;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.popup button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Bunny button animation (from original index.html) */
+.bunny-button .bunny-face {
+    display: inline-block; /* Ensure transform applies */
+    transition: transform 0.5s ease-in-out;
+}
+
+.bunny-button .bunny-face.spinning {
+    animation: spin 2s infinite linear;
+}
+
+@keyframes spin {
+    from { transform: rotateY(0deg); }
+    to { transform: rotateY(360deg); }
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInSimple {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes zoomIn {
+    from { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
+    to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+
+/* Media Queries for Responsiveness */
+@media (max-width: 480px) {
+    .login-box { padding: 25px 20px; }
+    .login-box h1 { font-size: 1.5em; }
+    .login-options button { padding: 12px 20px; font-size: 1em; }
+
+    .app-header-info { padding: 10px 15px; font-size: 0.85em; }
+    .logout-btn { padding: 6px 12px; font-size: 0.8em; }
+
+    .main-header h1, .main-header h2 { font-size: 1.8em; margin-bottom: 20px; }
+    .screen { padding: 15px; }
+
+    .options-grid { gap: 15px; }
+    .option-box { 
+        flex-basis: 100%; /* Stack options vertically on very small screens */
+        max-width: none; 
+        font-size: 1em;
+        min-height: 80px;
+    }
+    .option-box.game-choice { font-size: 1.1em; padding: 20px; }
+
+    .pagination-buttons button { padding: 8px 15px; font-size: 0.9em; margin: 0 3px; }
+    .emotion-btn { flex: 1 1 100%; max-width: none; font-size: 1em; padding: 12px 20px; }
+    textarea { min-height: 80px; }
+    .submit-btn { padding: 10px 20px; font-size: 1em; }
+
+    .calendar-nav button { font-size: 1.2em; }
+    #currentMonthYear { font-size: 1.2em; }
+    .calendar-grid div { padding: 8px 3px; font-size: 0.8em; }
+    
+    .popup { font-size: 1.2em; padding: 20px; }
+    .popup button { padding: 10px 20px; font-size: 0.9em; }
+
+    /* No specific changes needed for Naughty Dare as it's already fairly responsive */
+    .game-buttons button { padding: 10px 20px; font-size: 1em; margin: 0 5px; }
+    #todResultArea { min-height: 60px; font-size: 1em; padding: 10px; }
+
+    /* Removed all specific letter hunt responsive styles */
+    /* e.g., #letterHuntTimerDisplay, #letterHuntScoresDisplay, #letterHuntTable media queries */
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+    #homeScreen .options-grid {
+        display: grid; grid-template-columns: repeat(2, 1fr);
+        gap: 20px; max-width: 600px; margin: 0 auto;
+    }
+    #homeScreen .option-box { max-width: none; }
+    #gameSelectionScreen .options-grid.game-options-grid {
+        flex-direction: row; /* Allow side-by-side if space */
+        gap: 20px;
+    }
+    #gameSelectionScreen .option-box.game-choice {
+         min-width: 220px; /* Min width for tablet */
+    }
+}
+
+@media (min-width: 769px) {
+    body { padding: 20px; }
+    #homeScreen .options-grid {
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px; padding: 20px; max-width: none;
+    }
+    #homeScreen .option-box { min-height: 120px; }
+    #gameSelectionScreen .options-grid.game-options-grid {
+        flex-direction: row; /* Force side-by-side */
+        justify-content: center;
+    }
+    #gameSelectionScreen .option-box.game-choice {
+        min-width: 250px;
+    }
+}
