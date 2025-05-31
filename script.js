@@ -1,4 +1,6 @@
 // --- FULLY UPDATED script.js with User Login, Attribution & Reply Functionality ---
+// AND NEW GAMING FEATURES
+
 // IMPORTANT: REPLACE THIS WITH YOUR ACTUAL DEPLOYED WEB APP URL from Google Apps Script
 const scriptURL = 'https://script.google.com/macros/s/AKfycbxMsH6HVLcv0yGQBKZCdOwdAUi9k_Jv4JeIOotqicQlef0mP_mIADlEVbUuzS8pPsZ27g/exec'; // <<< REPLACE WITH YOUR URL
 
@@ -8,7 +10,7 @@ const appContainer = document.getElementById('appContainer');
 const loggedInUserDisplay = document.getElementById('loggedInUserDisplay');
 const dynamicUserNameElements = document.querySelectorAll('.dynamicUserName');
 
-const screens = document.querySelectorAll('.screen');
+const screens = document.querySelectorAll('.screen'); // This will now include game screens
 const feelingsPages = document.querySelectorAll('#feelingsPortalScreen .page');
 const diaryPages = document.querySelectorAll('#diaryScreen .page');
 
@@ -27,7 +29,7 @@ function login(userName) {
         updateUserDisplay();
         loginContainer.style.display = 'none';
         appContainer.style.display = 'block';
-        document.body.style.alignItems = 'flex-start'; // Align app container to top
+        document.body.style.alignItems = 'flex-start'; 
         navigateToApp('homeScreen');
         console.log(`${currentUser} logged in.`);
     } else {
@@ -38,14 +40,12 @@ function login(userName) {
 function logout() {
     currentUser = '';
     localStorage.removeItem(SCRIPT_USER_KEY);
-    updateUserDisplay(); // Clear display
+    updateUserDisplay(); 
     appContainer.style.display = 'none';
     loginContainer.style.display = 'flex';
-    document.body.style.alignItems = 'center'; // Re-center login screen
-    // Ensure all app screens are hidden, login is visible
+    document.body.style.alignItems = 'center'; 
     screens.forEach(screen => screen.classList.remove('active'));
     console.log('User logged out.');
-    // Optionally, navigate to a specific part of login screen if it had pages.
 }
 
 function updateUserDisplay() {
@@ -54,6 +54,10 @@ function updateUserDisplay() {
     }
     dynamicUserNameElements.forEach(el => {
         el.textContent = currentUser || 'User';
+    });
+    // Update dynamic game player names (if elements exist)
+    document.querySelectorAll('.dynamicGamePlayer').forEach(el => {
+        el.textContent = currentGamePlayer || (currentUser || 'Player');
     });
 }
 
@@ -65,7 +69,7 @@ function checkLoginStatus() {
         loginContainer.style.display = 'none';
         appContainer.style.display = 'block';
         document.body.style.alignItems = 'flex-start';
-        navigateToApp('homeScreen'); // Or last visited screen if implemented
+        navigateToApp('homeScreen'); 
     } else {
         appContainer.style.display = 'none';
         loginContainer.style.display = 'flex';
@@ -76,22 +80,25 @@ function checkLoginStatus() {
 
 // --- Main Navigation and Core Functions ---
 function navigateToApp(screenId) {
-    if (!currentUser && screenId !== 'loginScreen') { // loginScreen doesn't exist as a .screen element
+    if (!currentUser && screenId !== 'loginScreen' && !loginContainer.contains(document.getElementById(screenId))) { 
         console.warn('No user logged in. Redirecting to login.');
-        logout(); // This will show the login screen
+        logout(); 
         return;
     }
     screens.forEach(screen => screen.classList.remove('active'));
     const targetScreen = document.getElementById(screenId);
     if (targetScreen) {
         targetScreen.classList.add('active');
+        // Scroll to top of the new screen
+        window.scrollTo(0, 0);
     } else {
         console.error("Screen not found:", screenId);
-        if (currentUser) navigateToApp('homeScreen'); // Fallback for logged-in user
-        else logout(); // Fallback for logged-out user
+        if (currentUser) navigateToApp('homeScreen'); 
+        else logout(); 
         return;
     }
 
+    // Specific initializations for screens
     if (screenId === 'feelingsPortalScreen') {
         navigateToFeelingsPage('feelingsPage1');
     } else if (screenId === 'diaryScreen') {
@@ -99,10 +106,13 @@ function navigateToApp(screenId) {
             renderCalendar(calendarCurrentDate);
             navigateToDiaryPage('diaryCalendarPage');
         });
+    } else if (screenId === 'gameSelectionScreen') {
+        // No specific init needed here beyond showing the screen
     }
+    // Game screen initializations are handled by selectGame()
 }
 
-// --- Hetu's Feelings Portal Functions ---
+// --- Hetu's Feelings Portal Functions --- (Existing code - kept for brevity)
 function navigateToFeelingsPage(pageId, emotion = '') {
     feelingsPages.forEach(page => page.classList.remove('active'));
     const targetPage = document.getElementById(pageId);
@@ -206,7 +216,6 @@ async function fetchAndDisplayFeelingsEntries() {
             table.classList.add('feelings-table');
             const thead = table.createTHead();
             const headerRow = thead.insertRow();
-            // Headers: Date, Submitted By, Emotion, Message, Response
             const headers = ['Date & Time', 'Entry By', 'Emotion', 'Message', 'Response'];
             headers.forEach(text => {
                 const th = document.createElement('th');
@@ -280,8 +289,7 @@ async function fetchAndDisplayFeelingsEntries() {
     }
 }
 
-
-// --- Diary Functions ---
+// --- Diary Functions --- (Existing code - kept for brevity)
 function navigateToDiaryPage(pageId) {
     diaryPages.forEach(page => page.classList.remove('active'));
     const targetPage = document.getElementById(pageId);
@@ -375,7 +383,6 @@ function renderCalendar(date) {
         if (diaryEntries[formattedCellDate]) {
             dayCell.classList.add('has-entry');
             dayCell.title = `${diaryEntries[formattedCellDate].submittedBy || 'Someone'} made an entry.`;
-             // Add user-specific class to calendar day if entry exists
             if (diaryEntries[formattedCellDate].submittedBy) {
                 dayCell.classList.add(`${diaryEntries[formattedCellDate].submittedBy.toLowerCase()}-entry-marker`);
             }
@@ -433,11 +440,10 @@ function viewDiaryEntry(dateString) {
     document.getElementById('viewDiaryDateDisplay').textContent = dateObj.toLocaleDateString('en-US', displayOptions);
     document.getElementById('viewDiaryThoughts').textContent = entry.thoughts || 'No thoughts.';
 
-    // Display who made the entry
     const attributionElement = document.getElementById('diaryEntryAttribution');
     if (attributionElement) {
         attributionElement.innerHTML = `<em>${entry.submittedBy || 'Unknown User'} Made a New entry</em>`;
-        attributionElement.className = 'entry-attribution'; // Reset classes
+        attributionElement.className = 'entry-attribution'; 
         if (entry.submittedBy) {
             attributionElement.classList.add(`${entry.submittedBy.toLowerCase()}-entry`);
         }
@@ -500,7 +506,7 @@ function submitDiaryEntry() {
     formData.append('formType', 'diaryEntry');
     formData.append('date', date);
     formData.append('thoughts', thoughts);
-    formData.append('submittedBy', currentUser); // User attribution
+    formData.append('submittedBy', currentUser); 
 
     const submitBtn = document.querySelector('#diaryEntryPage button[onclick="submitDiaryEntry()"]');
     const originalBtnText = submitBtn.textContent;
@@ -633,8 +639,7 @@ async function fetchAndDisplayAllDiaryEntries() {
     }
 }
 
-
-// --- Submit Reply Function ---
+// --- Submit Reply Function --- (Existing code - kept for brevity)
 async function submitReply(entryType, entryIdentifier, replyMessage, buttonElement) {
     if (!currentUser) { alert('Please log in to reply.'); logout(); return; }
     if (!replyMessage || replyMessage.trim() === "") {
@@ -654,7 +659,7 @@ async function submitReply(entryType, entryIdentifier, replyMessage, buttonEleme
     formData.append('entryType', entryType);
     formData.append('entryIdentifier', entryIdentifier);
     formData.append('replyMessage', replyMessage.trim());
-    formData.append('repliedBy', currentUser); // User attribution for reply
+    formData.append('repliedBy', currentUser); 
 
     const originalButtonText = buttonElement ? buttonElement.textContent : 'Reply 💌';
     if (buttonElement) {
@@ -687,7 +692,6 @@ async function submitReply(entryType, entryIdentifier, replyMessage, buttonEleme
                 fetchAndDisplayAllDiaryEntries();
             }
             const diaryViewPageActive = document.getElementById('diaryViewPage').classList.contains('active');
-            // Check if current view page matches the entryIdentifier for diary entries
             const currentViewingDate = diaryEntries[entryIdentifier] ? entryIdentifier : null; 
             if (diaryViewPageActive && currentViewingDate === entryIdentifier) { 
                  viewDiaryEntry(entryIdentifier); 
@@ -704,28 +708,338 @@ async function submitReply(entryType, entryIdentifier, replyMessage, buttonEleme
     }
 }
 
+// --- GAME VARIABLES & FUNCTIONS ---
+let currentGamePlayer = ''; // 'Prath' or 'Chikoo'
+let player1Name = "Prath";
+let player2Name = "Chikoo";
+
+function getOpponent(player) {
+    return player === player1Name ? player2Name : player1Name;
+}
+
+// Truth or Dare
+const truthQuestions = [
+    "What's your biggest fear?",
+    "What's a secret you've never told anyone?",
+    "What's the most embarrassing thing you've ever done?",
+    "Who is your secret crush?",
+    "What's your dream job?",
+    "If you could travel anywhere, where would you go and why?",
+    "What's one thing you would change about yourself?",
+    "What's the silliest thing that made you cry?",
+    "What's your favorite memory with the other player?",
+    "What's a movie that always makes you cry?"
+];
+const dareTasks = [
+    "Sing a song out loud.",
+    "Do 10 jumping jacks.",
+    "Talk in a funny accent for the next 3 rounds.",
+    "Try to lick your elbow.",
+    "Send a silly selfie to the other player.",
+    "Compliment the other player genuinely.",
+    "Do your best impression of a celebrity.",
+    "Wear socks on your hands for the next round.",
+    "Tell a joke.",
+    "Dance like nobody's watching for 30 seconds."
+];
+let todPlayerTurnDisplay, todResultArea, todNextTurnBtn, getTruthBtn, getDareBtn;
+
+function initTruthOrDare() {
+    todPlayerTurnDisplay = document.querySelector('#truthOrDareScreen .dynamicGamePlayer');
+    todResultArea = document.getElementById('todResultArea');
+    todNextTurnBtn = document.getElementById('todNextTurnBtn');
+    getTruthBtn = document.getElementById('getTruthBtn');
+    getDareBtn = document.getElementById('getDareBtn');
+
+    currentGamePlayer = currentUser; // Logged-in user starts
+    updateTodDisplay();
+    todResultArea.textContent = "Click 'Truth' or 'Dare' to start!";
+    todNextTurnBtn.style.display = 'none';
+    getTruthBtn.style.display = 'inline-block';
+    getDareBtn.style.display = 'inline-block';
+}
+
+function updateTodDisplay() {
+    if(todPlayerTurnDisplay) todPlayerTurnDisplay.textContent = currentGamePlayer;
+}
+
+function getTruth() {
+    const question = truthQuestions[Math.floor(Math.random() * truthQuestions.length)];
+    todResultArea.innerHTML = `<strong>Truth for ${currentGamePlayer}:</strong> ${question}`;
+    todNextTurnBtn.style.display = 'inline-block';
+    getTruthBtn.style.display = 'none';
+    getDareBtn.style.display = 'none';
+}
+
+function getDare() {
+    const dare = dareTasks[Math.floor(Math.random() * dareTasks.length)];
+    todResultArea.innerHTML = `<strong>Dare for ${currentGamePlayer}:</strong> ${dare}`;
+    todNextTurnBtn.style.display = 'inline-block';
+    getTruthBtn.style.display = 'none';
+    getDareBtn.style.display = 'none';
+}
+
+function todNextTurn() {
+    currentGamePlayer = getOpponent(currentGamePlayer);
+    updateTodDisplay();
+    todResultArea.textContent = `${currentGamePlayer}, your turn! Choose Truth or Dare.`;
+    todNextTurnBtn.style.display = 'none';
+    getTruthBtn.style.display = 'inline-block';
+    getDareBtn.style.display = 'inline-block';
+}
+
+// Tic-Tac-Toe
+let tttBoard = ['', '', '', '', '', '', '', '', ''];
+let tttCurrentPlayerSymbol = 'X'; // Prath is X, Chikoo is O
+let tttGameActive = true;
+let tttPlayerTurnDisplay, tttPlayerSymbolDisplay, tttStatusDisplay, tttGridElement;
+
+function initTicTacToe() {
+    tttPlayerTurnDisplay = document.querySelector('#ticTacToeScreen .dynamicGamePlayer');
+    tttPlayerSymbolDisplay = document.getElementById('tttPlayerSymbol');
+    tttStatusDisplay = document.getElementById('tttStatus');
+    tttGridElement = document.getElementById('ticTacToeGrid');
+    
+    resetTicTacToe(); // This will set initial player and render board
+}
+
+function resetTicTacToe() {
+    tttBoard = ['', '', '', '', '', '', '', '', ''];
+    tttGameActive = true;
+    currentGamePlayer = player1Name; // Prath (X) starts
+    tttCurrentPlayerSymbol = 'X';
+    updateTTTDisplay();
+    tttStatusDisplay.textContent = "";
+    renderTTTBoard();
+}
+
+function updateTTTDisplay() {
+    if(tttPlayerTurnDisplay) tttPlayerTurnDisplay.textContent = currentGamePlayer;
+    if(tttPlayerSymbolDisplay) tttPlayerSymbolDisplay.textContent = tttCurrentPlayerSymbol;
+}
+
+function renderTTTBoard() {
+    tttGridElement.innerHTML = '';
+    tttBoard.forEach((cell, index) => {
+        const cellElement = document.createElement('div');
+        cellElement.classList.add('ttt-cell');
+        cellElement.textContent = cell;
+        cellElement.addEventListener('click', () => handleTTTCellClick(index));
+        tttGridElement.appendChild(cellElement);
+    });
+}
+
+function handleTTTCellClick(index) {
+    if (!tttGameActive || tttBoard[index] !== '') return;
+
+    // Only the current player whose turn it is can make a move
+    // And that player must match the current logged-in user to interact
+    if (currentUser !== currentGamePlayer) {
+        alert(`It's ${currentGamePlayer}'s turn!`);
+        return;
+    }
+
+    tttBoard[index] = tttCurrentPlayerSymbol;
+    renderTTTBoard(); // Re-render to show the move
+
+    if (checkTTTWin()) {
+        tttStatusDisplay.textContent = `${currentGamePlayer} (${tttCurrentPlayerSymbol}) wins!`;
+        tttGameActive = false;
+        return;
+    }
+    if (tttBoard.every(cell => cell !== '')) {
+        tttStatusDisplay.textContent = "It's a Draw!";
+        tttGameActive = false;
+        return;
+    }
+
+    // Switch player
+    currentGamePlayer = getOpponent(currentGamePlayer);
+    tttCurrentPlayerSymbol = tttCurrentPlayerSymbol === 'X' ? 'O' : 'X';
+    updateTTTDisplay();
+}
+
+function checkTTTWin() {
+    const winConditions = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+        [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+        [0, 4, 8], [2, 4, 6]  // Diagonals
+    ];
+    return winConditions.some(condition => {
+        const [a, b, c] = condition;
+        return tttBoard[a] && tttBoard[a] === tttBoard[b] && tttBoard[a] === tttBoard[c];
+    });
+}
+
+
+// Rock Paper Scissors
+let rpsPlayer1Choice = null; // Prath's choice
+let rpsPlayer2Choice = null; // Chikoo's choice
+let rpsCurrentTurnPlayer = ''; // Who is currently choosing
+let rpsInfoText, rpsPlayer1Area, rpsP1Name, rpsP1ChoiceDisplay;
+let rpsPlayer2Area, rpsP2Name, rpsP2ChoiceDisplay;
+let rpsResultArea, rpsPlayAgainBtn;
+
+function initRPS() {
+    rpsInfoText = document.getElementById('rpsInfoText');
+    rpsPlayer1Area = document.getElementById('rpsPlayer1Area');
+    rpsP1Name = document.getElementById('rpsP1Name');
+    rpsP1ChoiceDisplay = document.getElementById('rpsP1ChoiceDisplay');
+    rpsPlayer2Area = document.getElementById('rpsPlayer2Area');
+    rpsP2Name = document.getElementById('rpsP2Name');
+    rpsP2ChoiceDisplay = document.getElementById('rpsP2ChoiceDisplay');
+    rpsResultArea = document.getElementById('rpsResultArea');
+    rpsPlayAgainBtn = document.getElementById('rpsPlayAgainBtn');
+
+    resetRPS();
+}
+
+function resetRPS() {
+    rpsPlayer1Choice = null;
+    rpsPlayer2Choice = null;
+    rpsCurrentTurnPlayer = player1Name; // Prath starts
+
+    rpsP1Name.textContent = `${player1Name}'s Turn`;
+    rpsP2Name.textContent = `${player2Name}'s Turn`;
+    
+    updateRPSDisplay();
+    
+    rpsResultArea.style.display = 'none';
+    rpsResultArea.textContent = '';
+    rpsPlayAgainBtn.style.display = 'none';
+
+    rpsP1ChoiceDisplay.style.display = 'none';
+    rpsP1ChoiceDisplay.textContent = '';
+    rpsP2ChoiceDisplay.style.display = 'none';
+    rpsP2ChoiceDisplay.textContent = '';
+}
+
+function updateRPSDisplay() {
+    if (rpsCurrentTurnPlayer === player1Name) {
+        rpsInfoText.innerHTML = `Rock, Paper, Scissors! <strong>${player1Name}</strong>, make your choice.`;
+        rpsPlayer1Area.style.display = 'block';
+        rpsPlayer2Area.style.display = 'none';
+        // Enable P1 buttons if current user is P1
+        rpsPlayer1Area.querySelectorAll('.rps-choice-btn').forEach(btn => btn.disabled = (currentUser !== player1Name));
+
+    } else if (rpsCurrentTurnPlayer === player2Name) {
+        rpsInfoText.innerHTML = `<strong>${player1Name}</strong> has chosen. <strong>${player2Name}</strong>, make your choice.`;
+        rpsPlayer1Area.style.display = 'none'; // Hide P1's choices after selection
+        rpsPlayer2Area.style.display = 'block';
+         // Enable P2 buttons if current user is P2
+        rpsPlayer2Area.querySelectorAll('.rps-choice-btn').forEach(btn => btn.disabled = (currentUser !== player2Name));
+    }
+    // Ensure loggedInUser name is updated if it's part of rpsInfoText and dynamicUserName is used.
+    document.querySelectorAll('#rpsScreen .dynamicUserName').forEach(el => {
+        el.textContent = currentUser || 'User';
+    });
+}
+
+function rpsChoose(choice) {
+    if (currentUser !== rpsCurrentTurnPlayer) {
+        alert(`It's ${rpsCurrentTurnPlayer}'s turn to choose!`);
+        return;
+    }
+
+    if (rpsCurrentTurnPlayer === player1Name) {
+        rpsPlayer1Choice = choice;
+        rpsP1ChoiceDisplay.textContent = `${player1Name} chose ${choice}`; // Keep it hidden for now conceptually
+        rpsP1ChoiceDisplay.style.display = 'block'; // Or show it if not truly blind
+        console.log(`${player1Name} chose: ${choice}`);
+        rpsCurrentTurnPlayer = player2Name;
+    } else if (rpsCurrentTurnPlayer === player2Name) {
+        rpsPlayer2Choice = choice;
+        rpsP2ChoiceDisplay.textContent = `${player2Name} chose ${choice}`;
+        rpsP2ChoiceDisplay.style.display = 'block';
+        console.log(`${player2Name} chose: ${choice}`);
+        determineRPSWinner();
+        rpsCurrentTurnPlayer = null; // Game round over
+    }
+    updateRPSDisplay();
+}
+
+function determineRPSWinner() {
+    rpsResultArea.style.display = 'block';
+    rpsPlayAgainBtn.style.display = 'inline-block';
+    rpsPlayer1Area.style.display = 'none'; // Hide choice buttons
+    rpsPlayer2Area.style.display = 'none'; // Hide choice buttons
+
+    // Make choices visible
+    rpsP1ChoiceDisplay.style.display = 'block';
+    rpsP2ChoiceDisplay.style.display = 'block';
+
+
+    if (rpsPlayer1Choice === rpsPlayer2Choice) {
+        rpsResultArea.textContent = `It's a TIE! Both chose ${rpsPlayer1Choice}.`;
+    } else if (
+        (rpsPlayer1Choice === "Rock" && rpsPlayer2Choice === "Scissors") ||
+        (rpsPlayer1Choice === "Paper" && rpsPlayer2Choice === "Rock") ||
+        (rpsPlayer1Choice === "Scissors" && rpsPlayer2Choice === "Paper")
+    ) {
+        rpsResultArea.textContent = `${player1Name} wins! ${rpsPlayer1Choice} beats ${rpsPlayer2Choice}.`;
+    } else {
+        rpsResultArea.textContent = `${player2Name} wins! ${rpsPlayer2Choice} beats ${rpsPlayer1Choice}.`;
+    }
+    rpsInfoText.textContent = "Round Over!";
+}
+
+// Game Selection
+function selectGame(gameName) {
+    if (!currentUser) {
+        alert('Please log in first.');
+        logout();
+        return;
+    }
+    console.log(`Game selected: ${gameName}. Current user: ${currentUser}. Players: ${player1Name}, ${player2Name}`);
+
+    switch (gameName) {
+        case 'TruthOrDare':
+            navigateToApp('truthOrDareScreen');
+            initTruthOrDare();
+            break;
+        case 'TicTacToe':
+            navigateToApp('ticTacToeScreen');
+            initTicTacToe();
+            break;
+        case 'RPS':
+            navigateToApp('rpsScreen');
+            initRPS();
+            break;
+        case 'Ludo':
+            navigateToApp('ludoScreen');
+            // Placeholder, no init logic for full game yet
+            break;
+        case 'Uno':
+            navigateToApp('unoScreen');
+            // Placeholder, no init logic for full game yet
+            break;
+        default:
+            alert('Selected game is not available yet.');
+            navigateToApp('gameSelectionScreen');
+    }
+}
+
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
     if (scriptURL.includes('YOUR_SCRIPT_ID_HERE') || scriptURL === '') {
         console.warn('⚠️ IMPORTANT: Please update the scriptURL in script.js with your Google Apps Script web app URL.');
-        // No alert here, login screen will be shown by default.
     }
     
-    checkLoginStatus(); // Check login status and navigate accordingly
+    checkLoginStatus(); 
     
     const prevMonthBtn = document.getElementById('prevMonthBtn');
     const nextMonthBtn = document.getElementById('nextMonthBtn');
 
     if (prevMonthBtn) {
         prevMonthBtn.addEventListener('click', () => {
-            if (!currentUser) return; // Prevent action if not logged in
+            if (!currentUser) return; 
             calendarCurrentDate.setMonth(calendarCurrentDate.getMonth() - 1);
             fetchDiaryEntries().then(() => renderCalendar(calendarCurrentDate));
         });
     }
     if (nextMonthBtn) {
         nextMonthBtn.addEventListener('click', () => {
-            if (!currentUser) return; // Prevent action if not logged in
+            if (!currentUser) return; 
             calendarCurrentDate.setMonth(calendarCurrentDate.getMonth() + 1);
             fetchDiaryEntries().then(() => renderCalendar(calendarCurrentDate));
         });
