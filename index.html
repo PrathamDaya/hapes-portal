@@ -1,1 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For my Hetu</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="loginContainer">
+        <div class="login-box">
+            <h1>Welcome! Who are you?</h1>
+            <div class="login-options">
+                <button class="chikoo-btn" onclick="login('Chikoo')">I am Chikoo 🐰</button>
+                <button class="prath-btn" onclick="login('Prath')">I am Prath 🐼</button>
+            </div>
+        </div>
+    </div>
 
+    <div id="appContainer">
+        <div class="app-header-info">
+            <span id="loggedInUserDisplay">User: Not logged in</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+
+        <section id="homeScreen" class="screen active">
+            <header class="main-header">
+                <h1>For my Hetu</h1>
+            </header>
+            <main class="options-grid">
+                <div class="option-box main-option" onclick="navigateToApp('feelingsPortalScreen')">
+                    💖 Hetu's Feelings Portal 💖
+                </div>
+                <div class="option-box main-option" onclick="navigateToApp('diaryScreen')">
+                    📅 Hetu's Diary 📅
+                </div>
+                <div class="option-box main-option game-option" onclick="navigateToApp('gameSelectionScreen')">
+                    🎮 Fun Games for Us! 🎮
+                </div>
+                <div class="option-box main-option action-option" onclick="showMissYouPopup()">
+                    🐰 Send a Miss You! 💖
+                </div>
+            </main>
+        </section>
+
+        <section id="gameSelectionScreen" class="screen">
+            <header class="main-header">
+                <h2>Choose a Game!</h2>
+            </header>
+            <main class="options-grid game-options-grid">
+                <div class="option-box game-choice" onclick="selectGame('TruthOrDare')">
+                    😈 Naughty Dare 😈
+                </div>
+                </main>
+            <div class="back-button-container">
+                <button class="back-btn" onclick="navigateToApp('homeScreen')">Back to Home</button>
+            </div>
+        </section>
+
+        <section id="truthOrDareScreen" class="screen">
+            <header class="main-header">
+                <h2>😈 Naughty Dare 😈</h2>
+            </header>
+            <main class="game-content">
+                <p>Current Player: <span class="dynamicGamePlayer"></span></p>
+                <div id="todResultArea" class="game-result-area"></div>
+                <div class="game-buttons">
+                    <button id="getDareBtn" onclick="getDare()">Get Dare!</button>
+                    <button id="todNextTurnBtn" style="display: none;" onclick="dareNextTurn()">Next Player's Turn</button>
+                </div>
+            </main>
+            <div class="back-button-container">
+                <button class="back-btn" onclick="navigateToApp('gameSelectionScreen')">Back to Games</button>
+            </div>
+        </section>
+
+        <section id="feelingsPortalScreen" class="screen">
+            <header class="main-header">
+                <h2>💖 Hetu's Feelings Portal 💖</h2>
+            </header>
+            <main class="portal-content">
+                <div class="pagination-buttons">
+                    <button onclick="navigateToFeelingsPage('feelingsPage1')">Page 1</button>
+                    <button onclick="navigateToFeelingsPage('feelingsPage2')">Page 2</button>
+                </div>
+
+                <div id="feelingsPage1" class="page active-page">
+                    <h3>How are you feeling, <span class="dynamicUserName"></span>?</h3>
+                    <div class="emotion-options">
+                        <button class="emotion-btn" onclick="navigateToFeelingsPage('feelingsPage2', 'Happy')">😊 Happy</button>
+                        <button class="emotion-btn" onclick="navigateToFeelingsPage('feelingsPage2', 'Loved')">🥰 Loved</button>
+                        <button class="emotion-btn" onclick="navigateToFeelingsPage('feelingsPage2', 'Missed')">🥺 Missed</button>
+                        <button class="emotion-btn" onclick="navigateToFeelingsPage('feelingsPage2', 'Excited')">🤩 Excited</button>
+                        <button class="emotion-btn" onclick="navigateToFeelingsPage('feelingsPage2', 'Relaxed')">😌 Relaxed</button>
+                        <button class="emotion-btn" onclick="navigateToFeelingsPage('feelingsPage2', 'Grumpy')">😠 Grumpy</button>
+                        <button class="emotion-btn" onclick="navigateToFeelingsPage('feelingsPage2', 'Sad')">😔 Sad</button>
+                        <button class="emotion-btn" onclick="navigateToFeelingsPage('feelingsPage2', 'Anxious')">😟 Anxious</button>
+                    </div>
+                </div>
+
+                <div id="feelingsPage2" class="page">
+                    <h3>Tell me more about feeling <span id="selectedEmotionDisplay"></span>...</h3>
+                    <textarea id="feelingsEntryText" rows="5" placeholder="Elaborate here..."></textarea>
+                    <button class="submit-btn" onclick="submitFeelingsEntry()">Submit Feelings</button>
+                </div>
+            </main>
+            <div class="back-button-container">
+                <button class="back-btn" onclick="navigateToApp('homeScreen')">Back to Home</button>
+            </div>
+        </section>
+
+        <section id="diaryScreen" class="screen">
+            <header class="main-header">
+                <h2>📅 Hetu's Diary 📅</h2>
+            </header>
+            <main class="diary-content">
+                <div class="pagination-buttons">
+                    <button onclick="navigateToDiaryPage('diaryCalendarPage')">Calendar</button>
+                    <button onclick="navigateToDiaryPage('diaryEntryPage')">New Entry</button>
+                    <button onclick="navigateToDiaryPage('diaryViewAllPage')">View All</button>
+                </div>
+
+                <div id="diaryCalendarPage" class="page active-page">
+                    <div class="calendar-nav">
+                        <button id="prevMonthBtn">←</button>
+                        <h3 id="currentMonthYear"></h3>
+                        <button id="nextMonthBtn">→</button>
+                    </div>
+                    <div class="calendar-grid" id="diaryCalendarGrid">
+                        </div>
+                </div>
+
+                <div id="diaryEntryPage" class="page">
+                    <h3>Write a new entry for <span id="currentDiaryDateDisplay"></span></h3>
+                    <textarea id="diaryEntryText" rows="10" placeholder="What's on your mind today, my love?"></textarea>
+                    <button class="submit-btn" onclick="submitDiaryEntry()">Save Entry</button>
+                </div>
+
+                <div id="diaryViewEntryPage" class="page">
+                    <h3 id="viewEntryDate"></h3>
+                    <p id="viewEntryText"></p>
+                    <div class="reply-section">
+                        <h4>Reply from <span class="dynamicUserName"></span>:</h4>
+                        <textarea id="replyDiaryText" rows="3" placeholder="Write your reply..."></textarea>
+                        <button class="submit-btn" onclick="submitReply('diary', currentViewedDiaryEntryId, document.getElementById('replyDiaryText').value, this)">Send Reply</button>
+                    </div>
+                    <p id="viewEntryReply"></p>
+                </div>
+
+                <div id="diaryViewAllPage" class="page">
+                    <h3>All Diary Entries:</h3>
+                    <div id="allDiaryEntriesContainer">
+                        </div>
+                </div>
+            </main>
+            <div class="back-button-container">
+                <button class="back-btn" onclick="navigateToApp('homeScreen')">Back to Home</button>
+            </div>
+        </section>
+
+        <div id="overlay" class="overlay" style="display:none;" onclick="closeMissYouPopup()"></div>
+        <div id="missYouPopup" class="popup" style="display:none;">
+            <p id="missYouMessage"></p>
+            <button onclick="closeMissYouPopup()">OK</button>
+        </div>
+
+    </div>
+
+    <script>
+        // Inline script for Miss You Popup (as it was in your original index.html)
+        document.addEventListener('DOMContentLoaded', function() {
+            const gameOptionBox = document.querySelector('.main-option.game-option');
+            gameOptionBox.addEventListener('click', function() {
+                console.log('Navigating to game options...');
+            });
+
+            const missYouMessages = [
+                "I love you my chikoo! 🥰",
+                "Sending virtual huggies 🤗 to my darling!",
+                "Sending virtual kissy 😘 to my darling!",
+                "Pratham misses you too! ❤️", 
+                "Thinking of you, always! ✨",
+                "You're the best! 💖"
+            ];
+
+            function showMissYouPopup() {
+                const bunnyFace = document.querySelector('.bunny-button .bunny-face');
+                bunnyFace.classList.add('spinning'); 
+
+                setTimeout(() => {
+                    bunnyFace.classList.remove('spinning');
+                    
+                    let message = missYouMessages[Math.floor(Math.random() * missYouMessages.length)];
+                    
+                    if (typeof currentUser !== 'undefined' && message === "Pratham misses you too! ❤️") {
+                        message = (currentUser === 'Chikoo') ? "Pratham misses you too! ❤️" : "Chikoo misses you too! ❤️";
+                    }
+
+                    document.getElementById('missYouMessage').innerHTML = message;
+                    document.getElementById('missYouPopup').style.display = 'block';
+                    document.getElementById('overlay').style.display = 'block';
+                }, 2000);
+            }
+
+            function closeMissYouPopup() {
+                document.getElementById('missYouPopup').style.display = 'none';
+                document.getElementById('overlay').style.display = 'none';
+            }
+
+            // Make these functions globally accessible if they aren't already
+            window.showMissYouPopup = showMissYouPopup;
+            window.closeMissYouPopup = closeMissYouPopup;
+        });
+    </script>
+    <script src="script.js"></script>
+</body>
+</html>
