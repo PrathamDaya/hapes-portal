@@ -1,5 +1,5 @@
 // --- FULLY UPDATED script.js with User Login, Attribution & Reply Functionality ---
-// AND REFACTORED GAMING FEATURES
+// AND REFACTORED GAMING FEATURES (Modified for Naughty Dare only, no Letter Hunt)
 
 const scriptURL = 'https://script.google.com/macros/s/AKfycbxMsH6HVLcv0yGQBKZCdOwdAUi9k_Jv4JeIOotqicQlef0mP_mIADlEVbUuzS8pPsZ27g/exec'; // <<< YOUR URL
 
@@ -82,7 +82,7 @@ function navigateToApp(screenId) {
     }
     screens.forEach(screen => screen.classList.remove('active'));
     const targetScreen = document.getElementById(screenId);
-    if (targetScreen) {
+    if (targetTargetScreen) {
         targetScreen.classList.add('active');
         window.scrollTo(0, 0);
     } else {
@@ -99,9 +99,8 @@ function navigateToApp(screenId) {
             renderCalendar(calendarCurrentDate);
             navigateToDiaryPage('diaryCalendarPage');
         });
-    } else if (screenId === 'letterHuntScreen') { // Initialize when navigating to the game
-        initLetterHuntGame();
     }
+    // Removed Letter Hunt initialization here
 }
 
 // --- Feelings Portal & Diary Functions --- ( 그대로 유지 - For Brevity, not shown here, but they are in your original script.js)
@@ -128,297 +127,75 @@ function getOpponent(player) {
     return player === player1Name ? player2Name : player1Name;
 }
 
-// --- Truth or Dare (Updated Content) ---
-const truthQuestions = [
-  "What's your biggest turn-on that you'd love me to try?",
-  "Have you ever had a sexy dream about me? What happened?",
-  "What’s one fantasy you’ve never told anyone but want to try with me?",
-  "What’s the naughtiest thing you’ve done in a public place?",
-  "What part of my body would you like to kiss right now?",
-  "Describe in detail how you'd seduce me tonight.",
-  "What’s your favorite memory of us being intimate?",
-  "If I gave you one night to be as wild as you want, what would you do?",
-  "What outfit of mine do you secretly fantasize about?",
-  "Have you ever thought about me in the shower? What did you imagine?",
-  "What's a secret spot that makes you melt when touched?",
-  "Would you rather a slow romantic night or a wild passionate one?",
-  "Have you ever touched yourself thinking of me?",
-  "Tell me your guilty pleasure when it comes to intimacy.",
-  "What’s something naughty you’ve always wanted to do but haven’t yet?",
-  "How do you like to be kissed?",
-  "Have you ever faked pleasure? Why?",
-  "What’s your wildest bedroom experience so far?",
-  "Would you rather tease or be teased?",
-  "What’s one thing I do that drives you crazy in bed?",
-  "What's your biggest secret you've never told anyone?",
-  "What word or phrase turns you on instantly?",
-  "Have you ever imagined us being intimate in a risky place?",
-  "If you could only use your mouth or hands to please me—what would you pick?",
-  "What's one thing you want me to do to you right now?",
-  "Have you ever had a crush on someone else while being with me? Be honest!",
-  "Tell me your favorite type of foreplay.",
-  "What's a roleplay scenario you'd try with me?",
-  "If I gave you one hour to dominate me, what would you do?",
-  "What's one sound I make that you love hearing in bed?"
-];
-
+// --- Naughty Dare ---
 const dareTasks = [
-  "Whisper something seductive in my ear—no holding back.",
-  "Give me a slow, teasing kiss somewhere *other* than the lips.",
-  "Use your hands to show me where you'd like to be touched.",
-  "Lick your lips and tell me what you'd do if you had 10 minutes alone with me.",
-  "Close your eyes and let me kiss you wherever I choose for 20 seconds.",
-  "Reenact your hottest fantasy with me as your partner—keep it PG-13... or not.",
-  "Take off one piece of clothing (socks don’t count!).",
-  "Give me a 30-second massage, but only using your lips.",
-  "Show me your sexiest look or pose—hold it for 10 seconds.",
-  "Let me blindfold you and surprise you with a kiss somewhere you wouldn’t expect.",
-  "Do a body-tracing kiss from my neck to my waistline.",
-  "Send me a naughty voice note—right now.",
-  "Act out a slow-motion striptease for 30 seconds.",
-  "Sit on my lap and whisper your wildest fantasy.",
-  "Pick a spot on your body for me to kiss and guide me there.",
-  "Make up a sexy nickname for me and use it in a sentence.",
-  "Give me a lap dance to a song of your choice.",
-  "Moan my name like you would during your most intense moment.",
-  "Use a piece of ice to tease my neck or lips.",
-  "Ask me a seductive question, and if I blush—you win.",
-  "Write a short naughty story that includes us and read it aloud.",
-  "Kiss me in five different places you’ve never kissed before.",
-  "Touch me blindfolded and guess which body part you're feeling.",
-  "Give me a playful 'punishment' of your choice.",
-  "Record a short video saying what you'd do to me if we were alone on vacation.",
-  "Do 10 slow squats while maintaining eye contact with me.",
-  "Trace a heart on my skin using only your tongue.",
-  "Act like you're trying to seduce me at a bar. Roleplay it!",
-  "Whisper the alphabet in my ear seductively.",
-  "Let me tickle you in one spot of my choice for 20 seconds."
+  "Lift your shirt and let me admire or kiss your chest—no touching below the belt.",
+  "Sit on my lap and grind for 1 minute—clothes stay on.",
+  "Kiss my neck, chest, and ears passionately for 1 full minute.",
+  "Describe how you’d touch me if clothes weren’t in the way—be detailed.",
+  "Use your hands to show me where you want to be kissed—over clothes only.",
+  "Give me a teasing lap dance—no undressing allowed.",
+  "Moan my name softly in my ear while lightly stroking my chest or thighs (outside clothing).",
+  "Pretend to undress me slowly—without actually removing anything.",
+  "Blindfold me and tease me with your breath and lips—only above the waist.",
+  "Let me feel your heartbeat—guide my hand under your shirt (but over a bra).",
+  "Roleplay you're trying to seduce me at a party—touch me like you mean it, over clothes.",
+  "Whisper your favorite way of being touched—while slowly stroking my arm or neck.",
+  "Use a feather or soft object to trace my chest and thighs—outside clothing only.",
+  "Tease me by kissing just around my lips—but no actual kiss for 30 seconds.",
+  "Slide your hand slowly over my body—over clothing only—but maintain strong eye contact.",
+  "Tell me a dirty fantasy—but one we can do *with our clothes on*.",
+  "Act like you're turned on—without saying a word. Let your body do the talking.",
+  "Get on top of me and slowly move—just to tease, no actual grinding.",
+  "Use only your mouth to send shivers down my neck and collarbone.",
+  "Let me lie down and place your hands where you'd want to be touched—over clothes.",
+  "Kiss me on five different places (above the waist) while I keep my eyes closed.",
+  "Touch yourself over your clothes while describing what you want me to do to you.",
+  "Show me your 'pleasure face'—then explain what causes it.",
+  "Put on your sexiest look, lean in close, and say what you want me to do (fully clothed).",
+  "Trace my body with your hands slowly—start from shoulders down to thighs.",
+  "Let me lightly spank you—just once, fully clothed.",
+  "Record a 10-second audio of you saying something seductive—and let me keep it.",
+  "Give me a body tour: point and say what each part craves (touch over clothes only).",
+  "Get as close as possible to my lips without kissing me. Hold for 30 seconds.",
+  "Lay on top of me fully clothed and describe what you'd do if there were no clothes between us."
 ];
 
-let todPlayerTurnDisplay, todResultArea, todNextTurnBtn, getTruthBtn, getDareBtn;
+let darePlayerTurnDisplay, dareResultArea, dareNextTurnBtn, getDareBtn; // Renamed variables for clarity
 
-function initTruthOrDare() {
-    todPlayerTurnDisplay = document.querySelector('#truthOrDareScreen .dynamicGamePlayer');
-    todResultArea = document.getElementById('todResultArea');
-    todNextTurnBtn = document.getElementById('todNextTurnBtn');
-    getTruthBtn = document.getElementById('getTruthBtn');
-    getDareBtn = document.getElementById('getDareBtn');
+function initNaughtyDare() { // Renamed function
+    darePlayerTurnDisplay = document.querySelector('#truthOrDareScreen .dynamicGamePlayer'); // Assuming screen ID remains 'truthOrDareScreen' for now
+    dareResultArea = document.getElementById('todResultArea'); // Assuming element ID remains 'todResultArea'
+    dareNextTurnBtn = document.getElementById('todNextTurnBtn'); // Assuming element ID remains 'todNextTurnBtn'
+    getDareBtn = document.getElementById('getDareBtn'); // Assuming element ID remains 'getDareBtn'
 
     currentGamePlayer = currentUser; 
-    updateTodDisplay();
-    todResultArea.textContent = "Click 'Truth' or 'Dare' to start!";
-    todNextTurnBtn.style.display = 'none';
-    getTruthBtn.style.display = 'inline-block';
+    updateDareDisplay(); // Renamed function
+    dareResultArea.textContent = "Click 'Get Dare' to start!";
+    dareNextTurnBtn.style.display = 'none';
     getDareBtn.style.display = 'inline-block';
 }
 
-function updateTodDisplay() {
-    if(todPlayerTurnDisplay) todPlayerTurnDisplay.textContent = currentGamePlayer;
-}
-
-function getTruth() {
-    const question = truthQuestions[Math.floor(Math.random() * truthQuestions.length)];
-    todResultArea.innerHTML = `<strong>Truth for ${currentGamePlayer}:</strong> ${question}`;
-    todNextTurnBtn.style.display = 'inline-block';
-    getTruthBtn.style.display = 'none';
-    getDareBtn.style.display = 'none';
+function updateDareDisplay() { // Renamed function
+    if(darePlayerTurnDisplay) darePlayerTurnDisplay.textContent = currentGamePlayer;
 }
 
 function getDare() {
     const dare = dareTasks[Math.floor(Math.random() * dareTasks.length)];
-    todResultArea.innerHTML = `<strong>Dare for ${currentGamePlayer}:</strong> ${dare}`;
-    todNextTurnBtn.style.display = 'inline-block';
-    getTruthBtn.style.display = 'none';
+    dareResultArea.innerHTML = `<strong>Dare for ${currentGamePlayer}:</strong> ${dare}`;
+    dareNextTurnBtn.style.display = 'inline-block';
     getDareBtn.style.display = 'none';
 }
 
-function todNextTurn() {
+function dareNextTurn() { // Renamed function
     currentGamePlayer = getOpponent(currentGamePlayer);
-    updateTodDisplay();
-    todResultArea.textContent = `${currentGamePlayer}, your turn! Choose Truth or Dare.`;
-    todNextTurnBtn.style.display = 'none';
-    getTruthBtn.style.display = 'inline-block';
+    updateDareDisplay(); // Renamed function
+    dareResultArea.textContent = `${currentGamePlayer}, your turn! Click 'Get Dare' for your next challenge.`;
+    dareNextTurnBtn.style.display = 'none';
     getDareBtn.style.display = 'inline-block';
 }
 
-
-// --- Letter Item Hunt Game ---
-let letterHuntGameActive = false;
-let letterHuntTimeLeft = 300; // 5 minutes in seconds (300 seconds)
-let letterHuntTimerInterval;
-let letterHuntScores = { Prath: 0, Chikoo: 0 };
-let claimedLetters = {}; // e.g., {'A': 'Prath'}
-const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
-
-let letterHuntTimerDisplayEl, letterHuntStartBtnEl, letterHuntEndEarlyBtnEl;
-let prathScoreLHEl, chikooScoreLHEl, letterHuntStatusEl, letterHuntTableBodyEl, letterHuntPlayAgainBtnEl;
-
-function initLetterHuntGame() {
-    letterHuntTimerDisplayEl = document.getElementById('letterHuntTimerDisplay');
-    letterHuntStartBtnEl = document.getElementById('letterHuntStartBtn');
-    letterHuntEndEarlyBtnEl = document.getElementById('letterHuntEndEarlyBtn');
-    prathScoreLHEl = document.getElementById('prathScoreLH');
-    chikooScoreLHEl = document.getElementById('chikooScoreLH');
-    letterHuntStatusEl = document.getElementById('letterHuntStatus');
-    letterHuntTableBodyEl = document.querySelector('#letterHuntTable tbody');
-    letterHuntPlayAgainBtnEl = document.getElementById('letterHuntPlayAgainBtn');
-
-    letterHuntGameActive = false;
-    letterHuntTimeLeft = 300; 
-    letterHuntScores = { Prath: 0, Chikoo: 0 };
-    claimedLetters = {};
-    
-    if (letterHuntTimerInterval) clearInterval(letterHuntTimerInterval);
-
-    updateLetterHuntTimerDisplay();
-    updateLetterHuntScoreDisplay();
-    renderLetterHuntTable();
-
-    letterHuntStatusEl.textContent = "Ready to hunt for letters?";
-    letterHuntStartBtnEl.style.display = 'inline-block';
-    letterHuntEndEarlyBtnEl.style.display = 'none';
-    letterHuntPlayAgainBtnEl.style.display = 'none';
-    
-    // Ensure table checkboxes are initially disabled if rendered before game start
-    letterHuntTableBodyEl.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.disabled = true);
-}
-
-function renderLetterHuntTable() {
-    if (!letterHuntTableBodyEl) return;
-    letterHuntTableBodyEl.innerHTML = ''; // Clear previous table
-
-    alphabet.forEach(letter => {
-        const row = letterHuntTableBodyEl.insertRow();
-        const cellLetter = row.insertCell();
-        const cellPrath = row.insertCell();
-        const cellChikoo = row.insertCell();
-
-        cellLetter.textContent = letter;
-        
-        const checkboxPrath = document.createElement('input');
-        checkboxPrath.type = 'checkbox';
-        checkboxPrath.dataset.player = player1Name;
-        checkboxPrath.dataset.letter = letter;
-        checkboxPrath.disabled = true; // Disabled until game starts
-        checkboxPrath.onchange = function() { handleLetterClaim(this); };
-        cellPrath.appendChild(checkboxPrath);
-
-        const checkboxChikoo = document.createElement('input');
-        checkboxChikoo.type = 'checkbox';
-        checkboxChikoo.dataset.player = player2Name;
-        checkboxChikoo.dataset.letter = letter;
-        checkboxChikoo.disabled = true; // Disabled until game starts
-        checkboxChikoo.onchange = function() { handleLetterClaim(this); };
-        cellChikoo.appendChild(checkboxChikoo);
-    });
-}
-
-function startLetterHuntGame() {
-    letterHuntGameActive = true;
-    letterHuntTimeLeft = 300; // Reset timer
-    letterHuntScores = { Prath: 0, Chikoo: 0 }; // Reset scores
-    claimedLetters = {}; // Reset claimed letters
-    
-    initLetterHuntGame(); // Re-initialize to reset table state and scores display
-
-    letterHuntStatusEl.textContent = "Game On! Find those items!";
-    letterHuntStartBtnEl.style.display = 'none';
-    letterHuntEndEarlyBtnEl.style.display = 'inline-block';
-    letterHuntPlayAgainBtnEl.style.display = 'none';
-
-
-    // Enable checkboxes
-    letterHuntTableBodyEl.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-        cb.disabled = false;
-        cb.checked = false; // Ensure they are unchecked
-    });
-
-    updateLetterHuntTimerDisplay(); // Show initial time
-    letterHuntTimerInterval = setInterval(letterHuntTimerTick, 1000);
-}
-
-function letterHuntTimerTick() {
-    letterHuntTimeLeft--;
-    updateLetterHuntTimerDisplay();
-    if (letterHuntTimeLeft <= 0) {
-        endLetterHuntGame();
-    }
-}
-
-function updateLetterHuntTimerDisplay() {
-    const minutes = Math.floor(letterHuntTimeLeft / 60);
-    const seconds = letterHuntTimeLeft % 60;
-    if (letterHuntTimerDisplayEl) {
-        letterHuntTimerDisplayEl.textContent = `Time Left: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    }
-}
-
-function handleLetterClaim(checkboxElement) {
-    if (!letterHuntGameActive) {
-        checkboxElement.checked = false; // Revert check if game not active
-        return;
-    }
-
-    const letter = checkboxElement.dataset.letter;
-    const player = checkboxElement.dataset.player;
-
-    if (currentUser !== player) {
-        alert("It's not your turn to claim, or you are not logged in as this player!");
-        checkboxElement.checked = false; // Revert if not the current user
-        return;
-    }
-
-    if (claimedLetters[letter]) {
-        // This letter is already claimed, this should ideally not happen if checkboxes are disabled correctly
-        // but as a safeguard:
-        if (claimedLetters[letter] !== player) { // If claimed by opponent
-             alert(`Letter ${letter} already claimed by ${claimedLetters[letter]}!`);
-        }
-        checkboxElement.checked = (claimedLetters[letter] === player); // Ensure it reflects actual claim state
-        return;
-    }
-
-    claimedLetters[letter] = player;
-    letterHuntScores[player]++;
-    updateLetterHuntScoreDisplay();
-
-    // Disable both checkboxes for this letter
-    document.querySelector(`input[data-letter="${letter}"][data-player="${player1Name}"]`).disabled = true;
-    document.querySelector(`input[data-letter="${letter}"][data-player="${player2Name}"]`).disabled = true;
-    
-    // Ensure the clicked checkbox remains checked (it should be by default, but good to be explicit)
-    checkboxElement.checked = true; 
-    letterHuntStatusEl.textContent = `${player} claimed letter ${letter}!`;
-}
-
-function updateLetterHuntScoreDisplay() {
-    if (prathScoreLHEl) prathScoreLHEl.textContent = letterHuntScores.Prath;
-    if (chikooScoreLHEl) chikooScoreLHEl.textContent = letterHuntScores.Chikoo;
-}
-
-function endLetterHuntGame(early = false) {
-    letterHuntGameActive = false;
-    clearInterval(letterHuntTimerInterval);
-
-    let WinnerText = "Time's up! ";
-    if (early) WinnerText = "Game ended early! ";
-
-    if (letterHuntScores.Prath > letterHuntScores.Chikoo) {
-        WinnerText += `${player1Name} wins!`;
-    } else if (letterHuntScores.Chikoo > letterHuntScores.Prath) {
-        WinnerText += `${player2Name} wins!`;
-    } else {
-        WinnerText += "It's a tie!";
-    }
-    letterHuntStatusEl.textContent = `${WinnerText} Final Scores - Prath: ${letterHuntScores.Prath}, Chikoo: ${letterHuntScores.Chikoo}`;
-
-    // Disable all checkboxes
-    if (letterHuntTableBodyEl) {
-        letterHuntTableBodyEl.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.disabled = true);
-    }
-    letterHuntEndEarlyBtnEl.style.display = 'none';
-    letterHuntPlayAgainBtnEl.style.display = 'inline-block';
-}
+// Removed all Letter Hunt Game functions and variables.
 
 
 // Game Selection
@@ -431,13 +208,9 @@ function selectGame(gameName) {
     console.log(`Game selected: ${gameName}. Current user: ${currentUser}.`);
 
     switch (gameName) {
-        case 'TruthOrDare':
+        case 'TruthOrDare': // Kept the name for now, but it's "Naughty Dare" in functionality
             navigateToApp('truthOrDareScreen');
-            initTruthOrDare();
-            break;
-        case 'LetterHunt':
-            navigateToApp('letterHuntScreen');
-            // initLetterHuntGame() is called by navigateToApp if screenId is 'letterHuntScreen'
+            initNaughtyDare(); // Call the renamed init function
             break;
         default:
             alert('Selected game is not available yet.');
