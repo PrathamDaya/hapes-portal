@@ -193,6 +193,23 @@ body {
     min-height: 100px;
 }
 
+/* New Couple Dare Button Style */
+.couple-dare-btn {
+    background: linear-gradient(45deg, #ff6b6b, #d90000); /* Fiery red gradient */
+    color: white;
+    border: 1px solid #cc0000;
+    box-shadow: 0 8px 20px rgba(255, 0, 0, 0.2);
+    font-size: clamp(1.2em, 4.5vw, 1.5em);
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.couple-dare-btn:hover {
+    background: linear-gradient(45deg, #d90000, #ff6b6b);
+    box-shadow: 0 12px 25px rgba(255, 0, 0, 0.3);
+}
+
+
 #homeScreen .main-footer, .portal-footer {
     text-align: center;
     margin-top: 30px;
@@ -409,23 +426,30 @@ button:disabled {
 /* Ensure specific emotion button styles from HTML are maintained or enhanced */
 .option-box.grievance,
 #feelingsPortalScreen .option-box.grievance { 
-    background-color: #ffebf0; color: #c51162; border-color: #ffcdd2; 
+    background-color: #ffebf0;
+    color: #c51162;
+    border-color: #ffcdd2;
     /* Re-apply original stronger style if preferred, or keep this softer version */
     /* font-size: 1.4em; padding: 30px; min-height: 120px; */
 }
 .option-box.appreciate,
-#feelingsPortalScreen .option-box.appreciate { 
-    background-color: #e8f5e9; color: #2e7d32; border-color: #c8e6c9; 
+#feelingsPortalScreen .option-box.appreciate {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border-color: #c8e6c9;
 }
 .option-box.sad,
-#feelingsPortalScreen .option-box.sad { 
-    background-color: #e3f2fd; color: #1565c0; border-color: #bbdefb; 
+#feelingsPortalScreen .option-box.sad {
+    background-color: #e3f2fd;
+    color: #1565c0;
+    border-color: #bbdefb;
 }
 .option-box.happy,
-#feelingsPortalScreen .option-box.happy { 
-    background-color: #fff8e1; color: #ff8f00; border-color: #ffecb3; 
+#feelingsPortalScreen .option-box.happy {
+    background-color: #fff8e1;
+    color: #ff8f00;
+    border-color: #ffecb3;
 }
-
 /* Using the larger, more distinct styles from HTML for feeling options */
 #feelingsPortalScreen .option-box.grievance,
 #feelingsPortalScreen .option-box.appreciate,
@@ -435,8 +459,6 @@ button:disabled {
     padding: 30px;
     min-height: 120px;
 }
-
-
 #feelingsPortalScreen .option-box:hover,
 #feelingsPortalScreen .option-box:active {
     transform: translateY(-3px) scale(1.01);
@@ -477,548 +499,462 @@ button:disabled {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    opacity: 0;
-    animation: messageBoxRise 1.5s 0.5s forwards;
-    max-width: 140px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     z-index: 1;
+    max-width: 80%; /* Ensure it doesn't overflow container */
 }
 
 @keyframes bounceIn {
-    0% { transform: scale(0); opacity: 0; }
-    50% { transform: scale(1.2); opacity: 1; }
+    0% { transform: scale(0.3); opacity: 0; }
+    50% { transform: scale(1.1); opacity: 1; }
     70% { transform: scale(0.9); }
     100% { transform: scale(1); }
 }
 
-@keyframes messageBoxRise {
-    0% { opacity: 0; transform: translate(-50%, 0%); }
-    100% { opacity: 1; transform: translate(-50%, -120%); }
-}
-
-#feelings-thank-you-message, #diaryConfirmationPage p {
-    font-size: clamp(1em, 4vw, 1.1em);
-    color: #5c3b4c;
-    margin-bottom: 25px;
-    font-weight: 500;
-    line-height: 1.4;
-}
-
-/* Miss You Popup Styles (Merged from HTML) */
-#missYouPopup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #fff;
-    border: 2px solid #d94a6b;
-    padding: 30px; 
-    border-radius: 20px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-    text-align: center;
-    z-index: 1001; 
-    display: none; 
-    max-width: 400px; 
-    width: 90%; 
-    box-sizing: border-box;
-    font-size: 1.1em; 
-    color: #5c3b4c;
-    line-height: 1.6;
-}
-
-#missYouPopup p {
-    margin: 10px 0;
-    font-weight: 500;
-}
-
-#missYouPopup button {
-    background: linear-gradient(45deg, #d94a6b, #ff80a0);
-    color: white;
-    border: none;
-    padding: 12px 25px; 
-    border-radius: 25px;
-    cursor: pointer;
-    font-size: 1em; 
-    font-weight: bold;
-    margin-top: 20px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-#missYouPopup button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-
-#overlay { 
+/* Miss You Pop-up Styles (Merged from HTML) */
+.overlay {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.6); 
-    z-index: 1000; 
-    display: none; 
-    backdrop-filter: blur(3px); 
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 999;
 }
 
-
-/* Entries List Styles */
-.entries-list-container {
-    max-height: 400px; /* Increased height */
-    overflow-y: auto;
-    background: #fcfcfc;
-    border: 1px solid #eee;
-    border-radius: 15px;
-    padding: 15px;
-    margin-top: 20px;
-    text-align: left;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);
+.miss-you-popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: linear-gradient(to bottom right, #ffe6f2, #ffe0f0);
+    padding: 25px 20px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    text-align: center;
+    z-index: 1000;
+    width: 85%;
+    max-width: 400px;
+    border: 2px solid #ffb3d9;
+    animation: fadeInScale 0.4s ease-out forwards;
 }
 
-.feelings-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-    font-size: 0.9em;
-}
-
-.feelings-table th, .feelings-table td {
-    border: 1px solid #eee;
-    padding: 10px 8px;
-    text-align: left;
-    vertical-align: top; 
-    word-wrap: break-word;
-    min-width: 80px; /* Ensure some minimum width for cells */
-}
-
-.feelings-table th {
-    background-color: #f5f5f5;
+.miss-you-popup p {
+    font-size: 1.4em;
+    color: #c73f60;
+    margin-bottom: 20px;
     font-weight: bold;
-    color: #d94a6b;
-    font-size: 0.85em;
-    position: sticky; /* Sticky header for table */
-    top: -1px; /* Adjust if container has padding */
-    z-index: 1;
 }
 
-.feelings-table tr:nth-child(even) {
-    background-color: #fbfbfb;
+.miss-you-popup button {
+    background: linear-gradient(45deg, #ff80a0, #d94a6b);
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 20px;
+    font-size: 1em;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
-.feelings-table tr:hover {
-    background-color: #fff3f8; /* Subtle hover for rows */
+
+.miss-you-popup button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
 }
 
-
-.emotion-tag {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.8em;
-    font-weight: 600;
-    white-space: nowrap;
-}
-.emotion-tag.grievance { background-color: #ffcdd2; color: #c51162; }
-.emotion-tag.appreciate { background-color: #c8e6c9; color: #1b5e20; }
-.emotion-tag.sad { background-color: #bbdefb; color: #0d47a1; }
-.emotion-tag.happy { background-color: #ffecb3; color: #ff6f00; }
-.emotion-tag.unknown { background-color: #e0e0e0; color: #424242; }
-
-
-/* Calendar Styles */
-.calendar-header {
+/* Diary Specific Styles */
+.calendar-nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    background: #f8f8f8;
-    padding: 15px;
+    background-color: #fce8f0; /* Lighter background for nav */
+    padding: 10px 15px;
     border-radius: 15px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
-.calendar-header h2 {
-    margin: 0;
+.calendar-nav h2 {
     color: #d94a6b;
-    font-size: clamp(1.4em, 5vw, 1.8em);
-    text-align: center;
-    flex: 1;
+    margin: 0;
+    font-size: clamp(1.2em, 4vw, 1.8em);
 }
 
-.calendar-header button {
-    background: #f0f0f0;
-    color: #666;
-    border: 1px solid #ddd;
-    padding: 12px 15px;
-    border-radius: 12px;
-    font-size: 1.2em;
-    min-width: 50px;
-    min-height: 48px;
-    touch-action: manipulation;
+.calendar-nav .nav-btn {
+    background: #ffb3d9; /* Pinker nav buttons */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background 0.2s ease;
 }
 
-.calendar-header button:hover, .calendar-header button:active {
-    background: #e0e0e0;
+.calendar-nav .nav-btn:hover {
+    background: #ff80a0;
 }
 
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 8px;
+    background: #fff;
     padding: 15px;
-    background: #fdfdfd;
     border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    max-width: 700px; /* Limit width */
+    margin: 0 auto 20px; /* Center and add margin */
 }
 
 .calendar-day-header {
     font-weight: bold;
-    color: #d94a6b;
+    color: #c73f60;
     text-align: center;
     padding: 8px 0;
-    font-size: clamp(0.7em, 3vw, 0.9em);
+    font-size: 0.9em;
 }
 
 .calendar-day {
-    background: #fcfcfc;
-    border: 1px solid #eee;
+    background: #fdf0f5; /* Very light pink for days */
+    border: 1px solid #ffe0f0;
     border-radius: 8px;
-    aspect-ratio: 1 / 1;
+    padding: 10px 5px;
+    min-height: 60px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
-    font-size: clamp(0.8em, 3.5vw, 1.1em);
+    font-size: 0.9em;
     cursor: pointer;
     transition: background 0.2s ease, transform 0.2s ease;
-    color: #5c3b4c;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-    min-height: 40px;
-    touch-action: manipulation;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
-.calendar-day.empty {
-    background: #f0f0f0;
-    cursor: default;
-    box-shadow: none;
-    border-color: #ddd;
-}
-
-.calendar-day:not(.empty):hover,
-.calendar-day:not(.empty):active {
-    background: #ffe6f0;
+.calendar-day:hover:not(.empty):not(.has-entry) {
+    background: #ffe6f2;
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
 }
 
 .calendar-day.today {
-    background: linear-gradient(45deg, #ff9eb2, #ff80a0);
-    color: white;
-    border: 1px solid #ff80a0;
-    font-weight: bold;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border: 2px solid #d94a6b;
+    background: #fff0f5;
+    box-shadow: 0 2px 5px rgba(217, 74, 107, 0.2);
+}
+
+.calendar-day.empty {
+    background: #f9f9f9;
+    cursor: default;
+    border-color: #eee;
 }
 
 .calendar-day.has-entry {
-    background: #d94a6b;
-    color: white;
+    background: linear-gradient(135deg, #ffd9eb, #ffb3d9); /* More vibrant for entries */
     font-weight: bold;
-    border: 1px solid #c03a5b;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-}
-.calendar-day.has-entry.today { /* Ensure today with entry has distinct style too if needed */
-    background: linear-gradient(45deg, #c03a5b, #d94a6b); /* Darker version of has-entry */
+    color: #720026;
+    border-color: #ff99cc;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-
-.calendar-day.has-entry:hover,
-.calendar-day.has-entry:active {
-    background: #c03a5b;
+.calendar-day.has-entry:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
-/* Diary Entry Styles */
-.date-display {
-    font-size: clamp(1em, 4vw, 1.2em);
-    color: #d94a6b;
-    font-weight: bold;
-    margin-bottom: 20px;
-    line-height: 1.3;
+.entry-indicator {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    font-size: 0.7em;
+    color: #a07a8b;
 }
 
-.notebook.view-only p {
+.diary-entry-view {
     text-align: left;
-    font-size: clamp(1em, 3.5vw, 1.1em);
-    color: #444;
-    line-height: 1.6;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    margin-bottom: 8px; /* Space between main thoughts and attribution */
-}
-.entry-attribution {
-    font-size: 0.85em;
-    color: #777;
-    font-style: italic;
-    text-align: left;
-    margin-top: 5px;
-    margin-bottom: 15px; /* Space before reply section */
+    white-space: pre-wrap; /* Preserve line breaks */
+    word-wrap: break-word; /* Wrap long words */
 }
 
-
-.diary-entry-list-item {
-    padding: 15px;
-    margin-bottom: 15px;
-    background: #fff;
-    border: 1px solid #f0f0f0;
-    border-radius: 12px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-}
-.diary-entry-list-item:hover {
-    border-color: #e0e0e0;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-}
-
-.diary-entry-list-item h3 {
-    color: #d94a6b;
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-size: clamp(1.1em, 4vw, 1.2em);
-    line-height: 1.3;
-}
-
-.diary-entry-list-item p.entry-content { /* Class for the main thoughts */
-    color: #5c3b4c;
-    font-size: clamp(0.9em, 3.5vw, 0.95em);
-    line-height: 1.5;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    margin: 0 0 8px 0; 
-}
-.diary-entry-list-item .entry-attribution { /* Attribution in list */
-    font-size: 0.8em;
-    color: #888;
-    font-style: italic;
-    margin-bottom: 10px;
-}
-
-
-.diary-entry-list-item hr {
-    border: none;
-    border-top: 1px dashed #ffe0f0;
-    margin-top: 15px;
-    margin-bottom: 0;
-}
-
-.diary-actions {
-    text-align: center;
+.entries-list {
     margin-top: 20px;
+    background: #fdfdfd;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    max-height: 400px; /* Limit height */
+    overflow-y: auto; /* Enable scrolling */
+    border: 1px solid #eee;
 }
 
-/* --- ADDED STYLES FOR REPLY FUNCTIONALITY & ATTRIBUTION --- */
-.reply-btn {
-    background: linear-gradient(45deg, #4CAF50, #81C784); 
-    color: white !important; 
-    padding: 8px 15px;
+.entries-list p {
+    text-align: center;
+    color: #888;
+}
+
+.feelings-table, .diary-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.feelings-table th, .diary-table th {
+    background-color: #fde8f0;
+    color: #c73f60;
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ffc0cb;
     font-size: 0.9em;
-    border-radius: 20px;
-    margin-top: 10px;
-    border: none;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.reply-btn:hover, .reply-btn:active {
-    background: linear-gradient(45deg, #388E3C, #66BB6A);
-    transform: translateY(-1px);
-    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+.feelings-table td, .diary-table td {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    vertical-align: top;
+    font-size: 0.85em;
+    line-height: 1.4;
 }
 
-.reply-btn:disabled { 
-    background: #cccccc;
-    color: #666666;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
+.feelings-table tr:last-child td, .diary-table tr:last-child td {
+    border-bottom: none;
+}
+
+.emotion-tag {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75em;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-right: 5px;
+    color: white; /* Default white for all tags */
+}
+
+.emotion-tag.grievance { background-color: #e53935; } /* Red */
+.emotion-tag.appreciate { background-color: #43a047; } /* Green */
+.emotion-tag.sad { background-color: #1976d2; } /* Blue */
+.emotion-tag.happy { background-color: #fb8c00; } /* Orange */
+.emotion-tag.unknown { background-color: #757575; } /* Grey */
+
+.reply-btn {
+    background: #d94a6b; /* Main button color */
+    color: white;
+    padding: 6px 10px;
+    border-radius: 15px;
+    font-size: 0.75em;
+    margin-top: 5px;
+}
+.reply-btn:hover {
+    background: #c73f60;
 }
 
 .small-reply-btn {
-    padding: 6px 12px;
-    font-size: 0.8em;
+    padding: 6px 10px;
+    font-size: 0.75em;
+    border-radius: 15px;
 }
 
 .reply-display {
-    margin-top: 10px;
-    padding: 12px 15px; /* Slightly more padding */
-    background-color: #e8f5e9; 
-    border-left: 4px solid #66bb6a; 
-    border-radius: 6px; /* Softer radius */
-    font-size: 0.9em;
-    text-align: left; 
-}
-.reply-display.chikoo-reply { /* Specific style for Chikoo's reply */
-    background-color: #fff0f5; /* Light pink */
-    border-left-color: #ff80a0; /* Pink accent */
-}
-.reply-display.prath-reply { /* Specific style for Prath's reply */
-    background-color: #e3f2fd; /* Light blue */
-    border-left-color: #5ab9ea; /* Blue accent */
-}
-
-
-.reply-display p {
-    margin: 5px 0 !important; 
-    color: #333;
-    line-height: 1.4;
-}
-.reply-display strong { /* For "User Replied:" part */
-    color: #1e8e3e; /* Default strong green */
-}
-.reply-display.chikoo-reply strong { color: #d94a6b; } /* Pink for Chikoo's name */
-.reply-display.prath-reply strong { color: #1976d2; } /* Blue for Prath's name */
-
-
-.reply-timestamp {
-    font-size: 0.8em;
-    color: #555;
-    font-style: italic;
-    margin-top: 3px !important;
-}
-
-.entry-meta-info { /* For "User Made a New entry" */
-    font-size: 0.9em;
-    color: #666;
-    margin-bottom: 8px;
-    font-style: italic;
-}
-.entry-meta-info strong { /* For the user's name */
-    font-weight: bold;
-}
-.entry-meta-info.chikoo-entry strong { color: #d94a6b; }
-.entry-meta-info.prath-entry strong { color: #1976d2; }
-
-
-/* Container for reply section in single diary view and list items */
-.reply-section-container { 
-    padding: 10px;
-    margin-top: 15px;
-    background-color: #fdfdfd; 
-    border-radius: 8px;
-    border: 1px solid #f0f0f0;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
-}
-
-.diary-entry-list-item .entry-reply-section {
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px dashed #e0e0e0; 
-}
-
-/* Adjustments for feelings table */
-.feelings-table td .reply-btn {
-    padding: 5px 10px;
-    font-size: 0.85em;
-    margin-top: 5px;
-}
-
-.feelings-table td .reply-display {
-    font-size: 0.85em;
+    background-color: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 10px;
     padding: 8px;
     margin-top: 5px;
-    /* background-color inherited from .reply-display.chikoo-reply / .prath-reply */
+    font-size: 0.8em;
+    text-align: left;
 }
 
-.feelings-table td .reply-display p {
-    margin: 3px 0 !important;
+.reply-display strong {
+    color: #5c3b4c;
 }
-/* --- END ADDED STYLES FOR REPLY FUNCTIONALITY --- */
 
+.reply-display.prath-reply { background-color: #e3f2fd; border-color: #bbdefb; }
+.reply-display.prath-reply strong { color: #1565c0; }
 
-/* Additional mobile-specific improvements */
+.reply-display.chikoo-reply { background-color: #ffebf0; border-color: #ffcdd2; }
+.reply-display.chikoo-reply strong { color: #c51162; }
+
+.reply-timestamp {
+    font-size: 0.7em;
+    color: #999;
+    margin-top: 5px;
+}
+
+.delete-btn {
+    background: #ff5252;
+    color: white;
+}
+.delete-btn:hover {
+    background: #ff1744;
+}
+
+/* Couple Dare Specific Styles */
+#coupleDareScreen .container {
+    background: linear-gradient(135deg, #fceaff, #fddde6); /* Soft, inviting background */
+    border: 1px solid #ffb3d9;
+    box-shadow: 0 10px 30px rgba(255, 102, 153, 0.2);
+}
+
+#coupleDareScreen h1 {
+    color: #e91e63; /* Deeper pink */
+    font-size: clamp(1.8em, 5vw, 2.5em);
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.08);
+}
+
+.dare-game-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    padding: 20px;
+}
+
+.dare-display {
+    background: #fff;
+    border: 2px dashed #ff80a0; /* Playful dashed border */
+    border-radius: 20px;
+    padding: 30px;
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: clamp(1.2em, 4.5vw, 1.8em);
+    color: #880e4f; /* Deep reddish-purple for dare text */
+    font-weight: 600;
+    line-height: 1.6;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    max-width: 600px;
+    width: 100%;
+    animation: pulseBorder 2s infinite alternate ease-in-out;
+}
+
+@keyframes pulseBorder {
+    0% { border-color: #ff80a0; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    50% { border-color: #e91e63; box-shadow: 0 8px 20px rgba(233, 30, 99, 0.2); }
+    100% { border-color: #ff80a0; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+}
+
+.get-dare-btn {
+    background: linear-gradient(45deg, #e91e63, #d81b60); /* Vibrant pink/red */
+    color: white;
+    padding: 18px 30px;
+    border-radius: 30px;
+    font-size: 1.2em;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    box-shadow: 0 6px 15px rgba(233, 30, 99, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: none;
+}
+
+.get-dare-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(233, 30, 99, 0.4);
+}
+
+/* Responsive Adjustments */
 @media (max-width: 480px) {
     body {
         padding: 10px;
     }
-    
     .login-box {
-        padding: 20px;
+        padding: 25px 20px;
     }
-    .login-options button {
-        padding: 15px;
-        font-size: 1.1em;
-    }
-
     .app-header-info {
         padding: 8px 10px;
         margin-bottom: 10px;
     }
-    #loggedInUserDisplay { font-size: 0.85em; }
-    .logout-btn { padding: 6px 10px; font-size: 0.8em; }
-    
-    .container {
-        padding: 15px 12px;
-        border-radius: 15px;
+    #loggedInUserDisplay {
+        font-size: 0.85em;
     }
-    
+    .logout-btn {
+        padding: 6px 10px;
+        font-size: 0.8em;
+    }
+    .main-header h1 {
+        font-size: 2em;
+    }
     .options-grid {
         gap: 15px;
         padding: 10px;
     }
-    
     .option-box {
         padding: 20px 15px;
-        border-radius: 15px;
+        font-size: 1em;
+        min-height: 70px;
     }
-    
-    .main-option {
-        min-height: 85px;
-    }
-    
-    .bunny-button { 
-        min-height: 80px; 
-        padding: 20px; 
-    }
-    
-    .notebook {
-        padding: 15px;
-        margin: 15px auto;
-    }
-    
-    .notebook textarea {
-        padding: 12px;
+    .bunny-button {
+        padding: 20px;
         min-height: 100px;
+        font-size: 1.2em;
     }
-    
-    button {
-        padding: 12px 18px;
-        margin: 6px 3px;
-        font-size: 0.95em;
+    .bunny-button .bunny-face {
+        font-size: 2.5em;
     }
-    
-    .calendar-grid {
-        gap: 6px;
+    .container {
+        padding: 15px 10px;
+    }
+    .container header h1 {
+        font-size: 1.8em;
+        padding-top: 35px;
+    }
+    .back-to-home-btn {
+        padding: 10px 12px;
+        font-size: 0.8em;
+    }
+    .notebook textarea {
+        min-height: 100px;
         padding: 12px;
+        font-size: 0.9em;
     }
-    
+    button {
+        padding: 12px 15px;
+        font-size: 0.9em;
+        min-height: 40px;
+    }
+    .calendar-nav {
+        padding: 8px 10px;
+    }
+    .calendar-nav h2 {
+        font-size: 1.4em;
+    }
+    .calendar-nav .nav-btn {
+        padding: 8px 12px;
+        font-size: 0.8em;
+    }
+    .calendar-grid {
+        padding: 10px;
+        gap: 5px;
+    }
     .calendar-day {
-        min-height: 35px;
-        border-radius: 6px;
+        min-height: 50px;
+        padding: 8px 3px;
+        font-size: 0.8em;
     }
-    
-    .feelings-table th, .feelings-table td {
-        padding: 8px 6px;
-        font-size: 0.85em;
-    }
-    
     .emotion-tag {
         padding: 3px 6px;
         font-size: 0.75em;
     }
-    
     .confirmation-box {
         padding: 25px 15px;
     }
-    
     #missYouPopup { 
         padding: 20px 15px; 
         width: 90%;
+    }
+    .dare-display {
+        padding: 20px;
+        min-height: 120px;
+        font-size: 1.1em;
+    }
+    .get-dare-btn {
+        padding: 15px 25px;
+        font-size: 1em;
     }
 }
 
@@ -1056,35 +992,31 @@ button:disabled {
         max-width: none;
     }
     
-    .option-box { 
+    .option-box {
+        padding: 30px 25px;
         min-height: 120px;
-        padding: 30px;
-        font-size: 1.4em;
-        max-width: none;
+        font-size: 1.5em;
     }
-    
-    .main-option {
-        min-height: 120px;
+    .couple-dare-btn {
+        font-size: 1.6em;
     }
-        
-    .container {
-        padding: 30px;
-    }
-    
-    .notebook {
-        padding: 25px;
-        max-width: 600px; /* Increased max-width */
-    }
-    
-    .notebook textarea {
+    .bunny-button {
+        padding: 40px;
         min-height: 150px;
-        padding: 15px;
-        font-size: 1.1em;
+        font-size: 1.8em;
     }
-    
-    button {
-        padding: 12px 25px; 
-        font-size: 1.1em;
-        margin: 10px 5px;
+    .bunny-button .bunny-face {
+        font-size: 3.5em;
+    }
+    .container {
+        padding: 30px 25px;
+    }
+    .dare-display {
+        min-height: 180px;
+        font-size: 2em;
+    }
+    .get-dare-btn {
+        padding: 20px 40px;
+        font-size: 1.3em;
     }
 }
