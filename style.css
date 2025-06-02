@@ -1,91 +1,319 @@
+style.css
+/* --- THEME VARIABLES --- */
+:root {
+    /* Light Theme (default) */
+    --background-color: #fceaff;
+    --gradient-background: linear-gradient(to bottom right, #fceaff, #fff0f5);
+    --surface-color: #ffffff;
+    --primary-color: #d94a6b; /* Main pink */
+    --primary-variant-color: #c73f60; /* Darker pink */
+    --secondary-color: #5ab9ea; /* Prath's blue */
+    --secondary-variant-color: #4a9dc7; /* Darker blue */
+    --text-color: #333333; /* Darker for better readability */
+    --text-color-light: #5c3b4c; /* Original pinkish text */
+    --text-on-primary: #ffffff;
+    --text-on-secondary: #ffffff;
+    --border-color: #e0e0e0;
+    --subtle-text-color: #a07a8b;
+    --header-bg: rgba(255, 255, 255, 0.9);
+    --app-header-shadow: 0 3px 8px rgba(0,0,0,0.07);
+    --button-text-color: #ffffff;
+    --button-secondary-bg: #f0f0f0;
+    --button-secondary-text: #555555;
+    --button-secondary-border: #dddddd;
+    --input-bg: #fdfdfd;
+    --input-border: #cccccc;
+    --input-focus-border: #d94a6b;
+    --input-focus-shadow: rgba(217, 74, 107, 0.3);
+    --disabled-bg: #e0e0e0;
+    --disabled-text: #9e9e9e;
+    --shadow-color-rgb: 0,0,0;
+    --card-shadow: 0 8px 20px rgba(var(--shadow-color-rgb), 0.08);
+    --card-hover-shadow: 0 12px 25px rgba(var(--shadow-color-rgb), 0.12);
+    --md-icon-color: #757575;
+
+    /* Login */
+    --login-bg-start: #fde4f0; --login-bg-end: #fff5f8;
+    --login-box-bg: var(--surface-color);
+    --login-box-header: var(--primary-color);
+    --login-box-shadow: 0 10px 30px rgba(var(--shadow-color-rgb), 0.1);
+    --login-chikoo-btn-start: #ffadc5; --login-chikoo-btn-end: #ff80a0;
+    --login-prath-btn-start: #7fd2ff; --login-prath-btn-end: #5ab9ea;
+
+    /* Emotion colors */
+    --emotion-grievance-bg: #ffebf0; --emotion-grievance-text: #c51162; --emotion-grievance-border: #ffcdd2;
+    --emotion-appreciate-bg: #e8f5e9; --emotion-appreciate-text: #2e7d32; --emotion-appreciate-border: #c8e6c9;
+    --emotion-sad-bg: #e3f2fd; --emotion-sad-text: #1565c0; --emotion-sad-border: #bbdefb;
+    --emotion-happy-bg: #fff8e1; --emotion-happy-text: #ff8f00; --emotion-happy-border: #ffecb3;
+
+    /* Calendar */
+    --cal-header-bg: transparent; /* Cleaner look */
+    --cal-header-text: var(--primary-color);
+    --cal-nav-btn-bg: transparent;
+    --cal-nav-btn-text: var(--primary-color);
+    --cal-nav-btn-hover-bg: rgba(217, 74, 107, 0.1);
+    --cal-grid-bg: var(--surface-color);
+    --cal-day-header-text: var(--primary-variant-color);
+    --cal-day-bg: var(--surface-color);
+    --cal-day-text: var(--text-color);
+    --cal-day-border: var(--border-color);
+    --cal-day-empty-bg: #f5f5f5;
+    --cal-day-empty-border: #eeeeee;
+    --cal-day-hover-bg: #ffe0f0;
+    --cal-today-outline: 2px solid var(--primary-color);
+    --cal-today-font-weight: bold;
+    --cal-has-entry-dot-chikoo: var(--primary-color);
+    --cal-has-entry-dot-prath: var(--secondary-color);
+
+    /* Dare game */
+    --dare-display-bg: #fff3e0;
+    --dare-display-border: #ffcc80;
+    --dare-text-color: #bf360c;
+    --dare-button-bg-start: #ff7043; --dare-button-bg-end: #ff5722;
+
+    /* Reply */
+    --reply-btn-bg-start: #66bb6a; --reply-btn-bg-end: #4caf50;
+    --reply-display-bg: #e8f5e9; --reply-display-border: #a5d6a7;
+    --reply-display-chikoo-bg: #fff0f5; --reply-display-chikoo-border: #ffc1e3;
+    --reply-display-prath-bg: #e3f2fd; --reply-display-prath-border: #b3e5fc;
+    --reply-display-text: var(--text-color);
+    --reply-display-strong-text: #388e3c;
+    --reply-display-chikoo-strong-text: var(--primary-variant-color);
+    --reply-display-prath-strong-text: var(--secondary-variant-color);
+
+    /* Popups */
+    --popup-bg: var(--surface-color);
+    --popup-border: var(--primary-color);
+    --popup-shadow: 0 8px 25px rgba(var(--shadow-color-rgb), 0.2);
+    --overlay-bg: rgba(0,0,0,0.5);
+    --overlay-backdrop-filter: blur(3px);
+
+    --md-switch-bg: #ccc;
+    --md-switch-slider-bg: white;
+    --md-switch-checked-bg: var(--primary-color);
+}
+
+body.dark-theme {
+    --background-color: #121212;
+    --gradient-background: linear-gradient(to bottom right, #1f1f1f, #121212);
+    --surface-color: #1e1e1e;
+    --primary-color: #f48fb1; /* Lighter pink for dark theme */
+    --primary-variant-color: #f06292;
+    --secondary-color: #81d4fa; /* Lighter blue */
+    --secondary-variant-color: #4fc3f7;
+    --text-color: rgba(255, 255, 255, 0.87);
+    --text-color-light: rgba(255, 255, 255, 0.7);
+    --text-on-primary: #121212;
+    --text-on-secondary: #121212;
+    --border-color: rgba(255, 255, 255, 0.2); /* More visible border */
+    --subtle-text-color: rgba(255, 255, 255, 0.6);
+    --header-bg: #2a2a2a; /* Slightly lighter than surface for depth */
+    --app-header-shadow: 0 3px 8px rgba(0,0,0,0.25);
+    --button-text-color: #121212;
+    --button-secondary-bg: #333333;
+    --button-secondary-text: rgba(255,255,255,0.87);
+    --button-secondary-border: #444444;
+    --input-bg: #2c2c2c;
+    --input-border: #555555;
+    --input-focus-border: var(--primary-color);
+    --input-focus-shadow: rgba(244, 143, 177, 0.3);
+    --disabled-bg: #424242;
+    --disabled-text: rgba(255,255,255,0.5);
+    --shadow-color-rgb: 0,0,0; /* Shadows are trickier on dark, often emulated with lighter surfaces or less blur */
+    --card-shadow: 0 4px 10px rgba(var(--shadow-color-rgb), 0.3); /* Darker shadow for dark theme */
+    --card-hover-shadow: 0 8px 15px rgba(var(--shadow-color-rgb), 0.4);
+    --md-icon-color: rgba(255,255,255,0.7);
+
+    /* Login Dark */
+    --login-bg-start: #212121; --login-bg-end: #1a1a1a;
+    --login-box-bg: var(--surface-color);
+    --login-box-header: var(--primary-color);
+    --login-box-shadow: 0 10px 30px rgba(var(--shadow-color-rgb), 0.2);
+    --login-chikoo-btn-start: #f06292; --login-chikoo-btn-end: #ec407a;
+    --login-prath-btn-start: #4fc3f7; --login-prath-btn-end: #29b6f6;
+
+    /* Emotion colors dark */
+    --emotion-grievance-bg: #3e2723; --emotion-grievance-text: #ef9a9a; --emotion-grievance-border: #d32f2f;
+    --emotion-appreciate-bg: #1b5e20; --emotion-appreciate-text: #a5d6a7; --emotion-appreciate-border: #66bb6a;
+    --emotion-sad-bg: #1a237e; --emotion-sad-text: #90caf9; --emotion-sad-border: #64b5f6;
+    --emotion-happy-bg: #4e342e; --emotion-happy-text: #fff59d; --emotion-happy-border: #ffee58;
+
+    /* Calendar Dark */
+    --cal-header-text: var(--primary-color);
+    --cal-nav-btn-text: var(--primary-color);
+    --cal-nav-btn-hover-bg: rgba(244, 143, 177, 0.1);
+    --cal-grid-bg: var(--surface-color);
+    --cal-day-header-text: var(--primary-variant-color);
+    --cal-day-bg: #2c2c2c; /* Darker than surface for contrast */
+    --cal-day-text: var(--text-color);
+    --cal-day-border: #444444;
+    --cal-day-empty-bg: #212121; /* Even darker */
+    --cal-day-empty-border: #333333;
+    --cal-day-hover-bg: #383838;
+    --cal-today-outline: 2px solid var(--primary-color);
+    --cal-has-entry-dot-chikoo: var(--primary-color);
+    --cal-has-entry-dot-prath: var(--secondary-color);
+
+    /* Dare game Dark */
+    --dare-display-bg: #3e2723;
+    --dare-display-border: #795548;
+    --dare-text-color: #ffccbc;
+    --dare-button-bg-start: #ff8a65; --dare-button-bg-end: #ff7043;
+
+    /* Reply Dark */
+    --reply-btn-bg-start: #a5d6a7; --reply-btn-bg-end: #81c784;
+    --reply-display-bg: #2e3b2e; --reply-display-border: #81c784;
+    --reply-display-chikoo-bg: #3c262d; --reply-display-chikoo-border: #f48fb1;
+    --reply-display-prath-bg: #26343e; --reply-display-prath-border: #81d4fa;
+    --reply-display-text: var(--text-color);
+    --reply-display-strong-text: #a5d6a7;
+    --reply-display-chikoo-strong-text: var(--primary-color);
+    --reply-display-prath-strong-text: var(--secondary-color);
+
+    /* Popups Dark */
+    --popup-bg: #2c2c2c;
+    --popup-border: var(--primary-color);
+    --popup-shadow: 0 8px 25px rgba(var(--shadow-color-rgb), 0.3);
+    --overlay-bg: rgba(0,0,0,0.7);
+    --overlay-backdrop-filter: blur(4px);
+
+    --md-switch-bg: #555;
+    --md-switch-slider-bg: #bbb;
+    --md-switch-checked-bg: var(--primary-variant-color);
+}
+
+
+/* --- GLOBAL STYLES --- */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Roboto', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
-    background: linear-gradient(to bottom right, #fceaff, #fff0f5); /* Main app background */
-    display: flex; /* This will be controlled by JS for login/app visibility */
+    background: var(--gradient-background);
+    display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     padding: 15px;
-    color: #5c3b4c;
+    color: var(--text-color);
     overflow-x: hidden;
     box-sizing: border-box;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Material Icons baseline */
+.material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 20px; /* Preferred icon size */
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+    vertical-align: middle;
+    margin-right: 4px;
+    color: var(--md-icon-color);
+
+    /* Support for all WebKit browsers. */
+    -webkit-font-smoothing: antialiased;
+    /* Support for Safari and Chrome. */
+    text-rendering: optimizeLegibility;
+    /* Support for Firefox. */
+    -moz-osx-font-smoothing: grayscale;
+    /* Support for IE. */
+    font-feature-settings: 'liga';
+}
+.option-box .material-icons, .styled-button .material-icons, .back-to-home-btn .material-icons {
+    color: inherit; /* Icons inside buttons/options inherit color */
+    font-size: 1.2em; /* Slightly larger for buttons */
+}
+.feeling-option .material-icons {
+    font-size: 1.8em; /* Larger for emotion icons */
+    margin-bottom: 8px;
 }
 
 /* LOGIN SCREEN STYLES */
 #loginContainer {
-    display: flex; 
+    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    width: 100%; 
+    width: 100%;
     padding: 20px;
     box-sizing: border-box;
-    background: linear-gradient(to bottom right, #fde4f0, #fff5f8); 
+    background: linear-gradient(to bottom right, var(--login-bg-start), var(--login-bg-end));
     animation: fadeInSimple 0.5s ease-out;
 }
 
 .login-box {
-    background: #fff;
+    background: var(--login-box-bg);
     padding: 30px 40px;
-    border-radius: 25px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    border-radius: 16px; /* Material card radius */
+    box-shadow: var(--login-box-shadow);
     text-align: center;
     width: 100%;
     max-width: 400px;
 }
 
 .login-box h1 {
-    color: #d94a6b;
-    margin-bottom: 25px;
-    font-size: clamp(1.8em, 5vw, 2.4em);
+    color: var(--login-box-header);
+    margin-bottom: 30px;
+    font-size: clamp(1.8em, 5vw, 2.2em);
+    font-weight: 500;
 }
 
-.login-options button {
-    display: block;
+.login-options .login-main-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
-    padding: 18px 20px;
+    padding: 16px 20px; /* Increased padding */
     margin-bottom: 15px;
-    font-size: 1.2em;
-    font-weight: bold;
-    border-radius: 15px;
+    font-size: 1.15em;
+    font-weight: 500; /* Medium weight */
+    border-radius: 28px; /* Pill shape */
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
     border: none;
+    color: var(--text-on-primary);
+    letter-spacing: 0.5px;
+}
+.login-main-btn .user-emoji {
+    margin-left: 10px;
+    font-size: 1.3em;
 }
 
 .login-options button.chikoo-btn {
-    background: linear-gradient(45deg, #ffadc5, #ff80a0);
-    color: white;
-    box-shadow: 0 4px 12px rgba(255, 128, 160, 0.3);
+    background: linear-gradient(45deg, var(--login-chikoo-btn-start), var(--login-chikoo-btn-end));
+    box-shadow: 0 4px 12px rgba(255, 128, 160, 0.25);
 }
 .login-options button.chikoo-btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(255, 128, 160, 0.4);
+    box-shadow: 0 6px 15px rgba(255, 128, 160, 0.35);
 }
 
 .login-options button.prath-btn {
-    background: linear-gradient(45deg, #7fd2ff, #5ab9ea);
-    color: white;
-    box-shadow: 0 4px 12px rgba(90, 185, 234, 0.3);
+    background: linear-gradient(45deg, var(--login-prath-btn-start), var(--login-prath-btn-end));
+    box-shadow: 0 4px 12px rgba(90, 185, 234, 0.25);
 }
 .login-options button.prath-btn:hover {
     transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(90, 185, 234, 0.4);
+    box-shadow: 0 6px 15px rgba(90, 185, 234, 0.35);
 }
 
 @keyframes fadeInSimple {
     from { opacity: 0; }
     to { opacity: 1; }
 }
-/* END LOGIN SCREEN STYLES */
-
 
 #appContainer {
-    display: none; 
+    display: none;
     width: 100%;
-    max-width: 800px;
+    max-width: 800px; /* Max width for app content */
+    margin: 0 auto;
     box-sizing: border-box;
 }
 
@@ -94,49 +322,63 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 15px; 
-    background-color: rgba(255, 255, 255, 0.85);
+    padding: 12px 20px;
+    background-color: var(--header-bg);
     border-radius: 12px;
-    margin-bottom: 15px; 
-    box-shadow: 0 3px 8px rgba(0,0,0,0.07);
+    margin-bottom: 20px;
+    box-shadow: var(--app-header-shadow);
+}
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 
 #loggedInUserDisplay {
     font-size: 0.95em;
-    color: #c73f60;
-    font-weight: bold;
+    color: var(--primary-variant-color);
+    font-weight: 500;
 }
 
 .logout-btn {
-    background: #e9edf0; 
-    color: #555; 
-    border: 1px solid #d5d9dc;
-    padding: 8px 15px; 
-    font-size: 0.9em; 
-    border-radius: 8px;
+    background: var(--button-secondary-bg);
+    color: var(--button-secondary-text);
+    border: 1px solid var(--button-secondary-border);
+    padding: 8px 15px;
+    font-size: 0.9em;
+    border-radius: 20px; /* Pill shape */
     cursor: pointer;
     font-weight: 500;
     transition: background 0.2s ease, border-color 0.2s ease;
 }
 .logout-btn:hover {
-    background: #d8dde1;
-    border-color: #c8ccd0;
+    background: var(--border-color); /* Lighten on hover */
 }
+
+/* Theme Switch */
+.theme-switch-wrapper { display: flex; align-items: center; }
+.theme-icon-label { margin-right: 8px; font-size: 1.3em; color: var(--text-color); cursor: default; user-select: none;}
+.theme-switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+.theme-switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--md-switch-bg); transition: .4s; }
+.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: var(--md-switch-slider-bg); transition: .4s; }
+input:checked + .slider { background-color: var(--md-switch-checked-bg); }
+input:focus + .slider { box-shadow: 0 0 1px var(--primary-color); }
+input:checked + .slider:before { transform: translateX(20px); }
+.slider.round { border-radius: 24px; }
+.slider.round:before { border-radius: 50%; }
 
 
 .screen {
     display: none;
     width: 100%;
-    animation: fadeInScale 0.6s ease-out forwards;
+    animation: fadeInScale 0.5s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
     transform-origin: center center;
 }
-
-.screen.active {
-    display: block;
-}
+.screen.active { display: block; }
 
 @keyframes fadeInScale {
-    from { opacity: 0; transform: translateY(20px) scale(0.98); }
+    from { opacity: 0; transform: translateY(15px) scale(0.99); }
     to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
@@ -146,119 +388,86 @@ body {
     margin-bottom: 30px;
     padding: 15px;
 }
-
 #homeScreen .main-header h1 {
-    color: #d94a6b;
-    font-size: clamp(2em, 6vw, 2.8em); 
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+    color: var(--primary-color);
+    font-size: clamp(2em, 6vw, 2.8em);
+    text-shadow: 1px 1px 2px rgba(var(--shadow-color-rgb),0.05);
     margin: 0;
     line-height: 1.2;
+    font-weight: 500;
 }
 
 .options-grid {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 20px;
     padding: 15px;
-    align-items: center;
 }
 
 .option-box {
-    background: #fff;
-    border-radius: 20px;
+    background: var(--surface-color);
+    border-radius: 16px; /* Material card radius */
     padding: 25px 20px;
     text-align: center;
-    font-size: clamp(1.1em, 4vw, 1.4em);
-    color: #d94a6b;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    font-size: clamp(1.05em, 4vw, 1.3em);
+    color: var(--text-color-light);
+    box-shadow: var(--card-shadow);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
     cursor: pointer;
-    border: 1px solid #ffe0f0;
+    border: 1px solid var(--border-color);
     display: flex;
+    flex-direction: column; /* For icon on top */
     align-items: center;
     justify-content: center;
-    min-height: 80px;
-    width: 100%;
-    max-width: 320px; /* Increased max-width for better look */
+    min-height: 120px; /* Good height for cards */
+    font-weight: 500;
 }
-
 .option-box:hover, .option-box:active {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
+    box-shadow: var(--card-hover-shadow);
+}
+.option-box .option-icon { /* Icon for main options */
+    font-size: 2em;
+    margin-bottom: 10px;
+    color: var(--primary-color);
 }
 
-.main-option { /* Style for all main options including new game button */
-    font-weight: bold;
-    letter-spacing: 0.5px;
-    min-height: 100px;
+/* Bunny Button - simplified */
+.option-box-emoji.bunny-button {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 15px;
+    min-height: auto; /* Adjust if needed */
 }
-/* Specific style for the new game button if needed, can be like others */
-.option-box.game-dare-option {
-    /* Example: if you want a different background or icon */
-    /* background: linear-gradient(45deg, #ff6b6b, #ee5253); */
-    /* color: white; */
+.option-box-emoji.bunny-button:hover {
+    background: rgba(var(--shadow-color-rgb), 0.05); /* Subtle hover for discoverability */
+    transform: none; /* No lift for just emoji */
+    box-shadow: none;
 }
+.bunny-button .bunny-face {
+    font-size: 3.5em; /* Larger emoji */
+    line-height: 1;
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+.bunny-button .bunny-face.spinning { animation: spin 1s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
 
 #homeScreen .main-footer, .portal-footer {
     text-align: center;
     margin-top: 30px;
-    color: #a07a8b;
-    font-size: 0.85em;
-    padding: 0 15px;
+    color: var(--subtle-text-color);
+    font-size: 0.9em;
+    padding: 0 15px 10px;
 }
-
-/* Bunny Button Styles */
-.bunny-button {
-    background: linear-gradient(45deg, #ffc0cb, #ff80a0); 
-    color: white;
-    font-size: 1.5em; 
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0px; 
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); 
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-    border: 1px solid #ff6699;
-    cursor: pointer;
-    padding: 30px; 
-    min-height: 120px; 
-}
-
-.bunny-button:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
-    background: linear-gradient(45deg, #ff80a0, #ffc0cb); 
-}
-
-.bunny-button .bunny-face {
-    display: inline-block;
-    font-size: 3em; 
-    line-height: 1; 
-    animation: bounce 0.8s infinite alternate ease-in-out; 
-}
-
-.bunny-button .bunny-face.spinning {
-    animation: spin 2s linear infinite; 
-}
-
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-@keyframes bounce { 
-    0% { transform: translateY(0); }
-    100% { transform: translateY(-5px); } 
-}
-
 
 /* Common Portal Styles */
 .container {
-    background: #fff;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    background: var(--surface-color);
+    border-radius: 16px;
+    box-shadow: var(--card-shadow);
     padding: 20px 15px;
     text-align: center;
     width: 100%;
@@ -266,879 +475,600 @@ body {
     position: relative;
     margin: 0 auto;
 }
-
 .container header {
     margin-bottom: 25px;
     padding-bottom: 15px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--border-color);
     position: relative;
 }
-
 .container header h1 {
-    color: #d94a6b;
+    color: var(--primary-color);
     font-size: clamp(1.6em, 5vw, 2.2em);
     margin: 0;
-    padding-top: 40px; 
+    padding-top: 40px;
     line-height: 1.2;
+    font-weight: 500;
 }
 
 .back-to-home-btn {
     position: absolute;
-    top: 0px;
-    left: 0px;
-    background: #f0f0f0;
-    color: #666;
+    top: 10px; /* Adjusted for better placement */
+    left: 10px;
+    background: transparent; /* Material icon button */
+    color: var(--primary-color);
     border: none;
-    padding: 12px 16px;
-    border-radius: 15px;
+    padding: 8px;
+    border-radius: 50%; /* Circular for icon button */
     cursor: pointer;
-    font-size: 0.9em;
-    transition: background 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    touch-action: manipulation; 
+    transition: background 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
 }
-
 .back-to-home-btn:hover, .back-to-home-btn:active {
-    background: #e0e0e0;
+    background: rgba(var(--shadow-color-rgb), 0.1);
 }
+.back-to-home-btn .material-icons { margin-right: 0; font-size: 24px;}
+
 
 .page {
     display: none;
     padding: 15px 0;
-    animation: fadeIn 0.5s ease-out forwards;
+    animation: fadeIn 0.4s ease-out forwards;
 }
-
-.page.active {
-    display: block;
-}
-
+.page.active { display: block; }
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
+    from { opacity: 0; transform: translateY(8px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
 .notebook {
-    background: #fdfdfd;
-    border: 1px solid #e0e0e0;
-    border-radius: 15px;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
     padding: 20px;
     margin: 20px auto;
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
+    box-shadow: inset 0 1px 3px rgba(var(--shadow-color-rgb),0.05);
     max-width: 100%;
 }
-
 .notebook textarea {
     width: 100%;
     min-height: 120px;
     padding: 15px;
-    border: 2px solid #ddd;
-    border-radius: 12px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    border: 1px solid var(--input-border); /* Subtle border */
+    border-radius: 8px;
+    font-family: inherit;
     font-size: 1em;
-    color: #444;
+    color: var(--text-color);
+    background-color: var(--surface-color); /* Slightly different from notebook bg */
     resize: vertical;
     margin-bottom: 15px;
     box-sizing: border-box;
     line-height: 1.5;
 }
-
 .notebook textarea:focus {
     outline: none;
-    border-color: #d94a6b;
-    box-shadow: 0 0 8px rgba(217, 74, 107, 0.3);
+    border-color: var(--input-focus-border);
+    box-shadow: 0 0 0 2px var(--input-focus-shadow);
 }
 
-button {
-    background: linear-gradient(45deg, #ff80a0, #d94a6b);
-    color: white;
+/* Styled Buttons - Material Design Inspired */
+.styled-button {
+    background: linear-gradient(45deg, var(--primary-color), var(--primary-variant-color));
+    color: var(--button-text-color);
     border: none;
-    padding: 14px 20px;
-    border-radius: 25px;
+    padding: 12px 24px; /* Consistent padding */
+    border-radius: 24px; /* Pill shape */
     cursor: pointer;
     font-size: 1em;
-    font-weight: bold;
+    font-weight: 500;
     margin: 8px 4px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease; 
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    touch-action: manipulation;
-    min-height: 48px; 
+    transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease;
+    box-shadow: 0 2px 5px rgba(var(--shadow-color-rgb),0.15);
+    text-transform: uppercase; /* Material button convention */
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    text-decoration: none; /* For potential <a> tags styled as buttons */
 }
-
-button:hover, button:active {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+.styled-button:hover, .styled-button:active {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(var(--shadow-color-rgb),0.2);
 }
-
-button:active {
+.styled-button:active {
     transform: translateY(0);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 4px rgba(var(--shadow-color-rgb),0.15);
 }
-
-button:disabled {
-    background: #cccccc;
-    color: #666666; 
+.styled-button.primary { /* Already default */ }
+.styled-button.secondary {
+    background: var(--button-secondary-bg);
+    color: var(--button-secondary-text);
+    border: 1px solid var(--button-secondary-border);
+}
+.styled-button.secondary:hover {
+    background: var(--border-color);
+}
+.styled-button:disabled {
+    background: var(--disabled-bg);
+    color: var(--disabled-text);
     cursor: not-allowed;
     box-shadow: none;
     transform: none;
 }
+.styled-button .material-icons { margin-right: 8px; font-size: 1.1em; }
 
-.back-btn, .view-all-btn {
-    background: #f0f0f0;
-    color: #666;
-    border: 1px solid #ddd;
-}
-
-.back-btn:hover, .view-all-btn:hover, 
-.back-btn:active, .view-all-btn:active {
-    background: #e0e0e0;
-}
 
 .confirmation-box {
-    background: #f9f9f9;
-    border: 1px solid #e0e0e0;
-    border-radius: 20px;
+    background: var(--surface-color); /* Use surface for consistency */
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
     padding: 30px 20px;
     margin: 20px auto;
     max-width: 100%;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    box-shadow: 0 5px 15px rgba(var(--shadow-color-rgb),0.05);
 }
 
 /* Feelings Portal Specific Styles */
-#feelingsPortalScreen .option-box {
-    font-size: clamp(1em, 4vw, 1.2em); 
-    padding: 20px 15px; 
-    min-height: 70px; 
-    max-width: 280px; 
-    margin: 8px auto; 
-    font-weight: 600; 
-    letter-spacing: 0.3px; 
+.feelings-options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
 }
-#feelingsPortalScreen .option-box.grievance { 
-    background-color: #ffebf0; color: #c51162; border-color: #ffcdd2; 
+.feeling-option {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 130px;
+    font-weight: 500;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+    box-shadow: var(--card-shadow);
+    color: var(--text-color-light); /* Use the pinkish text for titles */
 }
-#feelingsPortalScreen .option-box.appreciate { 
-    background-color: #e8f5e9; color: #2e7d32; border-color: #c8e6c9; 
+.feeling-option:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--card-hover-shadow);
 }
-#feelingsPortalScreen .option-box.sad { 
-    background-color: #e3f2fd; color: #1565c0; border-color: #bbdefb; 
-}
-#feelingsPortalScreen .option-box.happy { 
-    background-color: #fff8e1; color: #ff8f00; border-color: #ffecb3; 
-}
+.feeling-option.grievance { background-color: var(--emotion-grievance-bg); color: var(--emotion-grievance-text); border-left: 4px solid var(--emotion-grievance-border); }
+.feeling-option.appreciate { background-color: var(--emotion-appreciate-bg); color: var(--emotion-appreciate-text); border-left: 4px solid var(--emotion-appreciate-border); }
+.feeling-option.sad { background-color: var(--emotion-sad-bg); color: var(--emotion-sad-text); border-left: 4px solid var(--emotion-sad-border); }
+.feeling-option.happy { background-color: var(--emotion-happy-bg); color: var(--emotion-happy-text); border-left: 4px solid var(--emotion-happy-border); }
+.feeling-option .feeling-icon { color: inherit; } /* Icon takes color from parent */
 
-#feelingsPortalScreen .option-box.grievance,
-#feelingsPortalScreen .option-box.appreciate,
-#feelingsPortalScreen .option-box.sad,
-#feelingsPortalScreen .option-box.happy {
-    font-size: 1.4em;
-    padding: 30px;
-    min-height: 120px;
-}
 
-
-#feelingsPortalScreen .option-box:hover,
-#feelingsPortalScreen .option-box:active {
-    transform: translateY(-3px) scale(1.01);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-}
-
-/* Animation Styles */
+/* Animation Styles - Feelings Confirmation */
 #feelings-animation-container {
-    width: clamp(120px, 30vw, 200px);
-    height: clamp(90px, 25vw, 150px);
+    width: clamp(120px, 30vw, 180px); /* Slightly smaller */
+    height: clamp(90px, 25vw, 130px);
     margin: 0 auto 20px;
     position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
 }
-
-#feelings-mail-icon {
-    font-size: clamp(2em, 8vw, 3em);
-    color: #d94a6b;
+#feelings-mail-icon { /* Now a Material Icon */
+    font-size: clamp(3em, 10vw, 4em); /* Larger icon */
+    color: var(--primary-color);
     position: relative;
     animation: bounceIn 1s forwards;
     display: inline-block;
     z-index: 2;
 }
-
-#feelings-message-box {
-    background: #fff;
-    border: 1px solid #d94a6b;
-    border-radius: 10px;
+#feelings-message-box { /* Unchanged, relies on JS */
+    background: var(--surface-color);
+    border: 1px solid var(--primary-color);
+    border-radius: 8px;
     padding: 8px 12px;
     position: absolute;
     font-size: clamp(0.7em, 3vw, 0.8em);
-    color: #5c3b4c;
+    color: var(--text-color-light);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    top: 50%;
-    left: 50%;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     opacity: 0;
     animation: messageBoxRise 1.5s 0.5s forwards;
     max-width: 140px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(var(--shadow-color-rgb),0.1);
     z-index: 1;
 }
-
-@keyframes bounceIn {
-    0% { transform: scale(0); opacity: 0; }
-    50% { transform: scale(1.2); opacity: 1; }
-    70% { transform: scale(0.9); }
-    100% { transform: scale(1); }
-}
-
-@keyframes messageBoxRise {
-    0% { opacity: 0; transform: translate(-50%, 0%); }
-    100% { opacity: 1; transform: translate(-50%, -120%); }
-}
+@keyframes bounceIn { /* Unchanged */ }
+@keyframes messageBoxRise { /* Unchanged */ }
 
 #feelings-thank-you-message, #diaryConfirmationPage p {
     font-size: clamp(1em, 4vw, 1.1em);
-    color: #5c3b4c;
+    color: var(--text-color);
     margin-bottom: 25px;
-    font-weight: 500;
-    line-height: 1.4;
+    font-weight: 400;
+    line-height: 1.5;
 }
 
 /* Miss You Popup Styles */
 #missYouPopup {
     position: fixed;
-    top: 50%;
-    left: 50%;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    background: #fff;
-    border: 2px solid #d94a6b;
-    padding: 30px; 
-    border-radius: 20px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    background: var(--popup-bg);
+    border: 1px solid var(--popup-border); /* Subtle border */
+    padding: 30px;
+    border-radius: 16px; /* Material card radius */
+    box-shadow: var(--popup-shadow);
     text-align: center;
-    z-index: 1001; 
-    display: none; 
-    max-width: 400px; 
-    width: 90%; 
+    z-index: 1001;
+    display: none;
+    max-width: 380px; /* Slightly wider */
+    width: 90%;
     box-sizing: border-box;
-    font-size: 1.1em; 
-    color: #5c3b4c;
+    font-size: 1.1em;
+    color: var(--text-color);
     line-height: 1.6;
 }
+#missYouPopup p { margin: 10px 0 20px; font-weight: 400; }
+#missYouPopup button { margin-top: 10px; }
 
-#missYouPopup p {
-    margin: 10px 0;
-    font-weight: 500;
+#overlay {
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: var(--overlay-bg);
+    z-index: 1000; display: none;
+    backdrop-filter: var(--overlay-backdrop-filter);
 }
-
-#missYouPopup button {
-    background: linear-gradient(45deg, #d94a6b, #ff80a0);
-    color: white;
-    border: none;
-    padding: 12px 25px; 
-    border-radius: 25px;
-    cursor: pointer;
-    font-size: 1em; 
-    font-weight: bold;
-    margin-top: 20px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-#missYouPopup button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-
-#overlay { 
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.6); 
-    z-index: 1000; 
-    display: none; 
-    backdrop-filter: blur(3px); 
-}
-
 
 /* Entries List Styles */
 .entries-list-container {
-    max-height: 400px; 
+    max-height: 450px; /* Increased height */
     overflow-y: auto;
-    background: #fcfcfc;
-    border: 1px solid #eee;
-    border-radius: 15px;
+    background: var(--input-bg); /* Consistent with notebook bg */
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
     padding: 15px;
     margin-top: 20px;
     text-align: left;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);
+    box-shadow: inset 0 1px 3px rgba(var(--shadow-color-rgb),0.03);
 }
-
 .feelings-table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate; /* For border-radius on cells */
+    border-spacing: 0;
     margin-top: 15px;
     font-size: 0.9em;
 }
-
 .feelings-table th, .feelings-table td {
-    border: 1px solid #eee;
-    padding: 10px 8px;
+    border-bottom: 1px solid var(--border-color);
+    padding: 12px 10px; /* More padding */
     text-align: left;
-    vertical-align: top; 
+    vertical-align: top;
     word-wrap: break-word;
-    min-width: 80px; 
 }
-
 .feelings-table th {
-    background-color: #f5f5f5;
-    font-weight: bold;
-    color: #d94a6b;
-    font-size: 0.85em;
-    position: sticky; 
-    top: -1px; 
-    z-index: 1;
+    background-color: var(--surface-color); /* Use surface for header */
+    font-weight: 500;
+    color: var(--primary-color);
+    font-size: 0.9em; /* Slightly larger */
+    position: sticky; top: -1px; z-index: 1;
+    border-top: 1px solid var(--border-color); /* Add top border for completeness */
 }
-
-.feelings-table tr:nth-child(even) {
-    background-color: #fbfbfb;
-}
-.feelings-table tr:hover {
-    background-color: #fff3f8; 
-}
-
+.feelings-table tr:last-child td { border-bottom: none; }
+.feelings-table td:first-child, .feelings-table th:first-child { border-left: 1px solid var(--border-color); border-top-left-radius: 8px; border-bottom-left-radius: 8px;}
+.feelings-table td:last-child, .feelings-table th:last-child { border-right: 1px solid var(--border-color); border-top-right-radius: 8px; border-bottom-right-radius: 8px;}
+.feelings-table tr:hover td { background-color: rgba(var(--primary-color), 0.05); } /* Subtle hover */
 
 .emotion-tag {
     display: inline-block;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.8em;
-    font-weight: 600;
+    padding: 5px 10px; /* More padding */
+    border-radius: 16px; /* Pill shape */
+    font-size: 0.85em; /* Slightly larger */
+    font-weight: 500;
     white-space: nowrap;
+    border: 1px solid transparent;
 }
-.emotion-tag.grievance { background-color: #ffcdd2; color: #c51162; }
-.emotion-tag.appreciate { background-color: #c8e6c9; color: #1b5e20; }
-.emotion-tag.sad { background-color: #bbdefb; color: #0d47a1; }
-.emotion-tag.happy { background-color: #ffecb3; color: #ff6f00; }
-.emotion-tag.unknown { background-color: #e0e0e0; color: #424242; }
+.emotion-tag.grievance { background-color: var(--emotion-grievance-bg); color: var(--emotion-grievance-text); border-color: var(--emotion-grievance-border); }
+.emotion-tag.appreciate { background-color: var(--emotion-appreciate-bg); color: var(--emotion-appreciate-text); border-color: var(--emotion-appreciate-border); }
+.emotion-tag.sad { background-color: var(--emotion-sad-bg); color: var(--emotion-sad-text); border-color: var(--emotion-sad-border); }
+.emotion-tag.happy { background-color: var(--emotion-happy-bg); color: var(--emotion-happy-text); border-color: var(--emotion-happy-border); }
+.emotion-tag.unknown { background-color: var(--disabled-bg); color: var(--disabled-text); border-color: var(--border-color); }
 
 
-/* Calendar Styles */
+/* Calendar Styles - Material Design / Google Calendar Inspired */
 .calendar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    background: #f8f8f8;
-    padding: 15px;
-    border-radius: 15px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    background: var(--cal-header-bg);
+    padding: 10px 0; /* Reduced padding as nav buttons are outside */
+    border-radius: 12px;
 }
-
 .calendar-header h2 {
     margin: 0;
-    color: #d94a6b;
-    font-size: clamp(1.4em, 5vw, 1.8em);
+    color: var(--cal-header-text);
+    font-size: clamp(1.5em, 5vw, 1.9em); /* Prominent month/year */
     text-align: center;
     flex: 1;
+    font-weight: 500;
 }
-
-.calendar-header button {
-    background: #f0f0f0;
-    color: #666;
-    border: 1px solid #ddd;
-    padding: 12px 15px;
-    border-radius: 12px;
-    font-size: 1.2em;
-    min-width: 50px;
-    min-height: 48px;
-    touch-action: manipulation;
+.calendar-nav-btn {
+    background: var(--cal-nav-btn-bg);
+    color: var(--cal-nav-btn-text);
+    border: none;
+    padding: 8px;
+    border-radius: 50%; /* Circular icon buttons */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px; height: 40px;
+    transition: background-color 0.2s ease;
 }
-
-.calendar-header button:hover, .calendar-header button:active {
-    background: #e0e0e0;
-}
+.calendar-nav-btn:hover { background: var(--cal-nav-btn-hover-bg); }
+.calendar-nav-btn .material-icons { font-size: 28px; margin: 0; } /* Larger nav icons */
 
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 8px;
-    padding: 15px;
-    background: #fdfdfd;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    gap: 8px; /* Increased gap */
+    padding: 10px; /* Padding around grid */
+    background: var(--cal-grid-bg);
+    border-radius: 12px; /* Rounded corners for grid container */
+    /* box-shadow: 0 2px 8px rgba(var(--shadow-color-rgb),0.05); */ /* Optional shadow */
 }
-
 .calendar-day-header {
-    font-weight: bold;
-    color: #d94a6b;
+    font-weight: 500;
+    color: var(--cal-day-header-text);
     text-align: center;
-    padding: 8px 0;
-    font-size: clamp(0.7em, 3vw, 0.9em);
+    padding: 10px 0; /* More space for day headers */
+    font-size: clamp(0.8em, 3vw, 0.95em);
 }
-
 .calendar-day {
-    background: #fcfcfc;
-    border: 1px solid #eee;
-    border-radius: 8px;
+    background: var(--cal-day-bg);
+    border: 1px solid var(--cal-day-border);
+    border-radius: 8px; /* Rounded day cells */
     aspect-ratio: 1 / 1;
     display: flex;
-    justify-content: center;
+    flex-direction: column; /* For number and dot */
+    justify-content: flex-start; /* Align number to top */
     align-items: center;
-    font-size: clamp(0.8em, 3.5vw, 1.1em);
+    padding-top: 6px; /* Space for number */
+    font-size: clamp(0.9em, 3.5vw, 1.15em); /* Larger day numbers */
     cursor: pointer;
-    transition: background 0.2s ease, transform 0.2s ease;
-    color: #5c3b4c;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-    min-height: 40px;
-    touch-action: manipulation;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+    color: var(--cal-day-text);
+    position: relative; /* For entry dots */
+    min-height: 50px; /* Ensure cells are large enough */
 }
-
 .calendar-day.empty {
-    background: #f0f0f0;
+    background: var(--cal-day-empty-bg);
+    border-color: var(--cal-day-empty-border);
     cursor: default;
-    box-shadow: none;
-    border-color: #ddd;
 }
-
 .calendar-day:not(.empty):hover,
 .calendar-day:not(.empty):active {
-    background: #ffe6f0;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+    background: var(--cal-day-hover-bg);
+    box-shadow: 0 2px 6px rgba(var(--shadow-color-rgb),0.08);
 }
-
 .calendar-day.today {
-    background: linear-gradient(45deg, #ff9eb2, #ff80a0);
-    color: white;
-    border: 1px solid #ff80a0;
-    font-weight: bold;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    outline: var(--cal-today-outline);
+    font-weight: var(--cal-today-font-weight);
+    color: var(--primary-color); /* Highlight today's number */
 }
-
-.calendar-day.has-entry {
-    background: #d94a6b;
-    color: white;
-    font-weight: bold;
-    border: 1px solid #c03a5b;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+.calendar-day .day-number { /* New span for just the number */
+    margin-bottom: 4px; /* Space between number and dots */
 }
-.calendar-day.has-entry.today { 
-    background: linear-gradient(45deg, #c03a5b, #d94a6b); 
+.entry-dots-container {
+    display: flex;
+    gap: 3px; /* Space between dots if multiple entries */
+    position: absolute;
+    bottom: 6px; /* Position dots at the bottom */
+    left: 50%;
+    transform: translateX(-50%);
 }
-
-
-.calendar-day.has-entry:hover,
-.calendar-day.has-entry:active {
-    background: #c03a5b;
+.entry-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
 }
+.entry-dot.chikoo { background-color: var(--cal-has-entry-dot-chikoo); }
+.entry-dot.prath { background-color: var(--cal-has-entry-dot-prath); }
+/* JS will need to add span.day-number and div.entry-dots-container */
 
 /* Diary Entry Styles */
 .date-display {
     font-size: clamp(1em, 4vw, 1.2em);
-    color: #d94a6b;
-    font-weight: bold;
+    color: var(--primary-color);
+    font-weight: 500;
     margin-bottom: 20px;
     line-height: 1.3;
 }
-
 .notebook.view-only p {
     text-align: left;
     font-size: clamp(1em, 3.5vw, 1.1em);
-    color: #444;
-    line-height: 1.6;
+    color: var(--text-color);
+    line-height: 1.7; /* More line height for readability */
     white-space: pre-wrap;
     word-wrap: break-word;
-    margin-bottom: 8px; 
+    margin-bottom: 8px;
 }
 .entry-attribution {
     font-size: 0.85em;
-    color: #777;
+    color: var(--subtle-text-color);
     font-style: italic;
     text-align: left;
     margin-top: 5px;
-    margin-bottom: 15px; 
+    margin-bottom: 15px;
 }
-
-
 .diary-entry-list-item {
     padding: 15px;
     margin-bottom: 15px;
-    background: #fff;
-    border: 1px solid #f0f0f0;
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
     border-radius: 12px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+    box-shadow: 0 2px 5px rgba(var(--shadow-color-rgb),0.03);
 }
 .diary-entry-list-item:hover {
-    border-color: #e0e0e0;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    border-color: var(--primary-color); /* Highlight on hover */
+    box-shadow: 0 4px 8px rgba(var(--shadow-color-rgb),0.05);
 }
-
 .diary-entry-list-item h3 {
-    color: #d94a6b;
+    color: var(--primary-color);
     margin-top: 0;
     margin-bottom: 10px;
     font-size: clamp(1.1em, 4vw, 1.2em);
     line-height: 1.3;
+    font-weight: 500;
 }
-
-.diary-entry-list-item p.entry-content { 
-    color: #5c3b4c;
+.diary-entry-list-item p.entry-content {
+    color: var(--text-color);
     font-size: clamp(0.9em, 3.5vw, 0.95em);
-    line-height: 1.5;
+    line-height: 1.6;
     white-space: pre-wrap;
     word-wrap: break-word;
-    margin: 0 0 8px 0; 
+    margin: 0 0 8px 0;
 }
-.diary-entry-list-item .entry-attribution { 
-    font-size: 0.8em;
-    color: #888;
-    font-style: italic;
-    margin-bottom: 10px;
-}
-
-
 .diary-entry-list-item hr {
     border: none;
-    border-top: 1px dashed #ffe0f0;
+    border-top: 1px dashed var(--border-color);
     margin-top: 15px;
     margin-bottom: 0;
 }
+.diary-actions { text-align: center; margin-top: 20px; }
 
-.diary-actions {
-    text-align: center;
-    margin-top: 20px;
-}
-
-/* --- STYLES FOR REPLY FUNCTIONALITY & ATTRIBUTION --- */
-.reply-btn {
-    background: linear-gradient(45deg, #4CAF50, #81C784); 
-    color: white !important; 
-    padding: 8px 15px;
+/* Reply Functionality Styles */
+.reply-btn { /* This is a specific button type, use styled-button structure */
+    background: linear-gradient(45deg, var(--reply-btn-bg-start), var(--reply-btn-bg-end));
+    padding: 8px 18px; /* Smaller for replies */
     font-size: 0.9em;
-    border-radius: 20px;
-    margin-top: 10px;
-    border: none;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
-
-.reply-btn:hover, .reply-btn:active {
-    background: linear-gradient(45deg, #388E3C, #66BB6A);
-    transform: translateY(-1px);
-    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
-}
-
-.reply-btn:disabled { 
-    background: #cccccc;
-    color: #666666;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-}
-
-.small-reply-btn {
-    padding: 6px 12px;
-    font-size: 0.8em;
-}
+.small-reply-btn { padding: 6px 12px; font-size: 0.8em; }
 
 .reply-display {
     margin-top: 10px;
-    padding: 12px 15px; 
-    background-color: #e8f5e9; 
-    border-left: 4px solid #66bb6a; 
-    border-radius: 6px; 
+    padding: 12px 15px;
+    border-left: 4px solid var(--reply-display-border);
+    border-radius: 6px;
     font-size: 0.9em;
-    text-align: left; 
+    text-align: left;
+    background-color: var(--reply-display-bg);
 }
-.reply-display.chikoo-reply { 
-    background-color: #fff0f5; 
-    border-left-color: #ff80a0; 
+.reply-display.chikoo-reply { background-color: var(--reply-display-chikoo-bg); border-left-color: var(--reply-display-chikoo-border); }
+.reply-display.prath-reply { background-color: var(--reply-display-prath-bg); border-left-color: var(--reply-display-prath-border); }
+
+.reply-display p { margin: 5px 0 !important; color: var(--reply-display-text); line-height: 1.4; }
+.reply-display strong { color: var(--reply-display-strong-text); }
+.reply-display.chikoo-reply strong { color: var(--reply-display-chikoo-strong-text); }
+.reply-display.prath-reply strong { color: var(--reply-display-prath-strong-text); }
+.reply-timestamp { font-size: 0.8em; color: var(--subtle-text-color); font-style: italic; margin-top: 3px !important; }
+
+.entry-meta-info { font-size: 0.9em; color: var(--subtle-text-color); margin-bottom: 8px; font-style: italic; }
+.entry-meta-info strong { font-weight: 500; }
+.entry-meta-info.chikoo-entry strong { color: var(--primary-color); }
+.entry-meta-info.prath-entry strong { color: var(--secondary-color); }
+
+.reply-section-container {
+    padding: 10px; margin-top: 15px;
+    background-color: var(--input-bg); /* Consistent with notebook */
+    border-radius: 8px; border: 1px solid var(--border-color);
+    box-shadow: inset 0 1px 2px rgba(var(--shadow-color-rgb),0.03);
 }
-.reply-display.prath-reply { 
-    background-color: #e3f2fd; 
-    border-left-color: #5ab9ea; 
-}
+.diary-entry-list-item .entry-reply-section { margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border-color); }
+.feelings-table td .reply-btn { padding: 5px 10px; font-size: 0.85em; margin-top: 5px; }
+.feelings-table td .reply-display { font-size: 0.85em; padding: 8px; margin-top: 5px; }
+.feelings-table td .reply-display p { margin: 3px 0 !important; }
 
 
-.reply-display p {
-    margin: 5px 0 !important; 
-    color: #333;
-    line-height: 1.4;
-}
-.reply-display strong { 
-    color: #1e8e3e; 
-}
-.reply-display.chikoo-reply strong { color: #d94a6b; } 
-.reply-display.prath-reply strong { color: #1976d2; } 
-
-
-.reply-timestamp {
-    font-size: 0.8em;
-    color: #555;
-    font-style: italic;
-    margin-top: 3px !important;
-}
-
-.entry-meta-info { 
-    font-size: 0.9em;
-    color: #666;
-    margin-bottom: 8px;
-    font-style: italic;
-}
-.entry-meta-info strong { 
-    font-weight: bold;
-}
-.entry-meta-info.chikoo-entry strong { color: #d94a6b; }
-.entry-meta-info.prath-entry strong { color: #1976d2; }
-
-
-.reply-section-container { 
-    padding: 10px;
-    margin-top: 15px;
-    background-color: #fdfdfd; 
-    border-radius: 8px;
-    border: 1px solid #f0f0f0;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
-}
-
-.diary-entry-list-item .entry-reply-section {
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px dashed #e0e0e0; 
-}
-
-.feelings-table td .reply-btn {
-    padding: 5px 10px;
-    font-size: 0.85em;
-    margin-top: 5px;
-}
-
-.feelings-table td .reply-display {
-    font-size: 0.85em;
-    padding: 8px;
-    margin-top: 5px;
-}
-
-.feelings-table td .reply-display p {
-    margin: 3px 0 !important;
-}
-/* --- END STYLES FOR REPLY FUNCTIONALITY --- */
-
-/* --- STYLES FOR DARE GAME --- */
+/* Dare Game Styles */
 .dare-display-area {
-    background: #fff8e1; /* Light yellow, playful */
-    border: 2px dashed #ffc107; /* Amber dashed border */
+    background: var(--dare-display-bg);
+    border: 2px dashed var(--dare-display-border);
     border-radius: 15px;
-    padding: 25px 20px;
+    padding: 30px 25px; /* More padding */
     margin: 20px auto;
-    min-height: 100px;
+    min-height: 120px; /* Good height */
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
-    box-shadow: 0 5px 15px rgba(255, 193, 7, 0.2);
+    box-shadow: 0 5px 15px rgba(var(--shadow-color-rgb), 0.1);
 }
-
 #dareText {
-    font-size: clamp(1.1em, 4vw, 1.5em); /* Larger font for dare */
-    color: #856404; /* Darker yellow/brown for text */
-    font-weight: bold;
-    line-height: 1.5;
+    font-size: clamp(1.2em, 4vw, 1.6em); /* Larger dare text */
+    color: var(--dare-text-color);
+    font-weight: 500;
+    line-height: 1.6;
     margin: 0;
 }
-
-.dare-actions {
-    text-align: center;
-    margin-top: 25px;
-}
-
-#nextDareBtn {
-    background: linear-gradient(45deg, #ff7e5f, #feb47b); /* Fiery gradient */
+.dare-actions { text-align: center; margin-top: 25px; }
+#nextDareBtn.dare-button { /* Specific styling for dare button */
+    background: linear-gradient(45deg, var(--dare-button-bg-start), var(--dare-button-bg-end));
     color: white;
-    font-size: 1.2em;
-    padding: 15px 30px;
-    box-shadow: 0 5px 15px rgba(255, 126, 95, 0.4);
+    font-size: 1.15em;
+    padding: 14px 28px;
+    box-shadow: 0 5px 15px rgba(255, 126, 95, 0.3); /* Dare-specific shadow color */
 }
-
-#nextDareBtn:hover, #nextDareBtn:active {
-    background: linear-gradient(45deg, #ff6a4f, #fea46b);
-    box-shadow: 0 7px 20px rgba(255, 126, 95, 0.5);
+#nextDareBtn.dare-button:hover, #nextDareBtn.dare-button:active {
+    box-shadow: 0 7px 20px rgba(255, 126, 95, 0.4);
 }
-/* --- END STYLES FOR DARE GAME --- */
+#nextDareBtn.dare-button .material-icons { color: white; }
 
 
-/* Additional mobile-specific improvements */
+/* Responsive Adjustments */
 @media (max-width: 480px) {
-    body {
-        padding: 10px;
-    }
-    
-    .login-box {
-        padding: 20px;
-    }
-    .login-options button {
-        padding: 15px;
-        font-size: 1.1em;
-    }
+    body { padding: 10px; }
+    .login-box { padding: 20px; }
+    .login-options .login-main-btn { padding: 14px; font-size: 1.05em; }
+    .app-header-info { padding: 10px 12px; margin-bottom: 15px; flex-direction: column; gap: 8px; align-items: flex-start;}
+    .header-controls { width: 100%; justify-content: space-between;}
 
-    .app-header-info {
-        padding: 8px 10px;
-        margin-bottom: 10px;
-    }
-    #loggedInUserDisplay { font-size: 0.85em; }
-    .logout-btn { padding: 6px 10px; font-size: 0.8em; }
-    
-    .container {
-        padding: 15px 12px;
-        border-radius: 15px;
-    }
-    
-    .options-grid {
-        gap: 15px;
-        padding: 10px;
-    }
-    
-    .option-box {
-        padding: 20px 15px;
-        border-radius: 15px;
-    }
-    
-    .main-option {
-        min-height: 85px;
-    }
-    
-    .bunny-button { 
-        min-height: 80px; 
-        padding: 20px; 
-    }
-    
-    .notebook {
-        padding: 15px;
-        margin: 15px auto;
-    }
-    
-    .notebook textarea {
-        padding: 12px;
-        min-height: 100px;
-    }
-    
-    button {
-        padding: 12px 18px;
-        margin: 6px 3px;
-        font-size: 0.95em;
-    }
-    
-    .calendar-grid {
-        gap: 6px;
-        padding: 12px;
-    }
-    
-    .calendar-day {
-        min-height: 35px;
-        border-radius: 6px;
-    }
-    
-    .feelings-table th, .feelings-table td {
-        padding: 8px 6px;
-        font-size: 0.85em;
-    }
-    
-    .emotion-tag {
-        padding: 3px 6px;
-        font-size: 0.75em;
-    }
-    
-    .confirmation-box {
-        padding: 25px 15px;
-    }
-    
-    #missYouPopup { 
-        padding: 20px 15px; 
-        width: 90%;
-    }
+    .container { padding: 15px 12px; border-radius: 12px; }
+    .options-grid { gap: 15px; padding: 10px; grid-template-columns: 1fr; /* Single column on small screens */ }
+    .option-box { padding: 20px 15px; border-radius: 12px; min-height: 100px; }
+    .option-box-emoji.bunny-button { padding: 10px; }
+    .bunny-button .bunny-face { font-size: 3em; }
 
-    .dare-display-area {
-        padding: 20px 15px;
-    }
-    #dareText {
-        font-size: 1em;
-    }
-    #nextDareBtn {
-        font-size: 1em;
-        padding: 12px 25px;
-    }
+    .notebook { padding: 15px; margin: 15px auto; }
+    .notebook textarea { padding: 12px; min-height: 100px; }
+    .styled-button { padding: 10px 20px; font-size: 0.9em; }
+    .calendar-grid { gap: 5px; padding: 8px; }
+    .calendar-day { min-height: 40px; border-radius: 6px; font-size: 0.9em; padding-top: 4px;}
+    .entry-dots-container { bottom: 4px; }
+    .entry-dot { width: 5px; height: 5px; }
+    .calendar-nav-btn .material-icons { font-size: 24px; }
+    .feelings-table th, .feelings-table td { padding: 8px 6px; font-size: 0.8em; }
+    .emotion-tag { padding: 4px 8px; font-size: 0.8em; }
+    .confirmation-box { padding: 25px 15px; }
+    #missYouPopup { padding: 25px 15px; width: 90%; }
+    .dare-display-area { padding: 20px 15px; }
+    #dareText { font-size: 1.1em; }
+    #nextDareBtn.dare-button { font-size: 1em; padding: 12px 25px; }
+    .feelings-options-grid { grid-template-columns: 1fr; }
 }
 
-/* Tablet styles */
 @media (min-width: 481px) and (max-width: 768px) {
-    .options-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr); /* Adjusted for potentially 3 items + bunny */
-        gap: 20px;
-        max-width: 600px;
-        margin: 0 auto;
-    }
-     /* Ensure bunny button spans full width if it's the last odd item */
-    .options-grid > .bunny-button:last-child:nth-child(odd) {
-        grid-column: span 2;
-    }
-    
-    .option-box {
-        max-width: none; /* Allow option boxes to fill grid cells */
-    }
-    
-    .calendar-grid {
-        max-width: 600px;
-        margin: 0 auto;
-    }
+    .options-grid { grid-template-columns: repeat(2, 1fr); max-width: 600px; margin: 0 auto; }
+    .options-grid > .option-box-emoji.bunny-button:last-child:nth-child(odd) { grid-column: span 2; } /* Full width if last odd */
+    .option-box { max-width: none; }
+    .calendar-grid { max-width: 600px; margin: 0 auto; gap: 6px; }
+    .feelings-options-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* Desktop styles */
 @media (min-width: 769px) {
-    body {
-        padding: 20px;
-    }
-    
-    .options-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Adjusted minmax */
-        gap: 30px;
-        padding: 20px;
-        max-width: none;
-    }
-    
-    .option-box { 
-        min-height: 120px;
-        padding: 30px;
-        font-size: 1.4em;
-        max-width: none;
-    }
-    
-    .main-option {
-        min-height: 120px;
-    }
-        
-    .container {
-        padding: 30px;
-    }
-    
-    .notebook {
-        padding: 25px;
-        max-width: 600px; 
-    }
-    
-    .notebook textarea {
-        min-height: 150px;
-        padding: 15px;
-        font-size: 1.1em;
-    }
-    
-    button {
-        padding: 12px 25px; 
-        font-size: 1.1em;
-        margin: 10px 5px;
-    }
-}
+    body { padding: 20px; }
+    .options-grid { gap: 25px; padding: 20px; }
+    .option-box { min-height: 140px; padding: 30px; font-size: 1.25em; }
+    .container { padding: 30px; }
+    .notebook { padding: 25px; max-width: 650px; }
+    .notebook textarea { min-height: 150px; padding: 15px; font-size: 1.05em; }
+    .styled-button { padding: 12px 25px; font-size: 1em; }
+    .calendar-grid { gap: 10px; } /* More space on desktop */
+    .feelings-options-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
 
+}
