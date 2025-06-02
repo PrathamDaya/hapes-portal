@@ -1,1145 +1,974 @@
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    background: linear-gradient(to bottom right, #fceaff, #fff0f5); /* Main app background */
-    display: flex; /* This will be controlled by JS for login/app visibility */
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 15px;
-    color: #5c3b4c;
-    overflow-x: hidden;
-    box-sizing: border-box;
-}
-
-/* LOGIN SCREEN STYLES */
-#loginContainer {
-    display: flex; 
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    width: 100%; 
-    padding: 20px;
-    box-sizing: border-box;
-    background: linear-gradient(to bottom right, #fde4f0, #fff5f8); 
-    animation: fadeInSimple 0.5s ease-out;
-}
-
-.login-box {
-    background: #fff;
-    padding: 30px 40px;
-    border-radius: 25px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-    text-align: center;
-    width: 100%;
-    max-width: 400px;
-}
-
-.login-box h1 {
-    color: #d94a6b;
-    margin-bottom: 25px;
-    font-size: clamp(1.8em, 5vw, 2.4em);
-}
-
-.login-options button {
-    display: block;
-    width: 100%;
-    padding: 18px 20px;
-    margin-bottom: 15px;
-    font-size: 1.2em;
-    font-weight: bold;
-    border-radius: 15px;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border: none;
-}
-
-.login-options button.chikoo-btn {
-    background: linear-gradient(45deg, #ffadc5, #ff80a0);
-    color: white;
-    box-shadow: 0 4px 12px rgba(255, 128, 160, 0.3);
-}
-.login-options button.chikoo-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(255, 128, 160, 0.4);
-}
-
-.login-options button.prath-btn {
-    background: linear-gradient(45deg, #7fd2ff, #5ab9ea);
-    color: white;
-    box-shadow: 0 4px 12px rgba(90, 185, 234, 0.3);
-}
-.login-options button.prath-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(90, 185, 234, 0.4);
-}
-
-@keyframes fadeInSimple {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-/* END LOGIN SCREEN STYLES */
-
-
-#appContainer {
-    display: none; 
-    width: 100%;
-    max-width: 800px;
-    box-sizing: border-box;
-}
-
-/* APP HEADER INFO (LOGGED IN USER & LOGOUT) */
-.app-header-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 15px; 
-    background-color: rgba(255, 255, 255, 0.85);
-    border-radius: 12px;
-    margin-bottom: 15px; 
-    box-shadow: 0 3px 8px rgba(0,0,0,0.07);
-}
-
-#loggedInUserDisplay {
-    font-size: 0.95em;
-    color: #c73f60;
-    font-weight: bold;
-}
-
-.logout-btn {
-    background: #e9edf0; 
-    color: #555; 
-    border: 1px solid #d5d9dc;
-    padding: 8px 15px; 
-    font-size: 0.9em; 
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background 0.2s ease, border-color 0.2s ease;
-}
-.logout-btn:hover {
-    background: #d8dde1;
-    border-color: #c8ccd0;
-}
-
-
-.screen {
-    display: none;
-    width: 100%;
-    animation: fadeInScale 0.6s ease-out forwards;
-    transform-origin: center center;
-}
-
-.screen.active {
-    display: block;
-}
-
-@keyframes fadeInScale {
-    from { opacity: 0; transform: translateY(20px) scale(0.98); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-/* Main Home Page Styles */
-#homeScreen .main-header {
-    text-align: center;
-    margin-bottom: 30px;
-    padding: 15px;
-}
-
-#homeScreen .main-header h1 {
-    color: #d94a6b;
-    font-size: clamp(2em, 6vw, 2.8em); 
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
-    margin: 0;
-    line-height: 1.2;
-}
-
-.options-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding: 15px;
-    align-items: center;
-}
-
-.option-box {
-    background: #fff;
-    border-radius: 20px;
-    padding: 25px 20px;
-    text-align: center;
-    font-size: clamp(1.1em, 4vw, 1.4em);
-    color: #d94a6b;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-    border: 1px solid #ffe0f0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 80px;
-    width: 100%;
-    max-width: 320px; /* Increased max-width for better look */
-}
-
-.option-box:hover, .option-box:active {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
-}
-
-.main-option { /* Style for all main options including new game button */
-    font-weight: bold;
-    letter-spacing: 0.5px;
-    min-height: 100px;
-}
-/* Specific style for the new game button if needed, can be like others */
-.option-box.game-dare-option {
-    /* Example: if you want a different background or icon */
-    /* background: linear-gradient(45deg, #ff6b6b, #ee5253); */
-    /* color: white; */
-}
-
-
-#homeScreen .main-footer, .portal-footer {
-    text-align: center;
-    margin-top: 30px;
-    color: #a07a8b;
-    font-size: 0.85em;
-    padding: 0 15px;
-}
-
-/* Bunny Button Styles */
-.bunny-button {
-    background: linear-gradient(45deg, #ffc0cb, #ff80a0); 
-    color: white;
-    font-size: 1.5em; 
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0px; 
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); 
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-    border: 1px solid #ff6699;
-    cursor: pointer;
-    padding: 30px; 
-    min-height: 120px; 
-}
-
-.bunny-button:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
-    background: linear-gradient(45deg, #ff80a0, #ffc0cb); 
-}
-
-.bunny-button .bunny-face {
-    display: inline-block;
-    font-size: 3em; 
-    line-height: 1; 
-    animation: bounce 0.8s infinite alternate ease-in-out; 
-}
-
-.bunny-button .bunny-face.spinning {
-    animation: spin 2s linear infinite; 
-}
-
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-@keyframes bounce { 
-    0% { transform: translateY(0); }
-    100% { transform: translateY(-5px); } 
-}
-
-
-/* Common Portal Styles */
-.container {
-    background: #fff;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    padding: 20px 15px;
-    text-align: center;
-    width: 100%;
-    box-sizing: border-box;
-    position: relative;
-    margin: 0 auto;
-}
-
-.container header {
-    margin-bottom: 25px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #eee;
-    position: relative;
-}
-
-.container header h1 {
-    color: #d94a6b;
-    font-size: clamp(1.6em, 5vw, 2.2em);
-    margin: 0;
-    padding-top: 40px; 
-    line-height: 1.2;
-}
-
-.back-to-home-btn {
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    background: #f0f0f0;
-    color: #666;
-    border: none;
-    padding: 12px 16px;
-    border-radius: 15px;
-    cursor: pointer;
-    font-size: 0.9em;
-    transition: background 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    touch-action: manipulation; 
-}
-
-.back-to-home-btn:hover, .back-to-home-btn:active {
-    background: #e0e0e0;
-}
-
-.page {
-    display: none;
-    padding: 15px 0;
-    animation: fadeIn 0.5s ease-out forwards;
-}
-
-.page.active {
-    display: block;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.notebook {
-    background: #fdfdfd;
-    border: 1px solid #e0e0e0;
-    border-radius: 15px;
-    padding: 20px;
-    margin: 20px auto;
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
-    max-width: 100%;
-}
-
-.notebook textarea {
-    width: 100%;
-    min-height: 120px;
-    padding: 15px;
-    border: 2px solid #ddd;
-    border-radius: 12px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 1em;
-    color: #444;
-    resize: vertical;
-    margin-bottom: 15px;
-    box-sizing: border-box;
-    line-height: 1.5;
-}
-
-.notebook textarea:focus {
-    outline: none;
-    border-color: #d94a6b;
-    box-shadow: 0 0 8px rgba(217, 74, 107, 0.3);
-}
-
-button {
-    background: linear-gradient(45deg, #ff80a0, #d94a6b);
-    color: white;
-    border: none;
-    padding: 14px 20px;
-    border-radius: 25px;
-    cursor: pointer;
-    font-size: 1em;
-    font-weight: bold;
-    margin: 8px 4px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease; 
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    touch-action: manipulation;
-    min-height: 48px; 
-}
-
-button:hover, button:active {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-}
-
-button:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-button:disabled {
-    background: #cccccc;
-    color: #666666; 
-    cursor: not-allowed;
-    box-shadow: none;
-    transform: none;
-}
-
-.back-btn, .view-all-btn {
-    background: #f0f0f0;
-    color: #666;
-    border: 1px solid #ddd;
-}
-
-.back-btn:hover, .view-all-btn:hover, 
-.back-btn:active, .view-all-btn:active {
-    background: #e0e0e0;
-}
-
-.confirmation-box {
-    background: #f9f9f9;
-    border: 1px solid #e0e0e0;
-    border-radius: 20px;
-    padding: 30px 20px;
-    margin: 20px auto;
-    max-width: 100%;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-}
-
-/* Feelings Portal Specific Styles */
-#feelingsPortalScreen .option-box {
-    font-size: clamp(1em, 4vw, 1.2em); 
-    padding: 20px 15px; 
-    min-height: 70px; 
-    max-width: 280px; 
-    margin: 8px auto; 
-    font-weight: 600; 
-    letter-spacing: 0.3px; 
-}
-#feelingsPortalScreen .option-box.grievance { 
-    background-color: #ffebf0; color: #c51162; border-color: #ffcdd2; 
-}
-#feelingsPortalScreen .option-box.appreciate { 
-    background-color: #e8f5e9; color: #2e7d32; border-color: #c8e6c9; 
-}
-#feelingsPortalScreen .option-box.sad { 
-    background-color: #e3f2fd; color: #1565c0; border-color: #bbdefb; 
-}
-#feelingsPortalScreen .option-box.happy { 
-    background-color: #fff8e1; color: #ff8f00; border-color: #ffecb3; 
-}
-
-#feelingsPortalScreen .option-box.grievance,
-#feelingsPortalScreen .option-box.appreciate,
-#feelingsPortalScreen .option-box.sad,
-#feelingsPortalScreen .option-box.happy {
-    font-size: 1.4em;
-    padding: 30px;
-    min-height: 120px;
-}
-
-
-#feelingsPortalScreen .option-box:hover,
-#feelingsPortalScreen .option-box:active {
-    transform: translateY(-3px) scale(1.01);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-}
-
-/* Animation Styles */
-#feelings-animation-container {
-    width: clamp(120px, 30vw, 200px);
-    height: clamp(90px, 25vw, 150px);
-    margin: 0 auto 20px;
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#feelings-mail-icon {
-    font-size: clamp(2em, 8vw, 3em);
-    color: #d94a6b;
-    position: relative;
-    animation: bounceIn 1s forwards;
-    display: inline-block;
-    z-index: 2;
-}
-
-#feelings-message-box {
-    background: #fff;
-    border: 1px solid #d94a6b;
-    border-radius: 10px;
-    padding: 8px 12px;
-    position: absolute;
-    font-size: clamp(0.7em, 3vw, 0.8em);
-    color: #5c3b4c;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0;
-    animation: messageBoxRise 1.5s 0.5s forwards;
-    max-width: 140px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    z-index: 1;
-}
-
-@keyframes bounceIn {
-    0% { transform: scale(0); opacity: 0; }
-    50% { transform: scale(1.2); opacity: 1; }
-    70% { transform: scale(0.9); }
-    100% { transform: scale(1); }
-}
-
-@keyframes messageBoxRise {
-    0% { opacity: 0; transform: translate(-50%, 0%); }
-    100% { opacity: 1; transform: translate(-50%, -120%); }
-}
-
-#feelings-thank-you-message, #diaryConfirmationPage p {
-    font-size: clamp(1em, 4vw, 1.1em);
-    color: #5c3b4c;
-    margin-bottom: 25px;
-    font-weight: 500;
-    line-height: 1.4;
-}
-
-/* Miss You Popup Styles */
-#missYouPopup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #fff;
-    border: 2px solid #d94a6b;
-    padding: 30px; 
-    border-radius: 20px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-    text-align: center;
-    z-index: 1001; 
-    display: none; 
-    max-width: 400px; 
-    width: 90%; 
-    box-sizing: border-box;
-    font-size: 1.1em; 
-    color: #5c3b4c;
-    line-height: 1.6;
-}
-
-#missYouPopup p {
-    margin: 10px 0;
-    font-weight: 500;
-}
-
-#missYouPopup button {
-    background: linear-gradient(45deg, #d94a6b, #ff80a0);
-    color: white;
-    border: none;
-    padding: 12px 25px; 
-    border-radius: 25px;
-    cursor: pointer;
-    font-size: 1em; 
-    font-weight: bold;
-    margin-top: 20px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-#missYouPopup button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-
-#overlay { 
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.6); 
-    z-index: 1000; 
-    display: none; 
-    backdrop-filter: blur(3px); 
-}
-
-
-/* Entries List Styles */
-.entries-list-container {
-    max-height: 400px; 
-    overflow-y: auto;
-    background: #fcfcfc;
-    border: 1px solid #eee;
-    border-radius: 15px;
-    padding: 15px;
-    margin-top: 20px;
-    text-align: left;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);
-}
-
-.feelings-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 15px;
-    font-size: 0.9em;
-}
-
-.feelings-table th, .feelings-table td {
-    border: 1px solid #eee;
-    padding: 10px 8px;
-    text-align: left;
-    vertical-align: top; 
-    word-wrap: break-word;
-    min-width: 80px; 
-}
-
-.feelings-table th {
-    background-color: #f5f5f5;
-    font-weight: bold;
-    color: #d94a6b;
-    font-size: 0.85em;
-    position: sticky; 
-    top: -1px; 
-    z-index: 1;
-}
-
-.feelings-table tr:nth-child(even) {
-    background-color: #fbfbfb;
-}
-.feelings-table tr:hover {
-    background-color: #fff3f8; 
-}
-
-
-.emotion-tag {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.8em;
-    font-weight: 600;
-    white-space: nowrap;
-}
-.emotion-tag.grievance { background-color: #ffcdd2; color: #c51162; }
-.emotion-tag.appreciate { background-color: #c8e6c9; color: #1b5e20; }
-.emotion-tag.sad { background-color: #bbdefb; color: #0d47a1; }
-.emotion-tag.happy { background-color: #ffecb3; color: #ff6f00; }
-.emotion-tag.unknown { background-color: #e0e0e0; color: #424242; }
-
-
-/* Calendar Styles */
-.calendar-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-    background: #f8f8f8;
-    padding: 15px;
-    border-radius: 15px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-}
-
-.calendar-header h2 {
-    margin: 0;
-    color: #d94a6b;
-    font-size: clamp(1.4em, 5vw, 1.8em);
-    text-align: center;
-    flex: 1;
-}
-
-.calendar-header button {
-    background: #f0f0f0;
-    color: #666;
-    border: 1px solid #ddd;
-    padding: 12px 15px;
-    border-radius: 12px;
-    font-size: 1.2em;
-    min-width: 50px;
-    min-height: 48px;
-    touch-action: manipulation;
-}
-
-.calendar-header button:hover, .calendar-header button:active {
-    background: #e0e0e0;
-}
-
-.calendar-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 8px;
-    padding: 15px;
-    background: #fdfdfd;
-    border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-}
-
-.calendar-day-header {
-    font-weight: bold;
-    color: #d94a6b;
-    text-align: center;
-    padding: 8px 0;
-    font-size: clamp(0.7em, 3vw, 0.9em);
-}
-
-.calendar-day {
-    background: #fcfcfc;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    aspect-ratio: 1 / 1;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: clamp(0.8em, 3.5vw, 1.1em);
-    cursor: pointer;
-    transition: background 0.2s ease, transform 0.2s ease;
-    color: #5c3b4c;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-    min-height: 40px;
-    touch-action: manipulation;
-}
-
-.calendar-day.empty {
-    background: #f0f0f0;
-    cursor: default;
-    box-shadow: none;
-    border-color: #ddd;
-}
-
-.calendar-day:not(.empty):hover,
-.calendar-day:not(.empty):active {
-    background: #ffe6f0;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
-}
-
-.calendar-day.today {
-    background: linear-gradient(45deg, #ff9eb2, #ff80a0);
-    color: white;
-    border: 1px solid #ff80a0;
-    font-weight: bold;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.calendar-day.has-entry {
-    background: #d94a6b;
-    color: white;
-    font-weight: bold;
-    border: 1px solid #c03a5b;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
-}
-.calendar-day.has-entry.today { 
-    background: linear-gradient(45deg, #c03a5b, #d94a6b); 
-}
-
-
-.calendar-day.has-entry:hover,
-.calendar-day.has-entry:active {
-    background: #c03a5b;
-}
-
-/* Diary Entry Styles */
-.date-display {
-    font-size: clamp(1em, 4vw, 1.2em);
-    color: #d94a6b;
-    font-weight: bold;
-    margin-bottom: 20px;
-    line-height: 1.3;
-}
-
-.notebook.view-only p {
-    text-align: left;
-    font-size: clamp(1em, 3.5vw, 1.1em);
-    color: #444;
-    line-height: 1.6;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    margin-bottom: 8px; 
-}
-.entry-attribution {
-    font-size: 0.85em;
-    color: #777;
-    font-style: italic;
-    text-align: left;
-    margin-top: 5px;
-    margin-bottom: 15px; 
-}
-
-
-.diary-entry-list-item {
-    padding: 15px;
-    margin-bottom: 15px;
-    background: #fff;
-    border: 1px solid #f0f0f0;
-    border-radius: 12px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-}
-.diary-entry-list-item:hover {
-    border-color: #e0e0e0;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-}
-
-.diary-entry-list-item h3 {
-    color: #d94a6b;
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-size: clamp(1.1em, 4vw, 1.2em);
-    line-height: 1.3;
-}
-
-.diary-entry-list-item p.entry-content { 
-    color: #5c3b4c;
-    font-size: clamp(0.9em, 3.5vw, 0.95em);
-    line-height: 1.5;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    margin: 0 0 8px 0; 
-}
-.diary-entry-list-item .entry-attribution { 
-    font-size: 0.8em;
-    color: #888;
-    font-style: italic;
-    margin-bottom: 10px;
-}
-
-
-.diary-entry-list-item hr {
-    border: none;
-    border-top: 1px dashed #ffe0f0;
-    margin-top: 15px;
-    margin-bottom: 0;
-}
-
-.diary-actions {
-    text-align: center;
-    margin-top: 20px;
-}
-
-/* --- STYLES FOR REPLY FUNCTIONALITY & ATTRIBUTION --- */
-.reply-btn {
-    background: linear-gradient(45deg, #4CAF50, #81C784); 
-    color: white !important; 
-    padding: 8px 15px;
-    font-size: 0.9em;
-    border-radius: 20px;
-    margin-top: 10px;
-    border: none;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.reply-btn:hover, .reply-btn:active {
-    background: linear-gradient(45deg, #388E3C, #66BB6A);
-    transform: translateY(-1px);
-    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
-}
-
-.reply-btn:disabled { 
-    background: #cccccc;
-    color: #666666;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
-}
-
-.small-reply-btn {
-    padding: 6px 12px;
-    font-size: 0.8em;
-}
-
-.reply-display {
-    margin-top: 10px;
-    padding: 12px 15px; 
-    background-color: #e8f5e9; 
-    border-left: 4px solid #66bb6a; 
-    border-radius: 6px; 
-    font-size: 0.9em;
-    text-align: left; 
-}
-.reply-display.chikoo-reply { 
-    background-color: #fff0f5; 
-    border-left-color: #ff80a0; 
-}
-.reply-display.prath-reply { 
-    background-color: #e3f2fd; 
-    border-left-color: #5ab9ea; 
-}
-
-
-.reply-display p {
-    margin: 5px 0 !important; 
-    color: #333;
-    line-height: 1.4;
-}
-.reply-display strong { 
-    color: #1e8e3e; 
-}
-.reply-display.chikoo-reply strong { color: #d94a6b; } 
-.reply-display.prath-reply strong { color: #1976d2; } 
-
-
-.reply-timestamp {
-    font-size: 0.8em;
-    color: #555;
-    font-style: italic;
-    margin-top: 3px !important;
-}
-
-.entry-meta-info { 
-    font-size: 0.9em;
-    color: #666;
-    margin-bottom: 8px;
-    font-style: italic;
-}
-.entry-meta-info strong { 
-    font-weight: bold;
-}
-.entry-meta-info.chikoo-entry strong { color: #d94a6b; }
-.entry-meta-info.prath-entry strong { color: #1976d2; }
-
-
-.reply-section-container { 
-    padding: 10px;
-    margin-top: 15px;
-    background-color: #fdfdfd; 
-    border-radius: 8px;
-    border: 1px solid #f0f0f0;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
-}
-
-.diary-entry-list-item .entry-reply-section {
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px dashed #e0e0e0; 
-}
-
-.feelings-table td .reply-btn {
-    padding: 5px 10px;
-    font-size: 0.85em;
-    margin-top: 5px;
-}
-
-.feelings-table td .reply-display {
-    font-size: 0.85em;
-    padding: 8px;
-    margin-top: 5px;
-}
-
-.feelings-table td .reply-display p {
-    margin: 3px 0 !important;
-}
-/* --- END STYLES FOR REPLY FUNCTIONALITY --- */
-
-/* --- STYLES FOR DARE GAME --- */
-.dare-display-area {
-    background: #fff8e1; /* Light yellow, playful */
-    border: 2px dashed #ffc107; /* Amber dashed border */
-    border-radius: 15px;
-    padding: 25px 20px;
-    margin: 20px auto;
-    min-height: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    box-shadow: 0 5px 15px rgba(255, 193, 7, 0.2);
-}
-
-#dareText {
-    font-size: clamp(1.1em, 4vw, 1.5em); /* Larger font for dare */
-    color: #856404; /* Darker yellow/brown for text */
-    font-weight: bold;
-    line-height: 1.5;
-    margin: 0;
-}
-
-.dare-actions {
-    text-align: center;
-    margin-top: 25px;
-}
-
-#nextDareBtn {
-    background: linear-gradient(45deg, #ff7e5f, #feb47b); /* Fiery gradient */
-    color: white;
-    font-size: 1.2em;
-    padding: 15px 30px;
-    box-shadow: 0 5px 15px rgba(255, 126, 95, 0.4);
-}
-
-#nextDareBtn:hover, #nextDareBtn:active {
-    background: linear-gradient(45deg, #ff6a4f, #fea46b);
-    box-shadow: 0 7px 20px rgba(255, 126, 95, 0.5);
-}
-/* --- END STYLES FOR DARE GAME --- */
-
-
-/* Additional mobile-specific improvements */
-@media (max-width: 480px) {
-    body {
-        padding: 10px;
-    }
-    
-    .login-box {
-        padding: 20px;
-    }
-    .login-options button {
-        padding: 15px;
-        font-size: 1.1em;
-    }
-
-    .app-header-info {
-        padding: 8px 10px;
-        margin-bottom: 10px;
-    }
-    #loggedInUserDisplay { font-size: 0.85em; }
-    .logout-btn { padding: 6px 10px; font-size: 0.8em; }
-    
-    .container {
-        padding: 15px 12px;
-        border-radius: 15px;
-    }
-    
-    .options-grid {
-        gap: 15px;
-        padding: 10px;
-    }
-    
-    .option-box {
-        padding: 20px 15px;
-        border-radius: 15px;
-    }
-    
-    .main-option {
-        min-height: 85px;
-    }
-    
-    .bunny-button { 
-        min-height: 80px; 
-        padding: 20px; 
-    }
-    
-    .notebook {
-        padding: 15px;
-        margin: 15px auto;
-    }
-    
-    .notebook textarea {
-        padding: 12px;
-        min-height: 100px;
-    }
-    
-    button {
-        padding: 12px 18px;
-        margin: 6px 3px;
-        font-size: 0.95em;
-    }
-    
-    .calendar-grid {
-        gap: 6px;
-        padding: 12px;
-    }
-    
-    .calendar-day {
-        min-height: 35px;
-        border-radius: 6px;
-    }
-    
-    .feelings-table th, .feelings-table td {
-        padding: 8px 6px;
-        font-size: 0.85em;
-    }
-    
-    .emotion-tag {
-        padding: 3px 6px;
-        font-size: 0.75em;
-    }
-    
-    .confirmation-box {
-        padding: 25px 15px;
-    }
-    
-    #missYouPopup { 
-        padding: 20px 15px; 
-        width: 90%;
-    }
-
-    .dare-display-area {
-        padding: 20px 15px;
-    }
-    #dareText {
-        font-size: 1em;
-    }
-    #nextDareBtn {
-        font-size: 1em;
-        padding: 12px 25px;
+// --- FULLY UPDATED script.js with User Login, Attribution, Reply & Dare Game Functionality ---
+// IMPORTANT: REPLACE THIS WITH YOUR ACTUAL DEPLOYED WEB APP URL from Google Apps Script
+const scriptURL = 'https://script.google.com/macros/s/AKfycbxMsH6HVLcv0yGQBKZCdOwdAUi9k_Jv4JeIOotqicQlef0mP_mIADlEVbUuzS8pPsZ27g/exec'; // <<< REPLACE WITH YOUR URL
+
+// DOM Elements
+const loginContainer = document.getElementById('loginContainer');
+const appContainer = document.getElementById('appContainer');
+const loggedInUserDisplay = document.getElementById('loggedInUserDisplay');
+const dynamicUserNameElements = document.querySelectorAll('.dynamicUserName');
+
+const screens = document.querySelectorAll('.screen');
+const feelingsPages = document.querySelectorAll('#feelingsPortalScreen .page');
+const diaryPages = document.querySelectorAll('#diaryScreen .page');
+
+// Dare Game Elements
+const dareTextElement = document.getElementById('dareText');
+
+// Global variables for application state
+let currentUser = ''; 
+const SCRIPT_USER_KEY = 'hetuAppCurrentUser';
+let currentEmotion = '';
+let calendarCurrentDate = new Date();
+let diaryEntries = {}; 
+
+// --- Dares List ---
+// Dares are designed for couples, aiming for playful, intimate, and sexy interactions.
+// "Upper body nudity" is permitted as per request.
+// The term "partner" is used to refer to the other person in the couple.
+const coupleDares = [
+    "Give your partner a slow, sensual massage on their neck and shoulders for 5 minutes.",
+    "Whisper three things you find sexiest about your partner into their ear.",
+    "Blindfold your partner and tease them with light touches for 2 minutes. Then, they do it to you.",
+    "Choose a song and give your partner a private slow dance.",
+    "Write a short, steamy compliment on a piece of paper and have your partner read it aloud.",
+    "Let your partner slowly unbutton or remove one item of your upper clothing. Then, you do the same for them.",
+    "Describe your favorite memory of a passionate moment with your partner in detail.",
+    "Feed your partner a piece of fruit (like a strawberry or grape) in the most seductive way you can.",
+    "Kiss your partner passionately for at least 60 seconds, as if it's your first time.",
+    "Take turns tracing words of affection on each other's backs with your fingertips. Guess the words.",
+    "Share a secret fantasy you've had about your partner.",
+    "Let your partner choose a spot on your upper body to kiss. Then, you choose a spot on theirs.",
+    "Remove your top. Let your partner admire you for a minute. Then, they remove their top for you to admire.",
+    "Sit facing each other, knees touching. Maintain eye contact for 2 minutes while caressing hands.",
+    "Give your partner a lingering kiss on their collarbone or shoulder blade.",
+    "Tell your partner, in a sultry voice, what you want to do with them later tonight.",
+    "Gently bite your partner's earlobe or lip while whispering something naughty.",
+    "Take turns applying a small amount of lotion or oil to each other's arms or chest.",
+    "Lie down together and cuddle, sharing soft kisses and whispers for 5 minutes, no talking above a whisper.",
+    "Blindfold your partner. Kiss them in three different places on their upper body. They guess where.",
+    "Slowly lick a drop of honey or chocolate syrup off your partner's finger or lips.",
+    "Let your partner take a 'body shot' (non-alcoholic, like whipped cream) off your chest or stomach (if comfortable, otherwise shoulder).",
+    "Recreate your very first kiss with your partner.",
+    "Give your partner a foot massage, focusing on sensual touches.",
+    "Both of you remove your shirts. Take turns complimenting each other's physique.",
+    "Write 'I want you' with lipstick on your partner's chest or shoulder.",
+    "Playfully spank your partner (lightly!) and tell them they've been naughty.",
+    "Share a shower or bath together, focusing on washing each other.",
+    "Let your partner choose one item of your clothing (upper body) for you to remove. You cannot say no.",
+    "Kiss your partner from their lips, down their neck, to their chest, very slowly.",
+    "Tell your partner a secret desire you have for your relationship's intimacy.",
+    "Blindfold yourself and let your partner guide your hands over their upper body.",
+    "Take turns giving each other eskimo kisses, then butterfly kisses.",
+    "Whisper your partner's name seductively while looking deep into their eyes.",
+    "Set a timer for 3 minutes. You can only communicate with kisses and caresses.",
+    "Let your partner draw a temporary tattoo on your upper arm or shoulder blade with a body-safe marker.",
+    "Both remove your tops. Dance together to a sexy song, skin to skin.",
+    "Give your partner a sensual 'once-over' look, from head to toe, and tell them what you see.",
+    "Tease your partner by almost kissing them several times before finally giving in.",
+    "Take turns reading a short, erotic poem or story snippet to each other.",
+    "If you're Chikoo, remove your top. If you're Prath, give Chikoo a sensual back rub.",
+    "If you're Prath, remove your top. If you're Chikoo, gently kiss Prath's chest.",
+    "Describe your partner's sexiest feature and why you love it.",
+    "Let your partner pick a dare for you from this list (excluding this one!).",
+    "Give your partner a lap dance (can be fully clothed or upper body bare).",
+    "Role-play: One of you is a famous movie star, the other is an adoring fan meeting them backstage.",
+    "Take a sexy selfie together (upper body focus).",
+    "Spend 5 minutes only complimenting each other's bodies (upper body focus if preferred).",
+    "Kiss each of your partner's fingertips, one by one, very slowly.",
+    "Dare your partner to make you blush with just words.",
+    "Both of you get comfortable. Close your eyes and describe your ideal romantic and passionate evening together."
+];
+let usedDares = [];
+
+
+// --- User Authentication and Session ---
+function login(userName) {
+    if (userName === 'Chikoo' || userName === 'Prath') {
+        currentUser = userName;
+        localStorage.setItem(SCRIPT_USER_KEY, currentUser);
+        updateUserDisplay();
+        loginContainer.style.display = 'none';
+        appContainer.style.display = 'block';
+        document.body.style.alignItems = 'flex-start'; 
+        navigateToApp('homeScreen');
+        console.log(`${currentUser} logged in.`);
+    } else {
+        // Using custom modal/message box instead of alert
+        showCustomMessage('Invalid user selection.');
     }
 }
 
-/* Tablet styles */
-@media (min-width: 481px) and (max-width: 768px) {
-    .options-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr); /* Adjusted for potentially 3 items + bunny */
-        gap: 20px;
-        max-width: 600px;
-        margin: 0 auto;
+function logout() {
+    currentUser = '';
+    localStorage.removeItem(SCRIPT_USER_KEY);
+    updateUserDisplay(); 
+    appContainer.style.display = 'none';
+    loginContainer.style.display = 'flex';
+    document.body.style.alignItems = 'center'; 
+    screens.forEach(screen => screen.classList.remove('active'));
+    console.log('User logged out.');
+}
+
+function updateUserDisplay() {
+    if (loggedInUserDisplay) {
+        loggedInUserDisplay.textContent = currentUser ? `User: ${currentUser}` : 'User: Not logged in';
     }
-     /* Ensure bunny button spans full width if it's the last odd item */
-    .options-grid > .bunny-button:last-child:nth-child(odd) {
-        grid-column: span 2;
-    }
-    
-    .option-box {
-        max-width: none; /* Allow option boxes to fill grid cells */
-    }
-    
-    .calendar-grid {
-        max-width: 600px;
-        margin: 0 auto;
+    dynamicUserNameElements.forEach(el => {
+        el.textContent = currentUser || 'User';
+    });
+}
+
+function checkLoginStatus() {
+    const storedUser = localStorage.getItem(SCRIPT_USER_KEY);
+    if (storedUser) {
+        currentUser = storedUser;
+        updateUserDisplay();
+        loginContainer.style.display = 'none';
+        appContainer.style.display = 'block';
+        document.body.style.alignItems = 'flex-start';
+        navigateToApp('homeScreen'); 
+    } else {
+        appContainer.style.display = 'none';
+        loginContainer.style.display = 'flex';
+        document.body.style.alignItems = 'center';
     }
 }
 
-/* Desktop styles */
-@media (min-width: 769px) {
-    body {
-        padding: 20px;
+
+// --- Main Navigation and Core Functions ---
+function navigateToApp(screenId) {
+    if (!currentUser && screenId !== 'loginScreen') { 
+        console.warn('No user logged in. Redirecting to login.');
+        logout(); 
+        return;
     }
-    
-    .options-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Adjusted minmax */
-        gap: 30px;
-        padding: 20px;
-        max-width: none;
+    screens.forEach(screen => screen.classList.remove('active'));
+    const targetScreen = document.getElementById(screenId);
+    if (targetScreen) {
+        targetScreen.classList.add('active');
+    } else {
+        console.error("Screen not found:", screenId);
+        if (currentUser) navigateToApp('homeScreen'); 
+        else logout(); 
+        return;
     }
-    
-    .option-box { 
-        min-height: 120px;
-        padding: 30px;
-        font-size: 1.4em;
-        max-width: none;
+
+    if (screenId === 'feelingsPortalScreen') {
+        navigateToFeelingsPage('feelingsPage1');
+    } else if (screenId === 'diaryScreen') {
+        fetchDiaryEntries().then(() => {
+            renderCalendar(calendarCurrentDate);
+            navigateToDiaryPage('diaryCalendarPage');
+        });
+    } else if (screenId === 'dareGameScreen') {
+        // Reset dares if all have been used, or on first load of the game screen
+        if (usedDares.length === coupleDares.length) {
+            usedDares = [];
+        }
+        if (dareTextElement) { // Initial message for dare game
+             dareTextElement.textContent = "Click the button below to get your first dare!";
+        }
     }
-    
-    .main-option {
-        min-height: 120px;
+}
+
+// --- Hetu's Feelings Portal Functions ---
+function navigateToFeelingsPage(pageId, emotion = '') {
+    feelingsPages.forEach(page => page.classList.remove('active'));
+    const targetPage = document.getElementById(pageId);
+    if (targetPage) {
+        targetPage.classList.add('active');
+    } else {
+        console.error('Feelings page not found:', pageId);
+        return;
     }
+
+    if (emotion) { 
+        currentEmotion = emotion;
+    }
+
+    if (pageId === 'feelingsPage2' && currentEmotion) {
+        const heading = document.querySelector('#feelingsPage2 h2');
+        if (heading) heading.textContent = `You selected: ${currentEmotion}. ${currentUser}, please let me know your thoughts.`;
+    }
+    if (pageId === 'feelingsPage3') {
+        const messageBox = document.getElementById('feelings-message-box');
+        const messageTextarea = document.getElementById('feelingsMessage');
+        if (messageBox && messageTextarea && messageTextarea.value) {
+            messageBox.textContent = messageTextarea.value.substring(0, 20) + '...';
+        } else if (messageBox) {
+            messageBox.textContent = "Thoughts recorded!";
+        }
+    }
+}
+
+function submitFeelingsEntry() {
+    if (!currentUser) { showCustomMessage('Please log in first.'); logout(); return; }
+    const messageInput = document.getElementById('feelingsMessage');
+    const message = messageInput.value.trim();
+
+    if (!currentEmotion) { showCustomMessage('Please select an emotion first!'); return; }
+    if (!message) { showCustomMessage('Please enter your thoughts.'); return; }
+    if (scriptURL.includes('YOUR_SCRIPT_ID_HERE') || scriptURL === '') {
+        showCustomMessage('Please update the scriptURL in script.js.'); return;
+    }
+
+    const formData = new FormData();
+    formData.append('formType', 'feelingsEntry');
+    formData.append('emotion', currentEmotion);
+    formData.append('message', message);
+    formData.append('submittedBy', currentUser); 
+
+    const submitBtn = document.getElementById('submitFeelingsBtn');
+    const originalBtnText = submitBtn.textContent;
+    submitBtn.textContent = 'Submitting...';
+    submitBtn.disabled = true;
+
+    console.log(`Submitting feelings entry by ${currentUser}:`, { emotion: currentEmotion, message: message.substring(0, 50) + '...' });
+
+    fetch(scriptURL, { method: 'POST', body: formData, mode: 'cors' })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => { throw new Error(`HTTP error! ${response.status}: ${text}`); });
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Feelings Entry Success!', data);
+        if (data.status === 'error') throw new Error(data.message || 'Server error saving feeling.');
+        navigateToFeelingsPage('feelingsPage3');
+        if (messageInput) messageInput.value = '';
+    })
+    .catch(error => {
+        console.error('Feelings Entry Error!', error);
+        showCustomMessage('Error submitting feelings entry: ' + error.message);
+    })
+    .finally(() => {
+        if (submitBtn) {
+            submitBtn.textContent = originalBtnText;
+            submitBtn.disabled = false;
+        }
+    });
+}
+
+async function fetchAndDisplayFeelingsEntries() {
+    if (!currentUser) { showCustomMessage('Please log in to view entries.'); logout(); return; }
+    console.log('Fetching feelings entries...');
+    const listContainer = document.getElementById('feelingsEntriesList');
+    if (!listContainer) {
+        console.error('"feelingsEntriesList" not found.');
+        navigateToFeelingsPage('feelingsPage1'); return;
+    }
+    listContainer.innerHTML = '<p>Loading entries...</p>';
+
+    try {
+        const response = await fetch(`${scriptURL}?action=getFeelingsEntries`, { method: 'GET', mode: 'cors' });
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`HTTP error! ${response.status}: ${errorText}`);
+        }
+        const serverData = await response.json();
+        console.log('Received feelings data:', serverData);
+        listContainer.innerHTML = '';
+
+        if (serverData.status === 'success' && serverData.data && serverData.data.length > 0) {
+            const table = document.createElement('table');
+            table.classList.add('feelings-table');
+            const thead = table.createTHead();
+            const headerRow = thead.insertRow();
+            const headers = ['Date & Time', 'Entry By', 'Emotion', 'Message', 'Response'];
+            headers.forEach(text => {
+                const th = document.createElement('th');
+                th.textContent = text;
+                headerRow.appendChild(th);
+            });
+
+            const tbody = table.createTBody();
+            serverData.data.forEach(entry => {
+                const row = tbody.insertRow();
+                
+                const cellTimestamp = row.insertCell();
+                cellTimestamp.textContent = entry.timestamp ? new Date(entry.timestamp).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) : 'N/A';
+
+                const cellSubmittedBy = row.insertCell();
+                cellSubmittedBy.innerHTML = `<strong>${entry.submittedBy || 'Unknown'}</strong>`;
+
+                const cellEmotion = row.insertCell();
+                const emotionSpan = document.createElement('span');
+                emotionSpan.classList.add('emotion-tag', entry.emotion ? entry.emotion.toLowerCase() : 'unknown');
+                emotionSpan.textContent = entry.emotion || 'N/A';
+                cellEmotion.appendChild(emotionSpan);
+
+                const cellMessage = row.insertCell();
+                cellMessage.textContent = entry.message || 'No message';
+
+                const cellResponse = row.insertCell();
+                cellResponse.style.verticalAlign = 'top';
+
+                if (entry.repliedBy && entry.replyMessage) {
+                    const replyContainer = document.createElement('div');
+                    replyContainer.classList.add('reply-display', `${entry.repliedBy.toLowerCase()}-reply`);
+                    const replyTextP = document.createElement('p');
+                    replyTextP.innerHTML = `<strong>${entry.repliedBy} Replied:</strong> ${entry.replyMessage}`;
+                    replyContainer.appendChild(replyTextP);
+                    if (entry.replyTimestamp) {
+                        const replyTimeP = document.createElement('p');
+                        replyTimeP.classList.add('reply-timestamp');
+                        replyTimeP.textContent = `Replied: ${new Date(entry.replyTimestamp).toLocaleString('en-US', {year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}`;
+                        replyContainer.appendChild(replyTimeP);
+                    }
+                    cellResponse.appendChild(replyContainer);
+                } else {
+                    const replyButton = document.createElement('button');
+                    replyButton.textContent = 'Reply 💌';
+                    replyButton.classList.add('reply-btn', 'small-reply-btn');
+                    replyButton.onclick = function() {
+                        replyButton.disabled = true;
+                        const entryDateStr = entry.timestamp ? new Date(entry.timestamp).toLocaleDateString() : "this feeling";
+                        // Using custom prompt
+                        showCustomPrompt(`Replying to ${entry.submittedBy || 'User'}'s feeling on ${entryDateStr}:\n"${(entry.message || '').substring(0, 100)}${(entry.message || '').length > 100 ? "..." : ""}"\n\n${currentUser}, your reply:`, (replyText) => {
+                            if (replyText !== null) { // Check if user provided input (not cancelled)
+                                submitReply('feeling', entry.timestamp, replyText, replyButton);
+                            } else {
+                                replyButton.disabled = false; // Re-enable if cancelled
+                            }
+                        });
+                    };
+                    cellResponse.appendChild(replyButton);
+                }
+            });
+            listContainer.appendChild(table);
+        } else if (serverData.status === 'success' && (!serverData.data || serverData.data.length === 0)) {
+            listContainer.innerHTML = '<p>No feelings entries recorded yet.</p>';
+        } else {
+            listContainer.innerHTML = `<p>Could not load entries: ${serverData.message || 'Unknown server response'}</p>`;
+        }
+        navigateToFeelingsPage('feelingsViewEntriesPage');
+    } catch (error) {
+        console.error('Failed to fetch feelings entries:', error);
+        if (listContainer) listContainer.innerHTML = `<p>Error loading entries: ${error.message}</p>`;
+    }
+}
+
+
+// --- Diary Functions ---
+function navigateToDiaryPage(pageId) {
+    diaryPages.forEach(page => page.classList.remove('active'));
+    const targetPage = document.getElementById(pageId);
+    if (targetPage) {
+        targetPage.classList.add('active');
+    } else {
+        console.error('Diary page not found:', pageId);
+    }
+}
+
+async function fetchDiaryEntries() {
+    if (!currentUser) { console.warn('User not logged in. Diary fetch aborted.'); return; }
+    console.log('Fetching diary entries...');
+    if (scriptURL.includes('YOUR_SCRIPT_ID_HERE') || scriptURL === '') {
+        console.warn('scriptURL not configured. Diary entries cannot be fetched.');
+        diaryEntries = {}; return; 
+    }
+    try {
+        const response = await fetch(`${scriptURL}?action=getDiaryEntries`, { method: 'GET', mode: 'cors' });
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`HTTP error! ${response.status}: ${errorText}`);
+        }
+        const data = await response.json();
+        console.log('Diary entries response:', data);
+        if (data.status === 'success') {
+            diaryEntries = {}; 
+            if (data.data) {
+                data.data.forEach(entry => {
+                    diaryEntries[entry.date] = entry;
+                });
+            }
+            console.log('Diary entries loaded into memory:', Object.keys(diaryEntries).length);
+        } else {
+            console.error('Error fetching diary entries from server:', data.message);
+            diaryEntries = {};
+        }
+    } catch (error) {
+        console.error('Failed to fetch diary entries (network/fetch error):', error);
+        diaryEntries = {};
+    }
+}
+
+function renderCalendar(date) {
+    const calendarGrid = document.getElementById('calendarGrid');
+    const monthYearDisplay = document.getElementById('currentMonthYear');
+    if (!calendarGrid || !monthYearDisplay) {
+        console.error("Calendar elements not found."); return;
+    }
+
+    calendarGrid.innerHTML = '';
+    const month = date.getMonth();
+    const year = date.getFullYear();
+    monthYearDisplay.textContent = `${date.toLocaleString('default', { month: 'long' })} ${year}`;
+
+    const firstDayOfMonth = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+    const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    daysOfWeek.forEach(day => {
+        const dayHeaderEl = document.createElement('div');
+        dayHeaderEl.classList.add('calendar-day-header');
+        dayHeaderEl.textContent = day;
+        calendarGrid.appendChild(dayHeaderEl);
+    });
+
+    for (let i = 0; i < firstDayOfMonth; i++) {
+        const emptyCell = document.createElement('div');
+        emptyCell.classList.add('calendar-day', 'empty');
+        calendarGrid.appendChild(emptyCell);
+    }
+
+    const today = new Date();
+    const todayYear = today.getFullYear();
+    const todayMonth = today.getMonth();
+    const todayDate = today.getDate();
+
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dayCell = document.createElement('div');
+        dayCell.classList.add('calendar-day');
+        dayCell.textContent = day;
         
-    .container {
-        padding: 30px;
-    }
-    
-    .notebook {
-        padding: 25px;
-        max-width: 600px; 
-    }
-    
-    .notebook textarea {
-        min-height: 150px;
-        padding: 15px;
-        font-size: 1.1em;
-    }
-    
-    button {
-        padding: 12px 25px; 
-        font-size: 1.1em;
-        margin: 10px 5px;
+        const cellDate = new Date(year, month, day);
+        const formattedCellDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        dayCell.dataset.date = formattedCellDate;
+
+        if (year === todayYear && month === todayMonth && day === todayDate) {
+            dayCell.classList.add('today');
+        }
+
+        if (diaryEntries[formattedCellDate]) {
+            dayCell.classList.add('has-entry');
+            dayCell.title = `${diaryEntries[formattedCellDate].submittedBy || 'Someone'} made an entry.`;
+            if (diaryEntries[formattedCellDate].submittedBy) {
+                dayCell.classList.add(`${diaryEntries[formattedCellDate].submittedBy.toLowerCase()}-entry-marker`);
+            }
+        }
+
+
+        dayCell.addEventListener('click', () => {
+            console.log('Clicked calendar day with date:', dayCell.dataset.date);
+            if (diaryEntries[dayCell.dataset.date]) {
+                viewDiaryEntry(dayCell.dataset.date);
+            } else {
+                openDiaryEntry(dayCell.dataset.date);
+            }
+        });
+        calendarGrid.appendChild(dayCell);
     }
 }
 
+function openDiaryEntry(dateString) {
+    document.getElementById('selectedDate').value = dateString;
+    console.log('openDiaryEntry received dateString:', dateString);
+
+    const dateParts = dateString.split('-');
+    if (dateParts.length !== 3) { showCustomMessage('Invalid date format for opening diary: ' + dateString); return; }
+    const yearNum = parseInt(dateParts[0], 10);
+    const monthNum = parseInt(dateParts[1], 10) - 1;
+    const dayNum = parseInt(dateParts[2], 10);
+    const dateObj = new Date(yearNum, monthNum, dayNum);
+
+    if (isNaN(dateObj.getTime())) { showCustomMessage('Could not create valid date from: ' + dateString); return; }
+    
+    const displayOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('diaryDateDisplay').textContent = dateObj.toLocaleDateString('en-US', displayOptions);
+    document.getElementById('diaryEntryTitle').textContent = `Diary for ${dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}`;
+    document.getElementById('diaryThoughts').value = '';
+    document.getElementById('diaryThoughts').placeholder = `${currentUser}, write your diary entry here...`;
+    navigateToDiaryPage('diaryEntryPage');
+}
+
+function viewDiaryEntry(dateString) {
+    const entry = diaryEntries[dateString];
+    if (!entry) {
+        console.warn('viewDiaryEntry called for a date with no cached entry:', dateString);
+        showCustomMessage('Could not load details for ' + dateString + '. Entry not found. Try going back.');
+        openDiaryEntry(dateString); 
+        return;
+    }
+
+    const dateParts = dateString.split('-');
+    if (dateParts.length !== 3) { showCustomMessage('Invalid date format for view: ' + dateString); return; }
+    const dateObj = new Date(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2]));
+    if (isNaN(dateObj.getTime())) { showCustomMessage('Invalid date object for view: ' + dateString); return; }
+
+    const displayOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    document.getElementById('viewDiaryDateDisplay').textContent = dateObj.toLocaleDateString('en-US', displayOptions);
+    document.getElementById('viewDiaryThoughts').textContent = entry.thoughts || 'No thoughts.';
+
+    const attributionElement = document.getElementById('diaryEntryAttribution');
+    if (attributionElement) {
+        attributionElement.innerHTML = `<em>${entry.submittedBy || 'Unknown User'} Made a New entry</em>`;
+        attributionElement.className = 'entry-attribution'; 
+        if (entry.submittedBy) {
+            attributionElement.classList.add(`${entry.submittedBy.toLowerCase()}-entry`);
+        }
+    }
+
+
+    const singleViewReplyContainer = document.getElementById('diaryViewPageReplySection');
+    if (singleViewReplyContainer) {
+        singleViewReplyContainer.innerHTML = ''; 
+
+        if (entry.repliedBy && entry.replyMessage) {
+            const replyDisplay = document.createElement('div');
+            replyDisplay.classList.add('reply-display', `${entry.repliedBy.toLowerCase()}-reply`);
+            const replyTextP = document.createElement('p');
+            replyTextP.innerHTML = `<strong>${entry.repliedBy} Replied:</strong> ${entry.replyMessage}`;
+            replyDisplay.appendChild(replyTextP);
+            if (entry.replyTimestamp) {
+                const replyTimeP = document.createElement('p');
+                replyTimeP.classList.add('reply-timestamp');
+                replyTimeP.textContent = `Replied: ${new Date(entry.replyTimestamp).toLocaleString('en-US', {year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true})}`;
+                replyDisplay.appendChild(replyTimeP);
+            }
+            singleViewReplyContainer.appendChild(replyDisplay);
+        } else {
+            const replyButton = document.createElement('button');
+            replyButton.textContent = 'Reply 💌';
+            replyButton.classList.add('reply-btn');
+            replyButton.onclick = function() {
+                replyButton.disabled = true;
+                const currentDisplayDate = document.getElementById('viewDiaryDateDisplay').textContent || entry.date;
+                showCustomPrompt(`Replying to ${entry.submittedBy || 'User'}'s diary entry for ${currentDisplayDate}:\n"${(entry.thoughts || '').substring(0, 100)}${(entry.thoughts || '').length > 100 ? "..." : ""}"\n\n${currentUser}, your reply:`, (replyText) => {
+                     if (replyText !== null) {
+                        submitReply('diary', dateString, replyText, replyButton);
+                    } else {
+                         replyButton.disabled = false;
+                    }
+                });
+            };
+            singleViewReplyContainer.appendChild(replyButton);
+        }
+    } else {
+        console.error("Reply container 'diaryViewPageReplySection' not found.");
+    }
+    navigateToDiaryPage('diaryViewPage');
+}
+
+
+function submitDiaryEntry() {
+    if (!currentUser) { showCustomMessage('Please log in first.'); logout(); return; }
+    const thoughts = document.getElementById('diaryThoughts').value.trim();
+    const date = document.getElementById('selectedDate').value;
+
+    if (!date) { showCustomMessage('No date selected.'); return; }
+    if (!thoughts) { showCustomMessage('Please write your thoughts.'); return; }
+    if (scriptURL.includes('YOUR_SCRIPT_ID_HERE') || scriptURL === '') {
+        showCustomMessage('Please update the scriptURL in script.js.'); return;
+    }
+
+    const formData = new FormData();
+    formData.append('formType', 'diaryEntry');
+    formData.append('date', date);
+    formData.append('thoughts', thoughts);
+    formData.append('submittedBy', currentUser); 
+
+    const submitBtn = document.querySelector('#diaryEntryPage button[onclick="submitDiaryEntry()"]');
+    const originalBtnText = submitBtn.textContent;
+    submitBtn.textContent = 'Saving...';
+    submitBtn.disabled = true;
+
+    console.log(`Submitting diary entry by ${currentUser}:`, { date: date, thoughts: thoughts.substring(0, 50) + '...' });
+
+    fetch(scriptURL, { method: 'POST', body: formData, mode: 'cors' })
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => { throw new Error(`HTTP error! ${response.status}: ${text}`); });
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('Diary Entry Success!', data);
+        if (data.status === 'error') throw new Error(data.message || 'Server error saving diary.');
+        return fetchDiaryEntries().then(() => { 
+             renderCalendar(calendarCurrentDate); 
+             navigateToDiaryPage('diaryConfirmationPage');
+        });
+    })
+    .catch(error => {
+        console.error('Diary Entry Error!', error);
+        showCustomMessage('Error saving diary entry: ' + error.message);
+    })
+    .finally(() => {
+        if (submitBtn) {
+            submitBtn.textContent = originalBtnText;
+            submitBtn.disabled = false;
+        }
+    });
+}
+
+async function fetchAndDisplayAllDiaryEntries() {
+    if (!currentUser) { showCustomMessage('Please log in to view entries.'); logout(); return; }
+    console.log('Fetching all diary entries list...');
+    const listContainer = document.getElementById('allDiaryEntriesList');
+    if (!listContainer) { console.error('"allDiaryEntriesList" not found.'); return; }
+    listContainer.innerHTML = '<p>Loading entries...</p>';
+
+    if (scriptURL.includes('YOUR_SCRIPT_ID_HERE') || scriptURL === '') {
+        listContainer.innerHTML = '<p>Error: scriptURL not configured.</p>'; return;
+    }
+
+    try {
+        const response = await fetch(`${scriptURL}?action=getDiaryEntries`, { method: 'GET', mode: 'cors' });
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`HTTP error! ${response.status}: ${errorText}`);
+        }
+        const serverData = await response.json();
+        console.log('All diary entries data:', serverData);
+        listContainer.innerHTML = '';
+
+        if (serverData.status === 'success' && serverData.data && serverData.data.length > 0) {
+            const sortedEntries = serverData.data.sort((a, b) => new Date(b.date) - new Date(a.date)); 
+            sortedEntries.forEach(entry => {
+                const entryDiv = document.createElement('div');
+                entryDiv.classList.add('diary-entry-list-item');
+                
+                let formattedDate = 'Unknown Date';
+                if (entry.date) {
+                    const entryDateObj = new Date(entry.date + "T00:00:00"); 
+                     if (!isNaN(entryDateObj.getTime())) {
+                        formattedDate = entryDateObj.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                    } else { formattedDate = `Invalid Date: ${entry.date}`; }
+                }
+                
+                const entryMetaDiv = document.createElement('div');
+                entryMetaDiv.classList.add('entry-meta-info');
+                if(entry.submittedBy) entryMetaDiv.classList.add(`${entry.submittedBy.toLowerCase()}-entry`);
+                entryMetaDiv.innerHTML = `<strong>${entry.submittedBy || 'Unknown User'}</strong> Made a New entry:`;
+                
+                entryDiv.innerHTML = `<h3>${formattedDate}</h3>`;
+                entryDiv.appendChild(entryMetaDiv);
+                const thoughtsP = document.createElement('p');
+                thoughtsP.classList.add('entry-content');
+                thoughtsP.textContent = entry.thoughts || 'No thoughts.';
+                entryDiv.appendChild(thoughtsP);
+
+
+                const replySectionDiv = document.createElement('div');
+                replySectionDiv.classList.add('entry-reply-section');
+
+                if (entry.repliedBy && entry.replyMessage) {
+                    const replyContainer = document.createElement('div');
+                    replyContainer.classList.add('reply-display', `${entry.repliedBy.toLowerCase()}-reply`);
+                    const replyTextP = document.createElement('p');
+                    replyTextP.innerHTML = `<strong>${entry.repliedBy} Replied:</strong> ${entry.replyMessage}`;
+                    replyContainer.appendChild(replyTextP);
+                    if (entry.replyTimestamp) {
+                        const replyTimeP = document.createElement('p');
+                        replyTimeP.classList.add('reply-timestamp');
+                        replyTimeP.textContent = `Replied: ${new Date(entry.replyTimestamp).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}`;
+                        replyContainer.appendChild(replyTimeP);
+                    }
+                    replySectionDiv.appendChild(replyContainer);
+                } else {
+                    const replyButton = document.createElement('button');
+                    replyButton.textContent = 'Reply 💌';
+                    replyButton.classList.add('reply-btn', 'small-reply-btn');
+                    replyButton.onclick = function(event) {
+                        event.stopPropagation();
+                        replyButton.disabled = true;
+                        showCustomPrompt(`Replying to ${entry.submittedBy || 'User'}'s diary entry for ${formattedDate}:\n"${(entry.thoughts || '').substring(0, 100)}${(entry.thoughts || '').length > 100 ? "..." : ""}"\n\n${currentUser}, your reply:`, (replyText) => {
+                            if (replyText !== null) {
+                                submitReply('diary', entry.date, replyText, replyButton);
+                            } else {
+                                replyButton.disabled = false;
+                            }
+                        });
+                    };
+                    replySectionDiv.appendChild(replyButton);
+                }
+                entryDiv.appendChild(replySectionDiv);
+                entryDiv.appendChild(document.createElement('hr')); 
+                listContainer.appendChild(entryDiv);
+            });
+        } else if (serverData.status === 'success' && (!serverData.data || serverData.data.length === 0)) {
+            listContainer.innerHTML = '<p>No diary entries recorded yet.</p>';
+        } else {
+            listContainer.innerHTML = `<p>Could not load entries: ${serverData.message || 'Unknown server response'}</p>`;
+        }
+        navigateToDiaryPage('allDiaryEntriesPage');
+    } catch (error) {
+        console.error('Failed to fetch all diary entries list:', error);
+        if (listContainer) listContainer.innerHTML = `<p>Error loading all diary entries: ${error.message}</p>`;
+    }
+}
+
+
+// --- Submit Reply Function ---
+async function submitReply(entryType, entryIdentifier, replyMessage, buttonElement) {
+    if (!currentUser) { showCustomMessage('Please log in to reply.'); logout(); return; }
+    if (!replyMessage || replyMessage.trim() === "") {
+        showCustomMessage("Reply cannot be empty.");
+        if (buttonElement) { buttonElement.disabled = false; buttonElement.textContent = 'Reply 💌'; }
+        return;
+    }
+
+    if (scriptURL.includes('YOUR_SCRIPT_ID_HERE') || scriptURL === '') {
+        showCustomMessage('Please update the scriptURL in script.js.');
+        if (buttonElement) { buttonElement.disabled = false; buttonElement.textContent = 'Reply 💌'; }
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('formType', 'replyEntry');
+    formData.append('entryType', entryType);
+    formData.append('entryIdentifier', entryIdentifier);
+    formData.append('replyMessage', replyMessage.trim());
+    formData.append('repliedBy', currentUser); 
+
+    const originalButtonText = buttonElement ? buttonElement.textContent : 'Reply 💌';
+    if (buttonElement) {
+        buttonElement.textContent = 'Replying...';
+        buttonElement.disabled = true;
+    }
+
+    console.log(`${currentUser} submitting reply for ${entryType} ID ${entryIdentifier}: ${replyMessage.trim()}`);
+
+    try {
+        const response = await fetch(scriptURL, { method: 'POST', body: formData, mode: 'cors' });
+        if (!response.ok) {
+            const text = await response.text();
+            console.error('Reply submission HTTP error response text:', text);
+            throw new Error(`HTTP error! ${response.status}: ${text}`);
+        }
+        const data = await response.json();
+        console.log('Reply server response:', data);
+        if (data.status === 'error') throw new Error(data.message || `Error saving reply from server.`);
+
+        showCustomMessage(`Reply by ${currentUser} submitted successfully! Notification sent.`);
+        
+        if (entryType === 'feeling') {
+            fetchAndDisplayFeelingsEntries(); 
+        } else if (entryType === 'diary') {
+            await fetchDiaryEntries(); 
+            renderCalendar(calendarCurrentDate); 
+            
+            if (document.getElementById('allDiaryEntriesPage').classList.contains('active')) {
+                fetchAndDisplayAllDiaryEntries();
+            }
+            const diaryViewPageActive = document.getElementById('diaryViewPage').classList.contains('active');
+            const currentViewingDate = diaryEntries[entryIdentifier] ? entryIdentifier : null; 
+            if (diaryViewPageActive && currentViewingDate === entryIdentifier) { 
+                 viewDiaryEntry(entryIdentifier); 
+            }
+        }
+
+    } catch (error) {
+        console.error('Reply Submission Error!', error);
+        showCustomMessage('Error submitting reply.\n' + error.message);
+        if (buttonElement) { 
+            buttonElement.textContent = originalButtonText;
+            buttonElement.disabled = false;
+        }
+    }
+}
+
+// --- Dare Game Functions ---
+function generateDare() {
+    if (!currentUser) {
+        showCustomMessage('Please log in to play the Dare Game!');
+        logout();
+        return;
+    }
+    if (!dareTextElement) {
+        console.error("Dare text element not found!");
+        return;
+    }
+
+    if (coupleDares.length === 0) {
+        dareTextElement.textContent = "No dares available!";
+        return;
+    }
+
+    let availableDares = coupleDares.filter(dare => !usedDares.includes(dare));
+
+    if (availableDares.length === 0) {
+        // All dares have been used, reset
+        usedDares = [];
+        availableDares = [...coupleDares];
+        showCustomMessage("You've gone through all the dares! Resetting for more fun. 😉");
+    }
+
+    const randomIndex = Math.floor(Math.random() * availableDares.length);
+    const selectedDare = availableDares[randomIndex];
+    
+    usedDares.push(selectedDare);
+    dareTextElement.textContent = selectedDare;
+}
+
+
+// --- Custom Message/Prompt Implementation (Replaces alert/prompt) ---
+function showCustomMessage(message, onOkCallback) {
+    // Check if a custom message popup already exists, remove it
+    const existingPopup = document.getElementById('customMessagePopup');
+    if (existingPopup) {
+        existingPopup.remove();
+    }
+    const existingOverlay = document.getElementById('customMessageOverlay');
+     if (existingOverlay) {
+        existingOverlay.remove();
+    }
+
+    const overlay = document.createElement('div');
+    overlay.id = 'customMessageOverlay';
+    overlay.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.6); z-index: 1999; display: flex;
+        align-items: center; justify-content: center; backdrop-filter: blur(3px);
+    `;
+
+    const popup = document.createElement('div');
+    popup.id = 'customMessagePopup';
+    popup.style.cssText = `
+        background: #fff; padding: 25px; border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.25); text-align: center;
+        max-width: 350px; width: 90%; z-index: 2000;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #5c3b4c; line-height: 1.6;
+    `;
+    
+    const messageP = document.createElement('p');
+    messageP.textContent = message;
+    messageP.style.margin = "0 0 20px 0";
+    messageP.style.fontSize = "1.05em";
+
+    const okButton = document.createElement('button');
+    okButton.textContent = 'Okay';
+    okButton.style.cssText = `
+        background: linear-gradient(45deg, #d94a6b, #ff80a0); color: white;
+        border: none; padding: 10px 20px; border-radius: 20px;
+        cursor: pointer; font-size: 1em; font-weight: bold;
+    `;
+
+    okButton.onclick = () => {
+        overlay.remove();
+        if (onOkCallback && typeof onOkCallback === 'function') {
+            onOkCallback();
+        }
+    };
+
+    popup.appendChild(messageP);
+    popup.appendChild(okButton);
+    overlay.appendChild(popup);
+    document.body.appendChild(overlay);
+}
+
+function showCustomPrompt(message, callback) {
+    const existingPopup = document.getElementById('customPromptPopup');
+    if (existingPopup) existingPopup.remove();
+    const existingOverlay = document.getElementById('customPromptOverlay');
+    if (existingOverlay) existingOverlay.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'customPromptOverlay';
+    overlay.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.65); z-index: 1999; display: flex;
+        align-items: center; justify-content: center; backdrop-filter: blur(4px);
+    `;
+
+    const popup = document.createElement('div');
+    popup.id = 'customPromptPopup';
+    popup.style.cssText = `
+        background: #fff; padding: 25px; border-radius: 15px;
+        box-shadow: 0 6px 25px rgba(0,0,0,0.3); text-align: center;
+        max-width: 400px; width: 90%; z-index: 2000;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #5c3b4c;
+    `;
+
+    const messageP = document.createElement('p');
+    messageP.textContent = message;
+    messageP.style.cssText = "margin: 0 0 15px 0; font-size: 1em; line-height: 1.5; white-space: pre-wrap;";
+
+    const inputField = document.createElement('textarea');
+    inputField.rows = 3;
+    inputField.style.cssText = `
+        width: calc(100% - 20px); padding: 10px; border: 1px solid #ddd;
+        border-radius: 8px; margin-bottom: 20px; font-size: 0.95em;
+        box-sizing: border-box; resize: vertical;
+    `;
+
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.display = 'flex';
+    buttonContainer.style.justifyContent = 'space-around';
+
+    const submitButton = document.createElement('button');
+    submitButton.textContent = 'Submit';
+    submitButton.style.cssText = `
+        background: linear-gradient(45deg, #4CAF50, #81C784); color: white;
+        border: none; padding: 10px 20px; border-radius: 20px;
+        cursor: pointer; font-size: 0.9em; font-weight: bold; flex-grow: 1; margin: 0 5px;
+    `;
+
+    const cancelButton = document.createElement('button');
+    cancelButton.textContent = 'Cancel';
+    cancelButton.style.cssText = `
+        background: #f0f0f0; color: #666; border: 1px solid #ddd;
+        padding: 10px 20px; border-radius: 20px; cursor: pointer;
+        font-size: 0.9em; font-weight: bold; flex-grow: 1; margin: 0 5px;
+    `;
+
+    submitButton.onclick = () => {
+        overlay.remove();
+        callback(inputField.value);
+    };
+
+    cancelButton.onclick = () => {
+        overlay.remove();
+        callback(null); // Indicate cancellation
+    };
+    
+    popup.appendChild(messageP);
+    popup.appendChild(inputField);
+    buttonContainer.appendChild(cancelButton);
+    buttonContainer.appendChild(submitButton);
+    popup.appendChild(buttonContainer);
+    overlay.appendChild(popup);
+    document.body.appendChild(overlay);
+    inputField.focus();
+}
+
+
+// --- Initialization ---
+document.addEventListener('DOMContentLoaded', () => {
+    if (scriptURL.includes('YOUR_SCRIPT_ID_HERE') || scriptURL === '') {
+        console.warn('⚠️ IMPORTANT: Please update the scriptURL in script.js with your Google Apps Script web app URL.');
+    }
+    
+    checkLoginStatus(); 
+    
+    const prevMonthBtn = document.getElementById('prevMonthBtn');
+    const nextMonthBtn = document.getElementById('nextMonthBtn');
+
+    if (prevMonthBtn) {
+        prevMonthBtn.addEventListener('click', () => {
+            if (!currentUser) return; 
+            calendarCurrentDate.setMonth(calendarCurrentDate.getMonth() - 1);
+            fetchDiaryEntries().then(() => renderCalendar(calendarCurrentDate));
+        });
+    }
+    if (nextMonthBtn) {
+        nextMonthBtn.addEventListener('click', () => {
+            if (!currentUser) return; 
+            calendarCurrentDate.setMonth(calendarCurrentDate.getMonth() + 1);
+            fetchDiaryEntries().then(() => renderCalendar(calendarCurrentDate));
+        });
+    }
+     console.log('DOM loaded. External script functions should be available.');
+     if (typeof navigateToApp === 'undefined') {
+         console.error('❌ script.js core functions not defined globally! This can happen if script is deferred or has loading issues.');
+         showCustomMessage('Error: Critical script functions not loaded.');
+     } else {
+         console.log('✅ script.js core functions seem to be defined.');
+     }
+});
 
