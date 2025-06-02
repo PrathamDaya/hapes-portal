@@ -1,3 +1,4 @@
+script.js
 // --- FULLY UPDATED script.js with User Login, Attribution, Reply & Dare Game Functionality ---
 // IMPORTANT: REPLACE THIS WITH YOUR ACTUAL DEPLOYED WEB APP URL from Google Apps Script
 const scriptURL = 'https://script.google.com/macros/s/AKfycbxMsH6HVLcv0yGQBKZCdOwdAUi9k_Jv4JeIOotqicQlef0mP_mIADlEVbUuzS8pPsZ27g/exec'; // <<< REPLACE WITH YOUR URL
@@ -15,17 +16,20 @@ const diaryPages = document.querySelectorAll('#diaryScreen .page');
 // Dare Game Elements
 const dareTextElement = document.getElementById('dareText');
 
+// Theme Toggle Elements
+const themeSwitch = document.getElementById('themeSwitch');
+const themeIcon = document.getElementById('themeIcon');
+const THEME_KEY = 'hetuAppTheme';
+
+
 // Global variables for application state
-let currentUser = ''; 
+let currentUser = '';
 const SCRIPT_USER_KEY = 'hetuAppCurrentUser';
 let currentEmotion = '';
 let calendarCurrentDate = new Date();
-let diaryEntries = {}; 
+let diaryEntries = {};
 
 // --- Dares List ---
-// Dares are designed for couples, aiming for playful, intimate, and sexy interactions.
-// "Upper body nudity" is permitted as per request.
-// The term "partner" is used to refer to the other person in the couple.
 const coupleDares = [
   "Do a slow striptease, removing one upper-body item every 5 seconds while making intense eye contact.",
   "Moan your partner’s name like you're being touched exactly how you want to be — three times in a row.",
@@ -68,11 +72,10 @@ function login(userName) {
         updateUserDisplay();
         loginContainer.style.display = 'none';
         appContainer.style.display = 'block';
-        document.body.style.alignItems = 'flex-start'; 
+        document.body.style.alignItems = 'flex-start';
         navigateToApp('homeScreen');
         console.log(`${currentUser} logged in.`);
     } else {
-        // Using custom modal/message box instead of alert
         showCustomMessage('Invalid user selection.');
     }
 }
@@ -80,17 +83,17 @@ function login(userName) {
 function logout() {
     currentUser = '';
     localStorage.removeItem(SCRIPT_USER_KEY);
-    updateUserDisplay(); 
+    updateUserDisplay();
     appContainer.style.display = 'none';
     loginContainer.style.display = 'flex';
-    document.body.style.alignItems = 'center'; 
+    document.body.style.alignItems = 'center';
     screens.forEach(screen => screen.classList.remove('active'));
     console.log('User logged out.');
 }
 
 function updateUserDisplay() {
     if (loggedInUserDisplay) {
-        loggedInUserDisplay.textContent = currentUser ? `User: ${currentUser}` : 'User: Not logged in';
+        loggedInUserDisplay.textContent = currentUser ? `Logged in: ${currentUser}` : 'User: Not logged in';
     }
     dynamicUserNameElements.forEach(el => {
         el.textContent = currentUser || 'User';
@@ -105,7 +108,7 @@ function checkLoginStatus() {
         loginContainer.style.display = 'none';
         appContainer.style.display = 'block';
         document.body.style.alignItems = 'flex-start';
-        navigateToApp('homeScreen'); 
+        navigateToApp('homeScreen');
     } else {
         appContainer.style.display = 'none';
         loginContainer.style.display = 'flex';
@@ -116,19 +119,20 @@ function checkLoginStatus() {
 
 // --- Main Navigation and Core Functions ---
 function navigateToApp(screenId) {
-    if (!currentUser && screenId !== 'loginScreen') { 
+    if (!currentUser && screenId !== 'loginScreen') {
         console.warn('No user logged in. Redirecting to login.');
-        logout(); 
+        logout();
         return;
     }
     screens.forEach(screen => screen.classList.remove('active'));
     const targetScreen = document.getElementById(screenId);
     if (targetScreen) {
         targetScreen.classList.add('active');
+        window.scrollTo(0, 0); // Scroll to top on new screen
     } else {
         console.error("Screen not found:", screenId);
-        if (currentUser) navigateToApp('homeScreen'); 
-        else logout(); 
+        if (currentUser) navigateToApp('homeScreen');
+        else logout();
         return;
     }
 
@@ -140,11 +144,10 @@ function navigateToApp(screenId) {
             navigateToDiaryPage('diaryCalendarPage');
         });
     } else if (screenId === 'dareGameScreen') {
-        // Reset dares if all have been used, or on first load of the game screen
         if (usedDares.length === coupleDares.length) {
             usedDares = [];
         }
-        if (dareTextElement) { // Initial message for dare game
+        if (dareTextElement) {
              dareTextElement.textContent = "Click the button below to get your first dare!";
         }
     }
@@ -156,12 +159,13 @@ function navigateToFeelingsPage(pageId, emotion = '') {
     const targetPage = document.getElementById(pageId);
     if (targetPage) {
         targetPage.classList.add('active');
+        window.scrollTo(0, 0); 
     } else {
         console.error('Feelings page not found:', pageId);
         return;
     }
 
-    if (emotion) { 
+    if (emotion) {
         currentEmotion = emotion;
     }
 
@@ -195,14 +199,12 @@ function submitFeelingsEntry() {
     formData.append('formType', 'feelingsEntry');
     formData.append('emotion', currentEmotion);
     formData.append('message', message);
-    formData.append('submittedBy', currentUser); 
+    formData.append('submittedBy', currentUser);
 
     const submitBtn = document.getElementById('submitFeelingsBtn');
-    const originalBtnText = submitBtn.textContent;
-    submitBtn.textContent = 'Submitting...';
+    const originalBtnText = submitBtn.innerHTML; // Save full HTML content
+    submitBtn.innerHTML = '<span class="material-icons">hourglass_top</span> Submitting...';
     submitBtn.disabled = true;
-
-    console.log(`Submitting feelings entry by ${currentUser}:`, { emotion: currentEmotion, message: message.substring(0, 50) + '...' });
 
     fetch(scriptURL, { method: 'POST', body: formData, mode: 'cors' })
     .then(response => {
@@ -212,18 +214,16 @@ function submitFeelingsEntry() {
         return response.json();
     })
     .then(data => {
-        console.log('Feelings Entry Success!', data);
         if (data.status === 'error') throw new Error(data.message || 'Server error saving feeling.');
         navigateToFeelingsPage('feelingsPage3');
         if (messageInput) messageInput.value = '';
     })
     .catch(error => {
-        console.error('Feelings Entry Error!', error);
         showCustomMessage('Error submitting feelings entry: ' + error.message);
     })
     .finally(() => {
         if (submitBtn) {
-            submitBtn.textContent = originalBtnText;
+            submitBtn.innerHTML = originalBtnText;
             submitBtn.disabled = false;
         }
     });
@@ -231,12 +231,8 @@ function submitFeelingsEntry() {
 
 async function fetchAndDisplayFeelingsEntries() {
     if (!currentUser) { showCustomMessage('Please log in to view entries.'); logout(); return; }
-    console.log('Fetching feelings entries...');
     const listContainer = document.getElementById('feelingsEntriesList');
-    if (!listContainer) {
-        console.error('"feelingsEntriesList" not found.');
-        navigateToFeelingsPage('feelingsPage1'); return;
-    }
+    if (!listContainer) { navigateToFeelingsPage('feelingsPage1'); return; }
     listContainer.innerHTML = '<p>Loading entries...</p>';
 
     try {
@@ -246,7 +242,6 @@ async function fetchAndDisplayFeelingsEntries() {
             throw new Error(`HTTP error! ${response.status}: ${errorText}`);
         }
         const serverData = await response.json();
-        console.log('Received feelings data:', serverData);
         listContainer.innerHTML = '';
 
         if (serverData.status === 'success' && serverData.data && serverData.data.length > 0) {
@@ -264,51 +259,35 @@ async function fetchAndDisplayFeelingsEntries() {
             const tbody = table.createTBody();
             serverData.data.forEach(entry => {
                 const row = tbody.insertRow();
-                
-                const cellTimestamp = row.insertCell();
-                cellTimestamp.textContent = entry.timestamp ? new Date(entry.timestamp).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) : 'N/A';
-
-                const cellSubmittedBy = row.insertCell();
-                cellSubmittedBy.innerHTML = `<strong>${entry.submittedBy || 'Unknown'}</strong>`;
-
+                row.insertCell().textContent = entry.timestamp ? new Date(entry.timestamp).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) : 'N/A';
+                row.insertCell().innerHTML = `<strong>${entry.submittedBy || 'Unknown'}</strong>`;
                 const cellEmotion = row.insertCell();
                 const emotionSpan = document.createElement('span');
                 emotionSpan.classList.add('emotion-tag', entry.emotion ? entry.emotion.toLowerCase() : 'unknown');
                 emotionSpan.textContent = entry.emotion || 'N/A';
                 cellEmotion.appendChild(emotionSpan);
-
-                const cellMessage = row.insertCell();
-                cellMessage.textContent = entry.message || 'No message';
+                row.insertCell().textContent = entry.message || 'No message';
 
                 const cellResponse = row.insertCell();
                 cellResponse.style.verticalAlign = 'top';
-
                 if (entry.repliedBy && entry.replyMessage) {
                     const replyContainer = document.createElement('div');
                     replyContainer.classList.add('reply-display', `${entry.repliedBy.toLowerCase()}-reply`);
-                    const replyTextP = document.createElement('p');
-                    replyTextP.innerHTML = `<strong>${entry.repliedBy} Replied:</strong> ${entry.replyMessage}`;
-                    replyContainer.appendChild(replyTextP);
-                    if (entry.replyTimestamp) {
-                        const replyTimeP = document.createElement('p');
-                        replyTimeP.classList.add('reply-timestamp');
-                        replyTimeP.textContent = `Replied: ${new Date(entry.replyTimestamp).toLocaleString('en-US', {year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}`;
-                        replyContainer.appendChild(replyTimeP);
-                    }
+                    replyContainer.innerHTML = `<p><strong>${entry.repliedBy} Replied:</strong> ${entry.replyMessage}</p>` +
+                                               (entry.replyTimestamp ? `<p class="reply-timestamp">Replied: ${new Date(entry.replyTimestamp).toLocaleString('en-US', {year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}</p>` : '');
                     cellResponse.appendChild(replyContainer);
                 } else {
                     const replyButton = document.createElement('button');
-                    replyButton.textContent = 'Reply 💌';
-                    replyButton.classList.add('reply-btn', 'small-reply-btn');
+                    replyButton.innerHTML = '<span class="material-icons">reply</span> Reply';
+                    replyButton.classList.add('styled-button', 'reply-btn', 'small-reply-btn');
                     replyButton.onclick = function() {
                         replyButton.disabled = true;
                         const entryDateStr = entry.timestamp ? new Date(entry.timestamp).toLocaleDateString() : "this feeling";
-                        // Using custom prompt
                         showCustomPrompt(`Replying to ${entry.submittedBy || 'User'}'s feeling on ${entryDateStr}:\n"${(entry.message || '').substring(0, 100)}${(entry.message || '').length > 100 ? "..." : ""}"\n\n${currentUser}, your reply:`, (replyText) => {
-                            if (replyText !== null) { // Check if user provided input (not cancelled)
+                            if (replyText !== null) {
                                 submitReply('feeling', entry.timestamp, replyText, replyButton);
                             } else {
-                                replyButton.disabled = false; // Re-enable if cancelled
+                                replyButton.disabled = false;
                             }
                         });
                     };
@@ -323,7 +302,6 @@ async function fetchAndDisplayFeelingsEntries() {
         }
         navigateToFeelingsPage('feelingsViewEntriesPage');
     } catch (error) {
-        console.error('Failed to fetch feelings entries:', error);
         if (listContainer) listContainer.innerHTML = `<p>Error loading entries: ${error.message}</p>`;
     }
 }
@@ -335,17 +313,16 @@ function navigateToDiaryPage(pageId) {
     const targetPage = document.getElementById(pageId);
     if (targetPage) {
         targetPage.classList.add('active');
+        window.scrollTo(0, 0);
     } else {
         console.error('Diary page not found:', pageId);
     }
 }
 
 async function fetchDiaryEntries() {
-    if (!currentUser) { console.warn('User not logged in. Diary fetch aborted.'); return; }
-    console.log('Fetching diary entries...');
+    if (!currentUser) { return; }
     if (scriptURL.includes('YOUR_SCRIPT_ID_HERE') || scriptURL === '') {
-        console.warn('scriptURL not configured. Diary entries cannot be fetched.');
-        diaryEntries = {}; return; 
+        diaryEntries = {}; return;
     }
     try {
         const response = await fetch(`${scriptURL}?action=getDiaryEntries`, { method: 'GET', mode: 'cors' });
@@ -354,31 +331,29 @@ async function fetchDiaryEntries() {
             throw new Error(`HTTP error! ${response.status}: ${errorText}`);
         }
         const data = await response.json();
-        console.log('Diary entries response:', data);
         if (data.status === 'success') {
-            diaryEntries = {}; 
+            diaryEntries = {};
             if (data.data) {
                 data.data.forEach(entry => {
-                    diaryEntries[entry.date] = entry;
+                    if (!diaryEntries[entry.date]) {
+                        diaryEntries[entry.date] = [];
+                    }
+                    diaryEntries[entry.date].push(entry); // Store as array for multiple entries per date
                 });
             }
-            console.log('Diary entries loaded into memory:', Object.keys(diaryEntries).length);
         } else {
-            console.error('Error fetching diary entries from server:', data.message);
             diaryEntries = {};
         }
     } catch (error) {
-        console.error('Failed to fetch diary entries (network/fetch error):', error);
         diaryEntries = {};
     }
 }
 
+
 function renderCalendar(date) {
     const calendarGrid = document.getElementById('calendarGrid');
     const monthYearDisplay = document.getElementById('currentMonthYear');
-    if (!calendarGrid || !monthYearDisplay) {
-        console.error("Calendar elements not found."); return;
-    }
+    if (!calendarGrid || !monthYearDisplay) return;
 
     calendarGrid.innerHTML = '';
     const month = date.getMonth();
@@ -410,9 +385,12 @@ function renderCalendar(date) {
     for (let day = 1; day <= daysInMonth; day++) {
         const dayCell = document.createElement('div');
         dayCell.classList.add('calendar-day');
-        dayCell.textContent = day;
         
-        const cellDate = new Date(year, month, day);
+        const dayNumberSpan = document.createElement('span');
+        dayNumberSpan.classList.add('day-number');
+        dayNumberSpan.textContent = day;
+        dayCell.appendChild(dayNumberSpan);
+
         const formattedCellDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         dayCell.dataset.date = formattedCellDate;
 
@@ -420,19 +398,30 @@ function renderCalendar(date) {
             dayCell.classList.add('today');
         }
 
-        if (diaryEntries[formattedCellDate]) {
+        if (diaryEntries[formattedCellDate] && diaryEntries[formattedCellDate].length > 0) {
             dayCell.classList.add('has-entry');
-            dayCell.title = `${diaryEntries[formattedCellDate].submittedBy || 'Someone'} made an entry.`;
-            if (diaryEntries[formattedCellDate].submittedBy) {
-                dayCell.classList.add(`${diaryEntries[formattedCellDate].submittedBy.toLowerCase()}-entry-marker`);
-            }
+            const dotsContainer = document.createElement('div');
+            dotsContainer.classList.add('entry-dots-container');
+            
+            // Create a Set to only add one dot per user for that day
+            const usersOnThisDay = new Set();
+            diaryEntries[formattedCellDate].forEach(entry => {
+                usersOnThisDay.add(entry.submittedBy.toLowerCase());
+            });
+
+            usersOnThisDay.forEach(user => {
+                const dot = document.createElement('span');
+                dot.classList.add('entry-dot', user); // e.g., 'chikoo' or 'prath'
+                dotsContainer.appendChild(dot);
+            });
+            dayCell.appendChild(dotsContainer);
+            dayCell.title = `${usersOnThisDay.size} entr${usersOnThisDay.size > 1 ? 'ies' : 'y'}. Click to view/add.`;
         }
 
 
         dayCell.addEventListener('click', () => {
-            console.log('Clicked calendar day with date:', dayCell.dataset.date);
-            if (diaryEntries[dayCell.dataset.date]) {
-                viewDiaryEntry(dayCell.dataset.date);
+            if (diaryEntries[dayCell.dataset.date] && diaryEntries[dayCell.dataset.date].length > 0) {
+                viewDiaryEntry(dayCell.dataset.date); // Prioritize viewing if entries exist
             } else {
                 openDiaryEntry(dayCell.dataset.date);
             }
@@ -441,82 +430,80 @@ function renderCalendar(date) {
     }
 }
 
+
 function openDiaryEntry(dateString) {
     document.getElementById('selectedDate').value = dateString;
-    console.log('openDiaryEntry received dateString:', dateString);
-
     const dateParts = dateString.split('-');
-    if (dateParts.length !== 3) { showCustomMessage('Invalid date format for opening diary: ' + dateString); return; }
-    const yearNum = parseInt(dateParts[0], 10);
-    const monthNum = parseInt(dateParts[1], 10) - 1;
-    const dayNum = parseInt(dateParts[2], 10);
-    const dateObj = new Date(yearNum, monthNum, dayNum);
-
-    if (isNaN(dateObj.getTime())) { showCustomMessage('Could not create valid date from: ' + dateString); return; }
+    if (dateParts.length !== 3) { showCustomMessage('Invalid date format: ' + dateString); return; }
+    const dateObj = new Date(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2]));
+    if (isNaN(dateObj.getTime())) { showCustomMessage('Invalid date: ' + dateString); return; }
     
     const displayOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById('diaryDateDisplay').textContent = dateObj.toLocaleDateString('en-US', displayOptions);
-    document.getElementById('diaryEntryTitle').textContent = `Diary for ${dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}`;
+    document.getElementById('diaryEntryTitle').textContent = `New Diary Entry for ${dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}`;
     document.getElementById('diaryThoughts').value = '';
     document.getElementById('diaryThoughts').placeholder = `${currentUser}, write your diary entry here...`;
     navigateToDiaryPage('diaryEntryPage');
 }
 
 function viewDiaryEntry(dateString) {
-    const entry = diaryEntries[dateString];
-    if (!entry) {
-        console.warn('viewDiaryEntry called for a date with no cached entry:', dateString);
-        showCustomMessage('Could not load details for ' + dateString + '. Entry not found. Try going back.');
-        openDiaryEntry(dateString); 
+    const entriesForDate = diaryEntries[dateString];
+    // For simplicity in this view, we'll show the first entry or allow new.
+    // A more complex UI might list multiple entries or show a combined view.
+    // For now, if an entry by current user exists, show it. Otherwise, prompt to add new or show other's.
+    // Let's keep current behavior: show first entry, with attribution and reply.
+    const entry = entriesForDate ? entriesForDate[0] : null; // Default to first entry for simplicity for now
+                                                            // The 'all entries' list handles multiple entries better.
+                                                            // Or better: find entry by currentUser first.
+    let userEntry = null;
+    if (entriesForDate) {
+        userEntry = entriesForDate.find(e => e.submittedBy === currentUser);
+    }
+    const displayEntry = userEntry || entry; // Prioritize current user's entry for direct view
+
+    if (!displayEntry) {
+        openDiaryEntry(dateString); // If no entry, open new entry page
         return;
     }
 
     const dateParts = dateString.split('-');
-    if (dateParts.length !== 3) { showCustomMessage('Invalid date format for view: ' + dateString); return; }
+    if (dateParts.length !== 3) { showCustomMessage('Invalid date format: ' + dateString); return; }
     const dateObj = new Date(parseInt(dateParts[0]), parseInt(dateParts[1]) - 1, parseInt(dateParts[2]));
-    if (isNaN(dateObj.getTime())) { showCustomMessage('Invalid date object for view: ' + dateString); return; }
+    if (isNaN(dateObj.getTime())) { showCustomMessage('Invalid date: ' + dateString); return; }
 
     const displayOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     document.getElementById('viewDiaryDateDisplay').textContent = dateObj.toLocaleDateString('en-US', displayOptions);
-    document.getElementById('viewDiaryThoughts').textContent = entry.thoughts || 'No thoughts.';
+    document.getElementById('viewDiaryThoughts').textContent = displayEntry.thoughts || 'No thoughts.';
 
     const attributionElement = document.getElementById('diaryEntryAttribution');
     if (attributionElement) {
-        attributionElement.innerHTML = `<em>${entry.submittedBy || 'Unknown User'} Made a New entry</em>`;
-        attributionElement.className = 'entry-attribution'; 
-        if (entry.submittedBy) {
-            attributionElement.classList.add(`${entry.submittedBy.toLowerCase()}-entry`);
+        attributionElement.innerHTML = `<em>Entry by ${displayEntry.submittedBy || 'Unknown User'}</em>`;
+        attributionElement.className = 'entry-attribution';
+        if (displayEntry.submittedBy) {
+            attributionElement.classList.add(`${displayEntry.submittedBy.toLowerCase()}-entry`);
         }
     }
 
-
     const singleViewReplyContainer = document.getElementById('diaryViewPageReplySection');
     if (singleViewReplyContainer) {
-        singleViewReplyContainer.innerHTML = ''; 
-
-        if (entry.repliedBy && entry.replyMessage) {
+        singleViewReplyContainer.innerHTML = '';
+        if (displayEntry.repliedBy && displayEntry.replyMessage) {
             const replyDisplay = document.createElement('div');
-            replyDisplay.classList.add('reply-display', `${entry.repliedBy.toLowerCase()}-reply`);
-            const replyTextP = document.createElement('p');
-            replyTextP.innerHTML = `<strong>${entry.repliedBy} Replied:</strong> ${entry.replyMessage}`;
-            replyDisplay.appendChild(replyTextP);
-            if (entry.replyTimestamp) {
-                const replyTimeP = document.createElement('p');
-                replyTimeP.classList.add('reply-timestamp');
-                replyTimeP.textContent = `Replied: ${new Date(entry.replyTimestamp).toLocaleString('en-US', {year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true})}`;
-                replyDisplay.appendChild(replyTimeP);
-            }
+            replyDisplay.classList.add('reply-display', `${displayEntry.repliedBy.toLowerCase()}-reply`);
+            replyDisplay.innerHTML = `<p><strong>${displayEntry.repliedBy} Replied:</strong> ${displayEntry.replyMessage}</p>` +
+                                     (displayEntry.replyTimestamp ? `<p class="reply-timestamp">Replied: ${new Date(displayEntry.replyTimestamp).toLocaleString('en-US', {year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true})}</p>` : '');
             singleViewReplyContainer.appendChild(replyDisplay);
-        } else {
+        } else if (displayEntry.submittedBy !== currentUser) { // Only allow reply if not own entry
             const replyButton = document.createElement('button');
-            replyButton.textContent = 'Reply 💌';
-            replyButton.classList.add('reply-btn');
+            replyButton.innerHTML = '<span class="material-icons">reply</span> Reply';
+            replyButton.classList.add('styled-button', 'reply-btn');
             replyButton.onclick = function() {
                 replyButton.disabled = true;
-                const currentDisplayDate = document.getElementById('viewDiaryDateDisplay').textContent || entry.date;
-                showCustomPrompt(`Replying to ${entry.submittedBy || 'User'}'s diary entry for ${currentDisplayDate}:\n"${(entry.thoughts || '').substring(0, 100)}${(entry.thoughts || '').length > 100 ? "..." : ""}"\n\n${currentUser}, your reply:`, (replyText) => {
+                const currentDisplayDate = document.getElementById('viewDiaryDateDisplay').textContent || displayEntry.date;
+                showCustomPrompt(`Replying to ${displayEntry.submittedBy || 'User'}'s diary entry for ${currentDisplayDate}:\n"${(displayEntry.thoughts || '').substring(0, 100)}${(displayEntry.thoughts || '').length > 100 ? "..." : ""}"\n\n${currentUser}, your reply:`, (replyText) => {
                      if (replyText !== null) {
-                        submitReply('diary', dateString, replyText, replyButton);
+                        // Pass unique identifier: date + original submitter for diary replies
+                        submitReply('diary', `${dateString}_${displayEntry.submittedBy}`, replyText, replyButton); 
                     } else {
                          replyButton.disabled = false;
                     }
@@ -524,8 +511,6 @@ function viewDiaryEntry(dateString) {
             };
             singleViewReplyContainer.appendChild(replyButton);
         }
-    } else {
-        console.error("Reply container 'diaryViewPageReplySection' not found.");
     }
     navigateToDiaryPage('diaryViewPage');
 }
@@ -546,14 +531,12 @@ function submitDiaryEntry() {
     formData.append('formType', 'diaryEntry');
     formData.append('date', date);
     formData.append('thoughts', thoughts);
-    formData.append('submittedBy', currentUser); 
+    formData.append('submittedBy', currentUser);
 
-    const submitBtn = document.querySelector('#diaryEntryPage button[onclick="submitDiaryEntry()"]');
-    const originalBtnText = submitBtn.textContent;
-    submitBtn.textContent = 'Saving...';
+    const submitBtn = document.querySelector('#diaryEntryPage .styled-button.primary');
+    const originalBtnText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<span class="material-icons">hourglass_top</span> Saving...';
     submitBtn.disabled = true;
-
-    console.log(`Submitting diary entry by ${currentUser}:`, { date: date, thoughts: thoughts.substring(0, 50) + '...' });
 
     fetch(scriptURL, { method: 'POST', body: formData, mode: 'cors' })
     .then(response => {
@@ -563,20 +546,18 @@ function submitDiaryEntry() {
         return response.json();
     })
     .then(data => {
-        console.log('Diary Entry Success!', data);
         if (data.status === 'error') throw new Error(data.message || 'Server error saving diary.');
-        return fetchDiaryEntries().then(() => { 
-             renderCalendar(calendarCurrentDate); 
+        return fetchDiaryEntries().then(() => {
+             renderCalendar(calendarCurrentDate);
              navigateToDiaryPage('diaryConfirmationPage');
         });
     })
     .catch(error => {
-        console.error('Diary Entry Error!', error);
         showCustomMessage('Error saving diary entry: ' + error.message);
     })
     .finally(() => {
         if (submitBtn) {
-            submitBtn.textContent = originalBtnText;
+            submitBtn.innerHTML = originalBtnText;
             submitBtn.disabled = false;
         }
     });
@@ -584,9 +565,8 @@ function submitDiaryEntry() {
 
 async function fetchAndDisplayAllDiaryEntries() {
     if (!currentUser) { showCustomMessage('Please log in to view entries.'); logout(); return; }
-    console.log('Fetching all diary entries list...');
     const listContainer = document.getElementById('allDiaryEntriesList');
-    if (!listContainer) { console.error('"allDiaryEntriesList" not found.'); return; }
+    if (!listContainer) { return; }
     listContainer.innerHTML = '<p>Loading entries...</p>';
 
     if (scriptURL.includes('YOUR_SCRIPT_ID_HERE') || scriptURL === '') {
@@ -594,34 +574,47 @@ async function fetchAndDisplayAllDiaryEntries() {
     }
 
     try {
-        const response = await fetch(`${scriptURL}?action=getDiaryEntries`, { method: 'GET', mode: 'cors' });
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`HTTP error! ${response.status}: ${errorText}`);
+        // We already have diaryEntries from fetchDiaryEntries, just need to display them all
+        // If not, fetch them (though navigateToApp should have done this for diary screen)
+        if (Object.keys(diaryEntries).length === 0) {
+            await fetchDiaryEntries();
         }
-        const serverData = await response.json();
-        console.log('All diary entries data:', serverData);
-        listContainer.innerHTML = '';
 
-        if (serverData.status === 'success' && serverData.data && serverData.data.length > 0) {
-            const sortedEntries = serverData.data.sort((a, b) => new Date(b.date) - new Date(a.date)); 
+        listContainer.innerHTML = '';
+        const allEntries = [];
+        for (const date in diaryEntries) {
+            diaryEntries[date].forEach(entry => allEntries.push(entry));
+        }
+
+        if (allEntries.length > 0) {
+            const sortedEntries = allEntries.sort((a, b) => {
+                const dateA = new Date(a.date + "T00:00:00"); // Ensure date part is parsed correctly
+                const dateB = new Date(b.date + "T00:00:00");
+                if (dateB.getTime() !== dateA.getTime()) {
+                    return dateB.getTime() - dateA.getTime();
+                }
+                // If dates are same, sort by creation timestamp if available
+                const tsA = a.createdTimestamp ? new Date(a.createdTimestamp) : 0;
+                const tsB = b.createdTimestamp ? new Date(b.createdTimestamp) : 0;
+                return tsB - tsA;
+            });
+
             sortedEntries.forEach(entry => {
                 const entryDiv = document.createElement('div');
                 entryDiv.classList.add('diary-entry-list-item');
-                
                 let formattedDate = 'Unknown Date';
                 if (entry.date) {
-                    const entryDateObj = new Date(entry.date + "T00:00:00"); 
+                    const entryDateObj = new Date(entry.date + "T00:00:00");
                      if (!isNaN(entryDateObj.getTime())) {
                         formattedDate = entryDateObj.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
                     } else { formattedDate = `Invalid Date: ${entry.date}`; }
                 }
-                
+
                 const entryMetaDiv = document.createElement('div');
                 entryMetaDiv.classList.add('entry-meta-info');
                 if(entry.submittedBy) entryMetaDiv.classList.add(`${entry.submittedBy.toLowerCase()}-entry`);
-                entryMetaDiv.innerHTML = `<strong>${entry.submittedBy || 'Unknown User'}</strong> Made a New entry:`;
-                
+                entryMetaDiv.innerHTML = `<strong>${entry.submittedBy || 'Unknown User'}</strong> wrote:`;
+
                 entryDiv.innerHTML = `<h3>${formattedDate}</h3>`;
                 entryDiv.appendChild(entryMetaDiv);
                 const thoughtsP = document.createElement('p');
@@ -629,33 +622,25 @@ async function fetchAndDisplayAllDiaryEntries() {
                 thoughtsP.textContent = entry.thoughts || 'No thoughts.';
                 entryDiv.appendChild(thoughtsP);
 
-
                 const replySectionDiv = document.createElement('div');
                 replySectionDiv.classList.add('entry-reply-section');
-
                 if (entry.repliedBy && entry.replyMessage) {
                     const replyContainer = document.createElement('div');
                     replyContainer.classList.add('reply-display', `${entry.repliedBy.toLowerCase()}-reply`);
-                    const replyTextP = document.createElement('p');
-                    replyTextP.innerHTML = `<strong>${entry.repliedBy} Replied:</strong> ${entry.replyMessage}`;
-                    replyContainer.appendChild(replyTextP);
-                    if (entry.replyTimestamp) {
-                        const replyTimeP = document.createElement('p');
-                        replyTimeP.classList.add('reply-timestamp');
-                        replyTimeP.textContent = `Replied: ${new Date(entry.replyTimestamp).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}`;
-                        replyContainer.appendChild(replyTimeP);
-                    }
+                    replyContainer.innerHTML = `<p><strong>${entry.repliedBy} Replied:</strong> ${entry.replyMessage}</p>` +
+                                               (entry.replyTimestamp ? `<p class="reply-timestamp">Replied: ${new Date(entry.replyTimestamp).toLocaleString('en-US', {year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true })}</p>` : '');
                     replySectionDiv.appendChild(replyContainer);
-                } else {
+                } else if (entry.submittedBy !== currentUser) { // Can only reply to other's entries
                     const replyButton = document.createElement('button');
-                    replyButton.textContent = 'Reply 💌';
-                    replyButton.classList.add('reply-btn', 'small-reply-btn');
+                    replyButton.innerHTML = '<span class="material-icons">reply</span> Reply';
+                    replyButton.classList.add('styled-button', 'reply-btn', 'small-reply-btn');
                     replyButton.onclick = function(event) {
                         event.stopPropagation();
                         replyButton.disabled = true;
                         showCustomPrompt(`Replying to ${entry.submittedBy || 'User'}'s diary entry for ${formattedDate}:\n"${(entry.thoughts || '').substring(0, 100)}${(entry.thoughts || '').length > 100 ? "..." : ""}"\n\n${currentUser}, your reply:`, (replyText) => {
                             if (replyText !== null) {
-                                submitReply('diary', entry.date, replyText, replyButton);
+                                // For diary, identifier should be unique: date + original_submitter
+                                submitReply('diary', `${entry.date}_${entry.submittedBy}`, replyText, replyButton);
                             } else {
                                 replyButton.disabled = false;
                             }
@@ -664,17 +649,14 @@ async function fetchAndDisplayAllDiaryEntries() {
                     replySectionDiv.appendChild(replyButton);
                 }
                 entryDiv.appendChild(replySectionDiv);
-                entryDiv.appendChild(document.createElement('hr')); 
+                entryDiv.appendChild(document.createElement('hr'));
                 listContainer.appendChild(entryDiv);
             });
-        } else if (serverData.status === 'success' && (!serverData.data || serverData.data.length === 0)) {
-            listContainer.innerHTML = '<p>No diary entries recorded yet.</p>';
         } else {
-            listContainer.innerHTML = `<p>Could not load entries: ${serverData.message || 'Unknown server response'}</p>`;
+            listContainer.innerHTML = '<p>No diary entries recorded yet.</p>';
         }
         navigateToDiaryPage('allDiaryEntriesPage');
     } catch (error) {
-        console.error('Failed to fetch all diary entries list:', error);
         if (listContainer) listContainer.innerHTML = `<p>Error loading all diary entries: ${error.message}</p>`;
     }
 }
@@ -685,65 +667,83 @@ async function submitReply(entryType, entryIdentifier, replyMessage, buttonEleme
     if (!currentUser) { showCustomMessage('Please log in to reply.'); logout(); return; }
     if (!replyMessage || replyMessage.trim() === "") {
         showCustomMessage("Reply cannot be empty.");
-        if (buttonElement) { buttonElement.disabled = false; buttonElement.textContent = 'Reply 💌'; }
+        if (buttonElement) { buttonElement.disabled = false; buttonElement.innerHTML = '<span class="material-icons">reply</span> Reply'; }
         return;
     }
-
     if (scriptURL.includes('YOUR_SCRIPT_ID_HERE') || scriptURL === '') {
         showCustomMessage('Please update the scriptURL in script.js.');
-        if (buttonElement) { buttonElement.disabled = false; buttonElement.textContent = 'Reply 💌'; }
+        if (buttonElement) { buttonElement.disabled = false; buttonElement.innerHTML = '<span class="material-icons">reply</span> Reply'; }
         return;
     }
 
     const formData = new FormData();
     formData.append('formType', 'replyEntry');
     formData.append('entryType', entryType);
-    formData.append('entryIdentifier', entryIdentifier);
+    formData.append('entryIdentifier', entryIdentifier); // For diary, this is now "date_originalSubmitter"
     formData.append('replyMessage', replyMessage.trim());
-    formData.append('repliedBy', currentUser); 
+    formData.append('repliedBy', currentUser);
 
-    const originalButtonText = buttonElement ? buttonElement.textContent : 'Reply 💌';
+    const originalButtonHTML = buttonElement ? buttonElement.innerHTML : '<span class="material-icons">reply</span> Reply';
     if (buttonElement) {
-        buttonElement.textContent = 'Replying...';
+        buttonElement.innerHTML = '<span class="material-icons">hourglass_top</span> Replying...';
         buttonElement.disabled = true;
     }
-
-    console.log(`${currentUser} submitting reply for ${entryType} ID ${entryIdentifier}: ${replyMessage.trim()}`);
 
     try {
         const response = await fetch(scriptURL, { method: 'POST', body: formData, mode: 'cors' });
         if (!response.ok) {
             const text = await response.text();
-            console.error('Reply submission HTTP error response text:', text);
             throw new Error(`HTTP error! ${response.status}: ${text}`);
         }
         const data = await response.json();
-        console.log('Reply server response:', data);
         if (data.status === 'error') throw new Error(data.message || `Error saving reply from server.`);
 
-        showCustomMessage(`Reply by ${currentUser} submitted successfully! Notification sent.`);
-        
+        showCustomMessage(`Reply by ${currentUser} submitted successfully!`);
+
         if (entryType === 'feeling') {
-            fetchAndDisplayFeelingsEntries(); 
+            fetchAndDisplayFeelingsEntries();
         } else if (entryType === 'diary') {
-            await fetchDiaryEntries(); 
-            renderCalendar(calendarCurrentDate); 
-            
-            if (document.getElementById('allDiaryEntriesPage').classList.contains('active')) {
-                fetchAndDisplayAllDiaryEntries();
-            }
+            await fetchDiaryEntries(); // Refetch all diary entries
+            renderCalendar(calendarCurrentDate); // Re-render calendar with new data
+
+            // If currently on a page displaying this entry, refresh it
+            const allEntriesPageActive = document.getElementById('allDiaryEntriesPage').classList.contains('active');
             const diaryViewPageActive = document.getElementById('diaryViewPage').classList.contains('active');
-            const currentViewingDate = diaryEntries[entryIdentifier] ? entryIdentifier : null; 
-            if (diaryViewPageActive && currentViewingDate === entryIdentifier) { 
-                 viewDiaryEntry(entryIdentifier); 
+            
+            if (allEntriesPageActive) {
+                fetchAndDisplayAllDiaryEntries(); // This will re-render the list
+            }
+            
+            // For single view, check if the replied entry is being viewed
+            // entryIdentifier for diary is "date_originalSubmitter"
+            const [dateOfEntry, originalSubmitter] = entryIdentifier.split('_');
+            const viewedDate = document.getElementById('selectedDate')?.value || document.querySelector('#diaryViewPage .date-display #viewDiaryDateDisplay')?.textContent;
+            //This check needs to be more robust if viewDiaryEntry is showing a specific entry
+            if (diaryViewPageActive && viewedDate && dateOfEntry) {
+                 const currentDateObj = new Date(dateOfEntry + "T00:00:00");
+                 const currentDisplayDateStr = currentDateObj.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+                if(document.getElementById('viewDiaryDateDisplay').textContent === currentDisplayDateStr){
+                     // find the specific entry in diaryEntries[dateOfEntry] that matches originalSubmitter
+                     const targetEntry = diaryEntries[dateOfEntry]?.find(e => e.submittedBy === originalSubmitter);
+                     if(targetEntry) {
+                        // Manually update the specific entry in memory before re-rendering view
+                        targetEntry.repliedBy = currentUser;
+                        targetEntry.replyMessage = replyMessage.trim();
+                        targetEntry.replyTimestamp = new Date().toISOString();
+                        viewDiaryEntry(dateOfEntry); // Re-render the view for this date
+                     } else { // Fallback if direct update is tricky
+                        navigateToApp('diaryScreen'); // Go back to calendar which will be fresh
+                     }
+                }
             }
         }
 
     } catch (error) {
-        console.error('Reply Submission Error!', error);
         showCustomMessage('Error submitting reply.\n' + error.message);
-        if (buttonElement) { 
-            buttonElement.textContent = originalButtonText;
+    } finally {
+         if (buttonElement) {
+            buttonElement.innerHTML = originalButtonHTML;
             buttonElement.disabled = false;
         }
     }
@@ -751,66 +751,46 @@ async function submitReply(entryType, entryIdentifier, replyMessage, buttonEleme
 
 // --- Dare Game Functions ---
 function generateDare() {
-    if (!currentUser) {
-        showCustomMessage('Please log in to play the Dare Game!');
-        logout();
-        return;
-    }
-    if (!dareTextElement) {
-        console.error("Dare text element not found!");
-        return;
-    }
-
-    if (coupleDares.length === 0) {
-        dareTextElement.textContent = "No dares available!";
-        return;
-    }
+    if (!currentUser) { showCustomMessage('Please log in to play the Dare Game!'); logout(); return; }
+    if (!dareTextElement) { return; }
+    if (coupleDares.length === 0) { dareTextElement.textContent = "No dares available!"; return; }
 
     let availableDares = coupleDares.filter(dare => !usedDares.includes(dare));
-
     if (availableDares.length === 0) {
-        // All dares have been used, reset
         usedDares = [];
         availableDares = [...coupleDares];
         showCustomMessage("You've gone through all the dares! Resetting for more fun. 😉");
     }
-
     const randomIndex = Math.floor(Math.random() * availableDares.length);
     const selectedDare = availableDares[randomIndex];
-    
     usedDares.push(selectedDare);
     dareTextElement.textContent = selectedDare;
 }
 
 
-// --- Custom Message/Prompt Implementation (Replaces alert/prompt) ---
+// --- Custom Message/Prompt Implementation ---
 function showCustomMessage(message, onOkCallback) {
-    // Check if a custom message popup already exists, remove it
     const existingPopup = document.getElementById('customMessagePopup');
-    if (existingPopup) {
-        existingPopup.remove();
-    }
+    if (existingPopup) existingPopup.remove();
     const existingOverlay = document.getElementById('customMessageOverlay');
-     if (existingOverlay) {
-        existingOverlay.remove();
-    }
+     if (existingOverlay) existingOverlay.remove();
 
     const overlay = document.createElement('div');
-    overlay.id = 'customMessageOverlay';
+    overlay.id = 'customMessageOverlay'; // Use same ID for CSS targeting
     overlay.style.cssText = `
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.6); z-index: 1999; display: flex;
-        align-items: center; justify-content: center; backdrop-filter: blur(3px);
+        background: var(--overlay-bg); z-index: 1999; display: flex;
+        align-items: center; justify-content: center; backdrop-filter: var(--overlay-backdrop-filter);
     `;
 
     const popup = document.createElement('div');
-    popup.id = 'customMessagePopup';
+    popup.id = 'customMessagePopup'; // Use same ID for CSS targeting
     popup.style.cssText = `
-        background: #fff; padding: 25px; border-radius: 15px;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.25); text-align: center;
-        max-width: 350px; width: 90%; z-index: 2000;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        color: #5c3b4c; line-height: 1.6;
+        background: var(--popup-bg); padding: 25px; border-radius: 16px;
+        box-shadow: var(--popup-shadow); text-align: center;
+        max-width: 360px; width: 90%; z-index: 2000;
+        font-family: 'Roboto', 'Segoe UI', sans-serif;
+        color: var(--text-color); line-height: 1.6; border: 1px solid var(--popup-border);
     `;
     
     const messageP = document.createElement('p');
@@ -820,11 +800,7 @@ function showCustomMessage(message, onOkCallback) {
 
     const okButton = document.createElement('button');
     okButton.textContent = 'Okay';
-    okButton.style.cssText = `
-        background: linear-gradient(45deg, #d94a6b, #ff80a0); color: white;
-        border: none; padding: 10px 20px; border-radius: 20px;
-        cursor: pointer; font-size: 1em; font-weight: bold;
-    `;
+    okButton.classList.add('styled-button', 'primary'); // Use new button style
 
     okButton.onclick = () => {
         overlay.remove();
@@ -849,18 +825,18 @@ function showCustomPrompt(message, callback) {
     overlay.id = 'customPromptOverlay';
     overlay.style.cssText = `
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.65); z-index: 1999; display: flex;
-        align-items: center; justify-content: center; backdrop-filter: blur(4px);
+        background: var(--overlay-bg); z-index: 1999; display: flex;
+        align-items: center; justify-content: center; backdrop-filter: var(--overlay-backdrop-filter);
     `;
 
     const popup = document.createElement('div');
     popup.id = 'customPromptPopup';
     popup.style.cssText = `
-        background: #fff; padding: 25px; border-radius: 15px;
-        box-shadow: 0 6px 25px rgba(0,0,0,0.3); text-align: center;
+        background: var(--popup-bg); padding: 25px; border-radius: 16px;
+        box-shadow: var(--popup-shadow); text-align: center;
         max-width: 400px; width: 90%; z-index: 2000;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        color: #5c3b4c;
+        font-family: 'Roboto', 'Segoe UI', sans-serif;
+        color: var(--text-color); border: 1px solid var(--popup-border);
     `;
 
     const messageP = document.createElement('p');
@@ -870,39 +846,40 @@ function showCustomPrompt(message, callback) {
     const inputField = document.createElement('textarea');
     inputField.rows = 3;
     inputField.style.cssText = `
-        width: calc(100% - 20px); padding: 10px; border: 1px solid #ddd;
+        width: calc(100% - 20px); padding: 12px; border: 1px solid var(--input-border);
         border-radius: 8px; margin-bottom: 20px; font-size: 0.95em;
-        box-sizing: border-box; resize: vertical;
+        box-sizing: border-box; resize: vertical; background-color: var(--surface-color); color: var(--text-color);
     `;
+    inputField.onfocus = () => {
+        inputField.style.borderColor = 'var(--input-focus-border)';
+        inputField.style.boxShadow = '0 0 0 2px var(--input-focus-shadow)';
+    };
+    inputField.onblur = () => {
+        inputField.style.borderColor = 'var(--input-border)';
+        inputField.style.boxShadow = 'none';
+    };
+
 
     const buttonContainer = document.createElement('div');
     buttonContainer.style.display = 'flex';
-    buttonContainer.style.justifyContent = 'space-around';
+    buttonContainer.style.justifyContent = 'flex-end'; // Align buttons to right
+    buttonContainer.style.gap = '10px';
 
     const submitButton = document.createElement('button');
     submitButton.textContent = 'Submit';
-    submitButton.style.cssText = `
-        background: linear-gradient(45deg, #4CAF50, #81C784); color: white;
-        border: none; padding: 10px 20px; border-radius: 20px;
-        cursor: pointer; font-size: 0.9em; font-weight: bold; flex-grow: 1; margin: 0 5px;
-    `;
+    submitButton.classList.add('styled-button', 'primary');
 
     const cancelButton = document.createElement('button');
     cancelButton.textContent = 'Cancel';
-    cancelButton.style.cssText = `
-        background: #f0f0f0; color: #666; border: 1px solid #ddd;
-        padding: 10px 20px; border-radius: 20px; cursor: pointer;
-        font-size: 0.9em; font-weight: bold; flex-grow: 1; margin: 0 5px;
-    `;
+    cancelButton.classList.add('styled-button', 'secondary');
 
     submitButton.onclick = () => {
         overlay.remove();
         callback(inputField.value);
     };
-
     cancelButton.onclick = () => {
         overlay.remove();
-        callback(null); // Indicate cancellation
+        callback(null);
     };
     
     popup.appendChild(messageP);
@@ -911,17 +888,50 @@ function showCustomPrompt(message, callback) {
     buttonContainer.appendChild(submitButton);
     popup.appendChild(buttonContainer);
     overlay.appendChild(popup);
-    document.body.appendChild(overlay);
     inputField.focus();
+}
+
+// --- Theme Management ---
+function applyTheme(theme) {
+    if (theme === 'dark') {
+        document.body.classList.add('dark-theme');
+        if (themeSwitch) themeSwitch.checked = true;
+        if (themeIcon) themeIcon.textContent = '🌙';
+    } else { // Light theme
+        document.body.classList.remove('dark-theme');
+        if (themeSwitch) themeSwitch.checked = false;
+        if (themeIcon) themeIcon.textContent = '☀️';
+    }
+}
+
+function toggleTheme() {
+    if (themeSwitch.checked) {
+        localStorage.setItem(THEME_KEY, 'dark');
+        applyTheme('dark');
+    } else {
+        localStorage.setItem(THEME_KEY, 'light');
+        applyTheme('light');
+    }
+}
+
+function loadTheme() {
+    const preferredTheme = localStorage.getItem(THEME_KEY);
+    if (preferredTheme) {
+        applyTheme(preferredTheme);
+    } else {
+        // Default to light theme if no preference or system preference check
+        applyTheme('light');
+    }
 }
 
 
 // --- Initialization ---
 document.addEventListener('DOMContentLoaded', () => {
     if (scriptURL.includes('YOUR_SCRIPT_ID_HERE') || scriptURL === '') {
-        console.warn('⚠️ IMPORTANT: Please update the scriptURL in script.js with your Google Apps Script web app URL.');
+        showCustomMessage('⚠️ IMPORTANT: Please update the scriptURL in script.js with your Google Apps Script web app URL.');
     }
     
+    loadTheme(); // Load theme first
     checkLoginStatus(); 
     
     const prevMonthBtn = document.getElementById('prevMonthBtn');
@@ -929,24 +939,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (prevMonthBtn) {
         prevMonthBtn.addEventListener('click', () => {
-            if (!currentUser) return; 
+            if (!currentUser) return;
             calendarCurrentDate.setMonth(calendarCurrentDate.getMonth() - 1);
-            fetchDiaryEntries().then(() => renderCalendar(calendarCurrentDate));
+            renderCalendar(calendarCurrentDate); // Fetch is not strictly needed if entries are global & pre-fetched
         });
     }
     if (nextMonthBtn) {
         nextMonthBtn.addEventListener('click', () => {
-            if (!currentUser) return; 
+            if (!currentUser) return;
             calendarCurrentDate.setMonth(calendarCurrentDate.getMonth() + 1);
-            fetchDiaryEntries().then(() => renderCalendar(calendarCurrentDate));
+            renderCalendar(calendarCurrentDate);
         });
     }
-     console.log('DOM loaded. External script functions should be available.');
+
+    if (themeSwitch) {
+        themeSwitch.addEventListener('change', toggleTheme);
+    }
+
      if (typeof navigateToApp === 'undefined') {
-         console.error('❌ script.js core functions not defined globally! This can happen if script is deferred or has loading issues.');
          showCustomMessage('Error: Critical script functions not loaded.');
-     } else {
-         console.log('✅ script.js core functions seem to be defined.');
      }
 });
-
