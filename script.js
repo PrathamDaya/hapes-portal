@@ -15,6 +15,9 @@ const diaryPages = document.querySelectorAll('#diaryScreen .page');
 // Dare Game Elements
 const dareTextElement = document.getElementById('dareText');
 
+// Song Game Elements
+const songTextElement = document.getElementById('songText'); // New element for song display
+
 // Global variables for application state
 let currentUser = ''; 
 const SCRIPT_USER_KEY = 'hetuAppCurrentUser';
@@ -59,6 +62,52 @@ const coupleDares = [
   "Say your partner’s name while playing with your chest and rubbing yourself through clothes."
 ];
 let usedDares = [];
+
+// --- Song List (from wwe.xlsx - Sheet1.csv) ---
+// This array will be populated from the CSV data.
+const songList = [
+    "Tu Jaane Na", "Hum Nashe Mein Toh Nahin", "Tum Ho", "Jee Le Zaraa", "Phir Se Ud Chala",
+    "Pehli Nazar Mein", "Mere Bina", "Khoya Khoya", "Aao Naa", "Tujhe Bhula Diya",
+    "Kun Faya Kun", "Abhi Kuch Dino Se", "Maula Mere Maula", "Maahi", "Bheegi Si Bhaagi Si",
+    "Khuda Jaane (From \"Bachna Ae Haseeno\")", "Raabta", "Aas Paas Khuda", "O Re Piya", "Hosanna",
+    "Saiyyan", "Tujhko Jo Paaya", "Tere Bin Nahi Laage (Male Version)", "Ajj Din Chadheya", "Rang Jo Lagyo",
+    "Jashn-E-Bahaaraa", "Phir Mohabbat", "Main Rang Sharbaton Ka", "Darmiyaan", "Is This Love",
+    "BHAGE RE MANN", "SAU DARD", "Sapna Jahan (From \"Brothers\")", "KABHI KABHI ADITI", "Wo Ajnabee",
+    "Hale Dil", "PEE LOON", "ADHOORE", "Tere Ho Ke Rahenge - Reprise", "GUZARISH",
+    "Saaiyaan", "TENNU LE", "Khudaya Khair", "Mann Mera", "O Saathi (From \"Baaghi 2\")",
+    "Surili Akhiyon Wale", "KUCHH KHAAS", "Soulmate", "Saiyaara", "TUM SE HI",
+    "Hey Ya !", "Tu Hi Meri Shab Hai (From \"Gangster\")", "Zara Sa", "SONIYE", "SAUDEBAZI (ENCORE)",
+    "Tum Mile", "Dildaara (Stand By Me)", "Criminal", "Uff Teri Adaa", "Tu Hi Mera",
+    "GUSTAKH DIL TERE LIYE", "Madhubala", "Tum Se", "Tum Mile (Love Reprise)", "Akhiyaan Gulaab",
+    "Hua Main", "Lover", "Tumse Hi Tumse", "Tere Bina", "OFFO",
+    "Tum Hi Ho Bandhu", "AAO MILO CHALO", "SOORAJ DOOBA HAIN", "Tu Mera Hero", "Make Some Noise For The Desi Boyz",
+    "SAWAAR LOON", "Bandook Meri Laila (feat. Raftaar, Sidharth Malhotra)", "TUMSE MILKE DIL KA", "Saibo", "Piya O Re Piya",
+    "Mileya Mileya", "Gulabi", "Bairiyaa", "YE TUNE KYA KIYA", "Tune Jo Na Kaha",
+    "TUM JO AAYE", "Right Now Now", "Subha Hone Na De", "Lat Lag Gayee", "Prem Ki Naiyya",
+    "DADDY MUMMY", "Jhak Maar Ke", "Abcd", "Love Me Thoda Aur", "Sunny Sunny",
+    "Gf Bf", "GIRL I NEED YOU", "Jeene Ke Hain Chaar Din", "Mujhse Shaadi Karogi", "Tum Hi Ho",
+    "Meri Aashiqui", "Bol Na Halke Halke", "MAST MAGAN", "Humdard", "JAB TAK",
+    "Pal", "PHIR KABHI", "Bol Do Na Zara", "SAB TERA", "KABHI JO BAADAL BARSE",
+    "Ghungroo (From \"WAR\")", "Ek Main Aur Ekk Tu", "Tere Naina", "Kya Mujhe Pyar Hai", "SAWARE",
+    "Tera Hone Laga Hoon", "Beete Lamhein", "KABIRA", "GENDA PHOOL", "Raataan Lambiyan (From \"Shershaah\")",
+    "Duniyaa (From \"Luka Chuppi\")", "Gal Mitthi Mitthi", "LOCHA-E-ULFAT", "Jab Mila Tu", "O Rangrez",
+    "Uff", "Bang Bang", "Tu Meri", "Meherbaan", "Khamoshiyan",
+    "Mera Yaar", "KINNA SONA", "Allah Maaf Kare", "Soniyo", "Hookah Bar",
+    "Nadaan Parinde", "SONI DE NAKHRE", "Mitwa", "Humraah (From \"Malang - Unleash The Madness\")", "Chahun Main Ya Naa",
+    "Satranga", "Tere Liye", "Bakhuda Tumhi Ho", "Main Hoon Saath Tere", "Apna Bana Le (From \"Bhediya\")",
+    "Dil Ibaadat", "Le Aaunga", "Jaanam (From \"Bad Newz\")", "Khoobsurat (From \"Stree 2\")", "Nazm Nazm",
+    "Meherbani", "Aadat (From \"Kalyug\")", "Dagabaaz Re", "Sajdaa", "Tera Deedar Hua",
+    "Sanu Ek Pal (From \"Raid\")", "TERE MAST MAST DO NAIN", "Rabba Main Toh Mar Gaya Oye", "Khairiyat", "Labon Ko",
+    "Saathiya", "Tose Naina", "Jiya Dhadak Dhadak Jaye (From \"Kalyug\")", "Aa Zara", "Caller Tune",
+    "You Are My Soniya", "MAIN RAHOON YA NA RAHOON", "Baarish", "Nain Katari Re", "Te Amo (Duet)",
+    "Lutt Putt Gaya", "Jogi", "Rait Zara Si", "I Love You", "Pehli Dafa",
+    "Itni Si Baat Hain", "Tera Fitoor", "TAINU LEKE", "Meet", "Meri Banogi Kya",
+    "Teri Jhuki Nazar", "Humko Pyar Hua", "DUPATTA TERA NAU RANG DA", "Sajdaa (From \"My Name Is Khan\")", "LO MAAN LIYA",
+    "Rishte Naate", "Aa Jao Meri Tamanna", "Marjaani", "Ishq Sufiyana", "Shaayraana",
+    "Kajra Re | Full Song | Bunty Aur Babli | Aishwarya, Abhishek, Amitabh Bachchan | Shankar-Ehsaan-Loy",
+    "Chaudhary", "Thodi Der", "Boom Boom (Lip Lock)"
+];
+let usedSongs = [];
 
 
 // --- User Authentication and Session ---
@@ -147,6 +196,14 @@ function navigateToApp(screenId) {
         }
         if (dareTextElement) { // Initial message for dare game
              dareTextElement.textContent = "Click the button below to get your first dare!";
+        }
+    } else if (screenId === 'songGameScreen') { // New: Handle song game screen
+        // Reset songs if all have been used, or on first load of the game screen
+        if (usedSongs.length === songList.length) {
+            usedSongs = [];
+        }
+        if (songTextElement) { // Initial message for song game
+             songTextElement.textContent = "Click the button below to get a random song!";
         }
     }
 }
@@ -769,7 +826,7 @@ function generateDare() {
 
     let availableDares = coupleDares.filter(dare => !usedDares.includes(dare));
 
-    if (availableDares.length === 0) {
+    if (availableDaires.length === 0) {
         // All dares have been used, reset
         usedDares = [];
         availableDares = [...coupleDares];
@@ -781,6 +838,39 @@ function generateDare() {
     
     usedDares.push(selectedDare);
     dareTextElement.textContent = selectedDare;
+}
+
+// --- Song Game Functions ---
+function generateSong() {
+    if (!currentUser) {
+        showCustomMessage('Please log in to play the Song Game!');
+        logout();
+        return;
+    }
+    if (!songTextElement) {
+        console.error("Song text element not found!");
+        return;
+    }
+
+    if (songList.length === 0) {
+        songTextElement.textContent = "No songs available!";
+        return;
+    }
+
+    let availableSongs = songList.filter(song => !usedSongs.includes(song));
+
+    if (availableSongs.length === 0) {
+        // All songs have been used, reset
+        usedSongs = [];
+        availableSongs = [...songList];
+        showCustomMessage("You've gone through all the songs! Resetting the list. 🎶");
+    }
+
+    const randomIndex = Math.floor(Math.random() * availableSongs.length);
+    const selectedSong = availableSongs[randomIndex];
+    
+    usedSongs.push(selectedSong);
+    songTextElement.textContent = selectedSong;
 }
 
 
@@ -896,11 +986,6 @@ function showCustomPrompt(message, callback) {
         font-size: 0.9em; font-weight: bold; flex-grow: 1; margin: 0 5px;
     `;
 
-    submitButton.onclick = () => {
-        overlay.remove();
-        callback(inputField.value);
-    };
-
     cancelButton.onclick = () => {
         overlay.remove();
         callback(null); // Indicate cancellation
@@ -950,4 +1035,3 @@ document.addEventListener('DOMContentLoaded', () => {
          console.log('✅ script.js core functions seem to be defined.');
      }
 });
-
