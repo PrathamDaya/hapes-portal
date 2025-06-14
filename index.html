@@ -24,7 +24,13 @@
     <div id="appContainer">
         <div class="app-header-info">
             <span id="loggedInUserDisplay">User: Not logged in</span>
-            <button class="logout-btn" onclick="logout()">Logout</button>
+            <div class="header-controls">
+                <button id="darkModeToggle" class="dark-mode-toggle-btn" aria-label="Toggle Dark Mode">
+                    <span class="icon-light">☀️</span>
+                    <span class="icon-dark">🌙</span>
+                </button>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
         </div>
 
         <section id="homeScreen" class="screen active">
@@ -41,7 +47,6 @@
                 <div class="option-box main-option" onclick="navigateToApp('dareGameScreen')">
                     😈 Couple's Dare Game 😈
                 </div>
-                <!-- New Song Game Button -->
                 <div class="option-box main-option" onclick="navigateToApp('songGameScreen')">
                     🎵 Random Song Game 🎶
                 </div>
@@ -86,19 +91,18 @@
                             </div>
                             <p id="feelings-thank-you-message">Thank you for sharing! Your thoughts have been recorded.</p>
                             <button class="main-home-btn" onclick="navigateToApp('homeScreen')">🏠 Main Home</button>
-                            <button class="back-to-feelings-btn" onclick="navigateToFeelingsPage('feelingsPage1')">New Entry</button>
                         </div>
                     </section>
 
-                    <section id="feelingsViewEntriesPage" class="page">
-                        <h2>Feelings Entries</h2>
-                        <div id="feelingsEntriesList" class="entries-list-container">
+                     <section id="allFeelingsEntriesPage" class="page">
+                        <h2>Your Feelings Entries</h2>
+                        <div id="feelingsEntriesList" class="entries-list">
                             <p>Loading entries...</p>
                         </div>
-                        <button onclick="navigateToFeelingsPage('feelingsPage1')">Back to Feelings Portal</button>
+                        <button class="back-btn" onclick="navigateToFeelingsPage('feelingsPage1')">Back to Feelings</button>
                     </section>
                 </main>
-                <footer class="portal-footer">
+                 <footer class="portal-footer">
                     <p>&copy; 2025 For Hetu with Love</p>
                 </footer>
             </div>
@@ -108,58 +112,46 @@
             <div class="container">
                 <header>
                     <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
-                    <h1><span class="dynamicUserName">User</span>'s Diary</h1>
+                    <h1>Hetu's Diary</h1>
                 </header>
                 <main>
                     <section id="diaryCalendarPage" class="page active">
-                        <div class="calendar-header">
-                            <button id="prevMonthBtn">←</button>
+                        <div class="calendar-nav">
+                            <button id="prevMonthBtn">◀️ Prev</button>
                             <h2 id="currentMonthYear"></h2>
-                            <button id="nextMonthBtn">→</button>
+                            <button id="nextMonthBtn">Next ▶️</button>
                         </div>
-                        <div id="calendarGrid" class="calendar-grid">
-                        </div>
-                        <div class="diary-actions">
-                            <button onclick="fetchAndDisplayAllDiaryEntries()">View All Entries</button>
-                        </div>
+                        <div class="calendar-grid" id="calendarGrid">
+                            </div>
+                        <button class="view-all-diary-btn" onclick="fetchAndDisplayDiaryEntries()">View All Diary Entries</button>
                     </section>
 
                     <section id="diaryEntryPage" class="page">
-                        <h2 id="diaryEntryTitle"></h2>
-                        <p class="date-display">Date: <span id="diaryDateDisplay"></span></p>
+                        <h2 id="diaryEntryDate"></h2>
                         <div class="notebook">
-                            <textarea id="diaryThoughts" placeholder="Write your diary entry here..."></textarea>
-                            <input type="hidden" id="selectedDate">
-                            <button onclick="submitDiaryEntry()">Save Entry</button>
+                            <textarea id="diaryMessage" placeholder="Write your diary entry here..."></textarea>
+                            <button id="submitDiaryBtn" onclick="submitDiaryEntry()">Save Entry</button>
                         </div>
                         <button class="back-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Calendar</button>
                     </section>
 
-                    <section id="diaryConfirmationPage" class="page">
+                     <section id="diaryEntryConfirmationPage" class="page">
                         <div class="confirmation-box">
-                            <p>Your diary entry has been saved!</p>
-                            <button class="main-home-btn" onclick="navigateToApp('homeScreen')">🏠 Main Home</button>
-                            <button class="back-to-diary-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Diary</button>
-                        </div>
-                    </section>
-
-                    <section id="diaryViewPage" class="page">
-                        <h2 class="date-display">Date: <span id="viewDiaryDateDisplay"></span></h2>
-                        <div class="notebook view-only">
-                            <p id="viewDiaryThoughts"></p>
-                             <p id="diaryEntryAttribution" class="entry-attribution"></p>
-                        </div>
-                        <div id="diaryViewPageReplySection" class="reply-section-container">
+                            <div id="diary-animation-container">
+                                <span id="diary-check-icon">✅</span>
+                                <div id="diary-message-box"></div>
                             </div>
-                        <button class="back-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Calendar</button>
+                            <p id="diary-thank-you-message">Your diary entry has been saved!</p>
+                            <button class="main-home-btn" onclick="navigateToApp('homeScreen')">🏠 Main Home</button>
+                        </div>
                     </section>
 
                     <section id="allDiaryEntriesPage" class="page">
-                        <h2>All Diary Entries</h2>
-                        <div id="allDiaryEntriesList" class="entries-list-container">
+                        <h2>Your Diary Entries</h2>
+                        <div id="diaryEntriesList" class="entries-list">
                             <p>Loading entries...</p>
                         </div>
-                        <button onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Calendar</button>
+                        <button class="back-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Diary</button>
                     </section>
 
                 </main>
@@ -176,11 +168,9 @@
                     <h1>Couple's Dare Game</h1>
                 </header>
                 <main>
-                    <div class="dare-display-area">
-                        <p id="dareText">Click the button below to get your first dare!</p>
-                    </div>
-                    <div class="dare-actions">
-                        <button id="nextDareBtn" onclick="generateDare()">Next Dare 🔥</button>
+                    <div class="game-box">
+                        <p id="dareText" class="game-text">Click the button below to get your first dare!</p>
+                        <button onclick="getNewDare()">Get a New Dare</button>
                     </div>
                 </main>
                 <footer class="portal-footer">
@@ -189,19 +179,16 @@
             </div>
         </section>
 
-        <!-- New Song Game Section -->
-        <section id="songGameScreen" class="screen">
+         <section id="songGameScreen" class="screen">
             <div class="container">
                 <header>
                     <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
                     <h1>Random Song Game</h1>
                 </header>
                 <main>
-                    <div class="song-display-area">
-                        <p id="songText">Click the button below to get a random song!</p>
-                    </div>
-                    <div class="song-actions">
-                        <button id="nextSongBtn" onclick="generateSong()">Next Song 🎶</button>
+                    <div class="game-box">
+                        <p id="songText" class="game-text">Click the button below to get a random song!</p>
+                        <button onclick="getNewSong()">Get a New Song</button>
                     </div>
                 </main>
                 <footer class="portal-footer">
@@ -210,28 +197,31 @@
             </div>
         </section>
 
-    </div>
-    
-    <div id="missYouPopup">
-        <p id="missYouMessage"></p> <button onclick="closeMissYouPopup()">Okay ❤️</button>
+
     </div>
 
-    <div id="overlay"></div>
+    <div id="missYouPopup" class="popup">
+        <div class="popup-content">
+            <span class="close-button" onclick="closeMissYouPopup()">×</span>
+            <p id="missYouMessage"></p>
+        </div>
+    </div>
+    <div id="overlay" class="overlay" onclick="closeMissYouPopup()"></div>
+
+    <div id="customMessageModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" onclick="hideCustomMessage()">×</span>
+            <p id="customMessageText"></p>
+            <button onclick="hideCustomMessage()">OK</button>
+        </div>
+    </div>
 
     <script>
-        // Inline JS from original file
-        console.log('HTML JavaScript is working!');
-        
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM loaded, checking for external script functions...');
-            // The main script.js will handle initialization now
-        });
-
+        // Miss You Popup Logic
         const missYouMessages = [
-            "I love you my chikoo! 🥰",
-            "Sending virtual huggies 🤗 to my darling!",
-            "Sending virtual kissy 😘 to my darling!",
-            "Pratham misses you too! ❤️", 
+            "Pratham misses you! ❤️", // Default for Chikoo
+            "Chikoo misses you! ❤️", // Default for Prath
+            "Sending virtual hug! 🤗",
             "Thinking of you, always! ✨",
             "You're the best! 💖"
         ];
@@ -245,11 +235,16 @@
                 
                 let message = missYouMessages[Math.floor(Math.random() * missYouMessages.length)];
                 
-                if (typeof currentUser !== 'undefined' && currentUser === 'Chikoo' && message === "Pratham misses you too! ❤️") {
-                    // message remains as is
-                } else if (typeof currentUser !== 'undefined' && currentUser === 'Prath' && message === "Pratham misses you too! ❤️") {
-                    message = "Chikoo misses you too! ❤️"; 
+                if (typeof currentUser !== 'undefined' && currentUser === 'Chikoo' && message === "Pratham misses you! ❤️") {
+                    // message remains as is for Chikoo
+                } else if (typeof currentUser !== 'undefined' && currentUser === 'Prath' && message === "Pratham misses you! ❤️") {
+                    message = "Chikoo misses you! ❤️"; // Change for Prath
+                } else if (typeof currentUser !== 'undefined' && currentUser === 'Prath' && message === "Chikoo misses you! ❤️") {
+                    // message remains as is for Prath
+                } else if (typeof currentUser !== 'undefined' && currentUser === 'Chikoo' && message === "Chikoo misses you! ❤️") {
+                    message = "Pratham misses you! ❤️"; // Change for Chikoo
                 }
+
 
                 document.getElementById('missYouMessage').innerHTML = message;
                 document.getElementById('missYouPopup').style.display = 'block';
@@ -265,4 +260,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
