@@ -1,134 +1,332 @@
+/* Universal Box-Sizing */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+:root {
+    /* Pastel Light Mode Colors */
+    --light-bg-gradient-start: #fdf6f6; /* Very light pink */
+    --light-bg-gradient-end: #f0f8ff; /* Very light blue */
+    --light-text-color: #5c6a72; /* Soft grey-blue */
+    --light-accent-color: #8c73d6; /* Soft lavender */
+    --light-secondary-accent: #ffb6c1; /* Light pink */
+    --light-button-bg-start: #b0e0e6; /* Powder blue */
+    --light-button-bg-end: #add8e6; /* Light blue */
+    --light-button-text: #ffffff;
+    --light-border-color: #e0e0e0;
+    --light-card-bg: #ffffff;
+    --light-shadow-color: rgba(0, 0, 0, 0.08);
+
+    /* Specific pastel shades for option boxes */
+    --light-grievance-bg: #ffebee; /* Light red pastel */
+    --light-grievance-text: #c62828;
+    --light-appreciate-bg: #e8f5e9; /* Light green pastel */
+    --light-appreciate-text: #388e3c;
+    --light-sad-bg: #e3f2fd; /* Light blue pastel */
+    --light-sad-text: #1976d2;
+    --light-happy-bg: #fffde7; /* Light yellow pastel */
+    --light-happy-text: #fbc02d;
+
+    /* Dark Mode Colors */
+    --dark-bg-gradient-start: #2c3e50; /* Dark blue-grey */
+    --dark-bg-gradient-end: #34495e; /* Slightly lighter dark blue-grey */
+    --dark-text-color: #ecf0f1; /* Light grey */
+    --dark-accent-color: #bb86fc; /* Light purple */
+    --dark-secondary-accent: #f48fb1; /* Muted pink */
+    --dark-button-bg-start: #4a69bd; /* Muted darker blue */
+    --dark-button-bg-end: #6a89cc; /* Slightly lighter muted blue */
+    --dark-button-text: #ffffff;
+    --dark-border-color: #4a4a4a;
+    --dark-card-bg: #3b3b3b;
+    --dark-shadow-color: rgba(0, 0, 0, 0.3);
+
+    /* Specific dark pastel shades for option boxes */
+    --dark-grievance-bg: #420000; /* Darker red pastel */
+    --dark-grievance-text: #ff8a80;
+    --dark-appreciate-bg: #1b5e20; /* Darker green pastel */
+    --dark-appreciate-text: #a5d6a7;
+    --dark-sad-bg: #1a237e; /* Darker blue pastel */
+    --dark-sad-text: #90caf9;
+    --dark-happy-bg: #ff6f00; /* Darker yellow/orange pastel */
+    --dark-happy-text: #ffe082;
+
+    /* Transitions */
+    --transition-speed: 0.4s ease-in-out;
+}
+
+/* Body Styles */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
-    background: linear-gradient(to bottom right, #fceaff, #fff0f5); /* Main app background */
-    display: flex; /* This will be controlled by JS for login/app visibility */
+    background: linear-gradient(to bottom right, var(--light-bg-gradient-start), var(--light-bg-gradient-end));
+    display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    padding: 15px;
-    color: #5c3b4c;
+    padding: 20px;
+    color: var(--light-text-color);
     overflow-x: hidden;
+    transition: background var(--transition-speed), color var(--transition-speed);
+}
+
+/* Dark Mode Body Styles */
+body.dark-mode {
+    background: linear-gradient(to bottom right, var(--dark-bg-gradient-start), var(--dark-bg-gradient-end));
+    color: var(--dark-text-color);
+}
+
+/* Base Button Styles */
+button {
+    background: linear-gradient(45deg, var(--light-button-bg-start), var(--light-button-bg-end));
+    color: var(--light-button-text);
+    border: none;
+    padding: 14px 24px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    margin: 10px 5px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background var(--transition-speed);
+    box-shadow: 0 4px 12px var(--light-shadow-color);
+    touch-action: manipulation;
+    min-height: 50px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+button:disabled {
+    background: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+/* Dark Mode Button Styles */
+body.dark-mode button {
+    background: linear-gradient(45deg, var(--dark-button-bg-start), var(--dark-button-bg-end));
+    box-shadow: 0 4px 12px var(--dark-shadow-color);
+}
+
+/* Common Container/Card Styles */
+.container, .login-box, .option-box, .notebook, .confirmation-box, .app-header-info {
+    background: var(--light-card-bg);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px var(--light-shadow-color);
+    padding: 25px 20px;
+    text-align: center;
+    width: 100%;
     box-sizing: border-box;
+    position: relative;
+    margin: 0 auto;
+    transition: background var(--transition-speed), box-shadow var(--transition-speed), border-color var(--transition-speed);
+    border: 1px solid var(--light-border-color);
+}
+
+body.dark-mode .container, body.dark-mode .login-box, body.dark-mode .option-box,
+body.dark-mode .notebook, body.dark-mode .confirmation-box, body.dark-mode .app-header-info {
+    background: var(--dark-card-bg);
+    box-shadow: 0 10px 30px var(--dark-shadow-color);
+    border-color: var(--dark-border-color);
 }
 
 /* LOGIN SCREEN STYLES */
 #loginContainer {
-    display: flex; 
+    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    width: 100%; 
-    padding: 20px;
-    box-sizing: border-box;
-    background: linear-gradient(to bottom right, #fde4f0, #fff5f8); 
-    animation: fadeInSimple 0.5s ease-out;
-}
-
-.login-box {
-    background: #fff;
-    padding: 30px 40px;
-    border-radius: 25px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-    text-align: center;
     width: 100%;
-    max-width: 400px;
+    padding: 20px;
+    animation: fadeInSimple 0.6s ease-out;
 }
 
 .login-box h1 {
-    color: #d94a6b;
-    margin-bottom: 25px;
-    font-size: clamp(1.8em, 5vw, 2.4em);
+    color: var(--light-accent-color);
+    margin-bottom: 30px;
+    font-size: clamp(2em, 5vw, 2.8em);
+    transition: color var(--transition-speed);
+}
+
+body.dark-mode .login-box h1 {
+    color: var(--dark-accent-color);
 }
 
 .login-options button {
     display: block;
     width: 100%;
-    padding: 18px 20px;
-    margin-bottom: 15px;
-    font-size: 1.2em;
-    font-weight: bold;
+    margin-bottom: 20px;
+    font-size: 1.3em;
+    padding: 20px 25px;
     border-radius: 15px;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    border: none;
 }
 
 .login-options button.chikoo-btn {
-    background: linear-gradient(45deg, #ffadc5, #ff80a0);
-    color: white;
-    box-shadow: 0 4px 12px rgba(255, 128, 160, 0.3);
+    background: linear-gradient(45deg, #ffccd5, #ffadcd); /* Soft pink */
+    color: #a04050;
+    box-shadow: 0 4px 12px rgba(255, 173, 205, 0.4);
 }
 .login-options button.chikoo-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(255, 128, 160, 0.4);
+    transform: translateY(-4px);
+    box-shadow: 0 6px 15px rgba(255, 173, 205, 0.5);
 }
 
 .login-options button.prath-btn {
-    background: linear-gradient(45deg, #7fd2ff, #5ab9ea);
-    color: white;
-    box-shadow: 0 4px 12px rgba(90, 185, 234, 0.3);
+    background: linear-gradient(45deg, #a7d9f7, #7ac0e4); /* Soft blue */
+    color: #3b6d8a;
+    box-shadow: 0 4px 12px rgba(122, 192, 228, 0.4);
 }
 .login-options button.prath-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px rgba(90, 185, 234, 0.4);
+    transform: translateY(-4px);
+    box-shadow: 0 6px 15px rgba(122, 192, 228, 0.5);
 }
+
+/* Dark Mode Login Buttons */
+body.dark-mode .login-options button.chikoo-btn {
+    background: linear-gradient(45deg, #c2185b, #e91e63);
+    color: white;
+    box-shadow: 0 4px 12px rgba(233, 30, 99, 0.6);
+}
+body.dark-mode .login-options button.prath-btn {
+    background: linear-gradient(45deg, #0d47a1, #1976d2);
+    color: white;
+    box-shadow: 0 4px 12px rgba(25, 118, 210, 0.6);
+}
+
 
 @keyframes fadeInSimple {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-/* END LOGIN SCREEN STYLES */
-
-
-#appContainer {
-    display: none; 
-    width: 100%;
-    max-width: 800px;
-    box-sizing: border-box;
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 /* APP HEADER INFO (LOGGED IN USER & LOGOUT) */
+#appContainer {
+    display: none;
+    width: 100%;
+    max-width: 900px; /* Increased max-width */
+}
+
 .app-header-info {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 15px; 
-    background-color: rgba(255, 255, 255, 0.85);
-    border-radius: 12px;
-    margin-bottom: 15px; 
-    box-shadow: 0 3px 8px rgba(0,0,0,0.07);
+    padding: 12px 20px;
+    margin-bottom: 25px;
+}
+
+.header-controls {
+    display: flex;
+    gap: 15px;
+    align-items: center;
 }
 
 #loggedInUserDisplay {
-    font-size: 0.95em;
-    color: #c73f60;
+    font-size: 1em;
+    color: var(--light-accent-color);
     font-weight: bold;
+    transition: color var(--transition-speed);
+}
+
+body.dark-mode #loggedInUserDisplay {
+    color: var(--dark-accent-color);
 }
 
 .logout-btn {
-    background: #e9edf0; 
-    color: #555; 
-    border: 1px solid #d5d9dc;
-    padding: 8px 15px; 
-    font-size: 0.9em; 
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: background 0.2s ease, border-color 0.2s ease;
+    background: var(--light-border-color);
+    color: var(--light-text-color);
+    border: 1px solid var(--light-border-color);
+    padding: 10px 18px;
+    font-size: 0.9em;
+    border-radius: 20px;
+    box-shadow: none;
+    margin: 0; /* Remove default button margin */
 }
 .logout-btn:hover {
-    background: #d8dde1;
-    border-color: #c8ccd0;
+    background: #e0e0e0;
+}
+
+body.dark-mode .logout-btn {
+    background: var(--dark-border-color);
+    color: var(--dark-text-color);
+    border-color: var(--dark-border-color);
+}
+body.dark-mode .logout-btn:hover {
+    background: #555;
 }
 
 
+/* Dark Mode Toggle Button */
+.dark-mode-toggle-btn {
+    background: var(--light-border-color);
+    color: var(--light-text-color);
+    border: 1px solid var(--light-border-color);
+    padding: 10px 15px;
+    font-size: 1.2em;
+    border-radius: 20px;
+    box-shadow: none;
+    margin: 0;
+    width: 50px; /* Fixed width */
+    height: 40px; /* Fixed height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.dark-mode-toggle-btn .icon-light,
+.dark-mode-toggle-btn .icon-dark {
+    position: absolute;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.dark-mode-toggle-btn .icon-light {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.dark-mode-toggle-btn .icon-dark {
+    opacity: 0;
+    transform: translateY(100%);
+}
+
+body.dark-mode .dark-mode-toggle-btn {
+    background: var(--dark-border-color);
+    color: var(--dark-text-color);
+    border-color: var(--dark-border-color);
+}
+
+body.dark-mode .dark-mode-toggle-btn .icon-light {
+    opacity: 0;
+    transform: translateY(-100%);
+}
+
+body.dark-mode .dark-mode-toggle-btn .icon-dark {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+/* Screen Transitions */
 .screen {
     display: none;
     width: 100%;
-    animation: fadeInScale 0.6s ease-out forwards;
+    animation: fadeInScale 0.7s ease-out forwards;
     transform-origin: center center;
+    padding: 0 10px; /* Added padding to prevent content touching edges */
 }
 
 .screen.active {
@@ -136,111 +334,114 @@ body {
 }
 
 @keyframes fadeInScale {
-    from { opacity: 0; transform: translateY(20px) scale(0.98); }
+    from { opacity: 0; transform: translateY(30px) scale(0.95); }
     to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 /* Main Home Page Styles */
 #homeScreen .main-header {
     text-align: center;
-    margin-bottom: 30px;
-    padding: 15px;
+    margin-bottom: 40px;
+    padding: 20px;
 }
 
 #homeScreen .main-header h1 {
-    color: #d94a6b;
-    font-size: clamp(2em, 6vw, 2.8em); 
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+    color: var(--light-accent-color);
+    font-size: clamp(2.5em, 6vw, 3.5em);
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.08);
     margin: 0;
     line-height: 1.2;
+    transition: color var(--transition-speed);
+}
+
+body.dark-mode #homeScreen .main-header h1 {
+    color: var(--dark-accent-color);
 }
 
 .options-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    padding: 15px;
-    align-items: center;
+    display: grid; /* Changed to grid for better control */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid */
+    gap: 30px; /* Increased gap for more white space */
+    padding: 20px;
+    justify-content: center;
+    align-items: stretch; /* Ensures equal height */
+    max-width: 100%;
+    margin: 0 auto;
 }
 
 .option-box {
-    background: #fff;
-    border-radius: 20px;
-    padding: 25px 20px;
-    text-align: center;
-    font-size: clamp(1.1em, 4vw, 1.4em);
-    color: #d94a6b;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-    border: 1px solid #ffe0f0;
+    padding: 30px 25px;
+    font-size: clamp(1.2em, 4vw, 1.5em);
+    color: var(--light-accent-color);
+    border: 1px solid var(--light-border-color);
+    min-height: 130px; /* Increased min-height */
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 80px;
-    width: 100%;
-    max-width: 320px; /* Increased max-width for better look */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background var(--transition-speed), color var(--transition-speed), border-color var(--transition-speed);
 }
 
-.option-box:hover, .option-box:active {
-    transform: translateY(-5px) scale(1.02);
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+.option-box:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.18);
 }
 
-.main-option { /* Style for all main options including new game button */
+body.dark-mode .option-box {
+    color: var(--dark-accent-color);
+    border-color: var(--dark-border-color);
+}
+
+.main-option {
     font-weight: bold;
-    letter-spacing: 0.5px;
-    min-height: 100px;
-}
-/* Specific style for the new game button if needed, can be like others */
-.option-box.game-dare-option {
-    /* Example: if you want a different background or icon */
-    /* background: linear-gradient(45deg, #ff6b6b, #ee5253); */
-    /* color: white; */
-}
-
-
-#homeScreen .main-footer, .portal-footer {
-    text-align: center;
-    margin-top: 30px;
-    color: #a07a8b;
-    font-size: 0.85em;
-    padding: 0 15px;
+    letter-spacing: 0.8px;
 }
 
 /* Bunny Button Styles */
 .bunny-button {
-    background: linear-gradient(45deg, #ffc0cb, #ff80a0); 
-    color: white;
-    font-size: 1.5em; 
+    background: linear-gradient(45deg, var(--light-secondary-accent), var(--light-accent-color));
+    color: var(--light-button-text);
+    font-size: 1.8em;
     font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0px; 
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); 
-    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-    border: 1px solid #ff6699;
-    cursor: pointer;
-    padding: 30px; 
-    min-height: 120px; 
+    gap: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.18);
+    border: none; /* No extra border for this one */
+    min-height: 150px;
+    grid-column: span 1; /* Default to 1 column */
 }
 
+@media (min-width: 769px) { /* On desktop, bunny button spans 2 columns */
+    .bunny-button {
+        grid-column: span 2;
+    }
+     /* If there are 5 items, the last one (bunny) should span 2 for centering */
+    .options-grid:has(> :nth-last-child(5):nth-child(5)) > .bunny-button:last-child {
+        grid-column: span 2;
+    }
+}
+
+
 .bunny-button:hover {
-    transform: translateY(-8px) scale(1.02);
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
-    background: linear-gradient(45deg, #ff80a0, #ffc0cb); 
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: 0 18px 35px rgba(0, 0, 0, 0.25);
+    background: linear-gradient(45deg, var(--light-accent-color), var(--light-secondary-accent));
 }
 
 .bunny-button .bunny-face {
-    display: inline-block;
-    font-size: 3em; 
-    line-height: 1; 
-    animation: bounce 0.8s infinite alternate ease-in-out; 
+    font-size: 3.5em;
+    line-height: 1;
+    animation: bounce 1s infinite alternate ease-in-out;
 }
 
 .bunny-button .bunny-face.spinning {
-    animation: spin 2s linear infinite; 
+    animation: spin 2s linear infinite;
+}
+
+body.dark-mode .bunny-button {
+    background: linear-gradient(45deg, var(--dark-secondary-accent), var(--dark-accent-color));
+    color: var(--dark-button-text);
+}
+body.dark-mode .bunny-button:hover {
+    background: linear-gradient(45deg, var(--dark-accent-color), var(--dark-secondary-accent));
 }
 
 @keyframes spin {
@@ -248,64 +449,79 @@ body {
     to { transform: rotate(360deg); }
 }
 
-@keyframes bounce { 
+@keyframes bounce {
     0% { transform: translateY(0); }
-    100% { transform: translateY(-5px); } 
+    100% { transform: translateY(-8px); }
+}
+
+#homeScreen .main-footer, .portal-footer {
+    text-align: center;
+    margin-top: 50px;
+    color: var(--light-text-color);
+    font-size: 0.9em;
+    padding: 0 20px;
+    transition: color var(--transition-speed);
+}
+
+body.dark-mode #homeScreen .main-footer, body.dark-mode .portal-footer {
+    color: var(--dark-text-color);
 }
 
 
 /* Common Portal Styles */
-.container {
-    background: #fff;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    padding: 20px 15px;
-    text-align: center;
-    width: 100%;
-    box-sizing: border-box;
-    position: relative;
-    margin: 0 auto;
+.container header {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--light-border-color);
 }
 
-.container header {
-    margin-bottom: 25px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #eee;
-    position: relative;
+body.dark-mode .container header {
+    border-color: var(--dark-border-color);
 }
 
 .container header h1 {
-    color: #d94a6b;
-    font-size: clamp(1.6em, 5vw, 2.2em);
+    color: var(--light-accent-color);
+    font-size: clamp(2em, 5vw, 3em);
     margin: 0;
-    padding-top: 40px; 
-    line-height: 1.2;
+    padding-top: 50px;
+    line-height: 1.3;
+    transition: color var(--transition-speed);
 }
+
+body.dark-mode .container header h1 {
+    color: var(--dark-accent-color);
+}
+
 
 .back-to-home-btn {
     position: absolute;
-    top: 0px;
-    left: 0px;
-    background: #f0f0f0;
-    color: #666;
-    border: none;
-    padding: 12px 16px;
-    border-radius: 15px;
-    cursor: pointer;
-    font-size: 0.9em;
-    transition: background 0.3s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    touch-action: manipulation; 
+    top: 15px;
+    left: 15px;
+    background: var(--light-border-color);
+    color: var(--light-text-color);
+    padding: 10px 15px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    box-shadow: none;
+    margin: 0;
 }
 
-.back-to-home-btn:hover, .back-to-home-btn:active {
+.back-to-home-btn:hover {
     background: #e0e0e0;
+}
+
+body.dark-mode .back-to-home-btn {
+    background: var(--dark-border-color);
+    color: var(--dark-text-color);
+}
+body.dark-mode .back-to-home-btn:hover {
+    background: #555;
 }
 
 .page {
     display: none;
-    padding: 15px 0;
-    animation: fadeIn 0.5s ease-out forwards;
+    padding: 20px 0;
+    animation: fadeIn 0.6s ease-out forwards;
 }
 
 .page.active {
@@ -313,873 +529,679 @@ body {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
+    from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
 .notebook {
-    background: #fdfdfd;
-    border: 1px solid #e0e0e0;
-    border-radius: 15px;
-    padding: 20px;
-    margin: 20px auto;
-    box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
+    background: var(--light-card-bg);
+    border: 1px solid var(--light-border-color);
+    padding: 25px;
+    margin: 30px auto;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.03);
     max-width: 100%;
+}
+
+body.dark-mode .notebook {
+    background: var(--dark-card-bg);
+    border-color: var(--dark-border-color);
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .notebook textarea {
     width: 100%;
-    min-height: 120px;
+    min-height: 150px;
     padding: 15px;
-    border: 2px solid #ddd;
+    border: 2px solid var(--light-border-color);
     border-radius: 12px;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 1em;
-    color: #444;
+    font-size: 1.1em;
+    color: var(--light-text-color);
     resize: vertical;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     box-sizing: border-box;
-    line-height: 1.5;
+    line-height: 1.6;
+    transition: border-color var(--transition-speed), box-shadow var(--transition-speed), background var(--transition-speed), color var(--transition-speed);
+    background: #fdfdfd;
 }
 
 .notebook textarea:focus {
     outline: none;
-    border-color: #d94a6b;
-    box-shadow: 0 0 8px rgba(217, 74, 107, 0.3);
+    border-color: var(--light-accent-color);
+    box-shadow: 0 0 10px rgba(140, 115, 214, 0.3);
 }
 
-button {
-    background: linear-gradient(45deg, #ff80a0, #d94a6b);
-    color: white;
-    border: none;
-    padding: 14px 20px;
+body.dark-mode .notebook textarea {
+    background: #2b2b2b;
+    color: var(--dark-text-color);
+    border-color: var(--dark-border-color);
+}
+body.dark-mode .notebook textarea:focus {
+    border-color: var(--dark-accent-color);
+    box-shadow: 0 0 10px rgba(187, 134, 252, 0.4);
+}
+
+/* Specific button styles (back, view all) */
+.back-btn, .view-all-btn, .main-home-btn, .view-all-diary-btn {
+    background: var(--light-border-color);
+    color: var(--light-text-color);
+    border: 1px solid var(--light-border-color);
+    padding: 12px 20px;
+    font-size: 0.95em;
     border-radius: 25px;
-    cursor: pointer;
-    font-size: 1em;
-    font-weight: bold;
-    margin: 8px 4px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease; 
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    touch-action: manipulation;
-    min-height: 48px; 
-}
-
-button:hover, button:active {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-}
-
-button:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-button:disabled {
-    background: #cccccc;
-    color: #666666; 
-    cursor: not-allowed;
     box-shadow: none;
-    transform: none;
+    margin: 10px;
 }
-
-.back-btn, .view-all-btn {
-    background: #f0f0f0;
-    color: #666;
-    border: 1px solid #ddd;
-}
-
-.back-btn:hover, .view-all-btn:hover, 
-.back-btn:active, .view-all-btn:active {
+.back-btn:hover, .view-all-btn:hover, .main-home-btn:hover, .view-all-diary-btn:hover {
     background: #e0e0e0;
+    transform: translateY(-2px);
+}
+body.dark-mode .back-btn, body.dark-mode .view-all-btn, body.dark-mode .main-home-btn, body.dark-mode .view-all-diary-btn {
+    background: var(--dark-border-color);
+    color: var(--dark-text-color);
+    border-color: var(--dark-border-color);
+}
+body.dark-mode .back-btn:hover, body.dark-mode .view-all-btn:hover, body.dark-mode .main-home-btn:hover, body.dark-mode .view-all-diary-btn:hover {
+    background: #555;
 }
 
+
+/* Confirmation Box */
 .confirmation-box {
-    background: #f9f9f9;
-    border: 1px solid #e0e0e0;
-    border-radius: 20px;
-    padding: 30px 20px;
-    margin: 20px auto;
-    max-width: 100%;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    padding: 40px 30px;
+    margin: 30px auto;
+    border: 1px solid var(--light-border-color);
+    box-shadow: 0 8px 25px var(--light-shadow-color);
 }
 
-/* Feelings Portal Specific Styles */
-#feelingsPortalScreen .option-box {
-    font-size: clamp(1em, 4vw, 1.2em); 
-    padding: 20px 15px; 
-    min-height: 70px; 
-    max-width: 280px; 
-    margin: 8px auto; 
-    font-weight: 600; 
-    letter-spacing: 0.3px; 
-}
-#feelingsPortalScreen .option-box.grievance { 
-    background-color: #ffebf0; color: #c51162; border-color: #ffcdd2; 
-}
-#feelingsPortalScreen .option-box.appreciate { 
-    background-color: #e8f5e9; color: #2e7d32; border-color: #c8e6c9; 
-}
-#feelingsPortalScreen .option-box.sad { 
-    background-color: #e3f2fd; color: #1565c0; border-color: #bbdefb; 
-}
-#feelingsPortalScreen .option-box.happy { 
-    background-color: #fff8e1; color: #ff8f00; border-color: #ffecb3; 
-}
-
-#feelingsPortalScreen .option-box.grievance,
-#feelingsPortalScreen .option-box.appreciate,
-#feelingsPortalScreen .option-box.sad,
-#feelingsPortalScreen .option-box.happy {
-    font-size: 1.4em;
-    padding: 30px;
-    min-height: 120px;
-}
-
-
-#feelingsPortalScreen .option-box:hover,
-#feelingsPortalScreen .option-box:active {
-    transform: translateY(-3px) scale(1.01);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-}
-
-/* Animation Styles */
-#feelings-animation-container {
-    width: clamp(120px, 30vw, 200px);
-    height: clamp(90px, 25vw, 150px);
-    margin: 0 auto 20px;
-    position: relative;
+#feelings-animation-container, #diary-animation-container {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
+    margin-bottom: 25px;
 }
 
-#feelings-mail-icon {
-    font-size: clamp(2em, 8vw, 3em);
-    color: #d94a6b;
-    position: relative;
-    animation: bounceIn 1s forwards;
-    display: inline-block;
-    z-index: 2;
+#feelings-mail-icon, #diary-check-icon {
+    font-size: 4em;
+    margin-bottom: 15px;
+    color: var(--light-accent-color);
+    animation: popIn 0.8s ease-out forwards;
+    transition: color var(--transition-speed);
 }
 
-#feelings-message-box {
-    background: #fff;
-    border: 1px solid #d94a6b;
+body.dark-mode #feelings-mail-icon, body.dark-mode #diary-check-icon {
+    color: var(--dark-accent-color);
+}
+
+#feelings-message-box, #diary-message-box {
+    background: #f0f0f0;
+    padding: 12px 20px;
     border-radius: 10px;
-    padding: 8px 12px;
-    position: absolute;
-    font-size: clamp(0.7em, 3vw, 0.8em);
-    color: #5c3b4c;
-    white-space: nowrap;
+    font-style: italic;
+    color: var(--light-text-color);
+    max-width: 80%;
     overflow: hidden;
+    white-space: nowrap;
     text-overflow: ellipsis;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0;
-    animation: messageBoxRise 1.5s 0.5s forwards;
-    max-width: 140px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    z-index: 1;
+    transition: background var(--transition-speed), color var(--transition-speed);
 }
 
-@keyframes bounceIn {
-    0% { transform: scale(0); opacity: 0; }
-    50% { transform: scale(1.2); opacity: 1; }
-    70% { transform: scale(0.9); }
+body.dark-mode #feelings-message-box, body.dark-mode #diary-message-box {
+    background: #555;
+    color: var(--dark-text-color);
+}
+
+
+#feelings-thank-you-message, #diary-thank-you-message {
+    font-size: 1.2em;
+    font-weight: 500;
+    color: var(--light-text-color);
+    margin-top: 20px;
+    transition: color var(--transition-speed);
+}
+body.dark-mode #feelings-thank-you-message, body.dark-mode #diary-thank-you-message {
+    color: var(--dark-text-color);
+}
+
+
+@keyframes popIn {
+    0% { transform: scale(0.5); opacity: 0; }
+    70% { transform: scale(1.1); opacity: 1; }
     100% { transform: scale(1); }
 }
 
-@keyframes messageBoxRise {
-    0% { opacity: 0; transform: translate(-50%, 0%); }
-    100% { opacity: 1; transform: translate(-50%, -120%); }
+
+/* Feelings Portal Specific Styles */
+#feelingsPortalScreen .option-box {
+    font-size: clamp(1.1em, 4vw, 1.4em);
+    padding: 25px 20px;
+    min-height: 100px;
+    max-width: 320px; /* Aligned with home screen option boxes */
+    margin: 15px auto; /* Increased margin for more white space */
+    font-weight: 600;
+    letter-spacing: 0.5px;
 }
 
-#feelings-thank-you-message, #diaryConfirmationPage p {
-    font-size: clamp(1em, 4vw, 1.1em);
-    color: #5c3b4c;
-    margin-bottom: 25px;
-    font-weight: 500;
-    line-height: 1.4;
+#feelingsPortalScreen .option-box.grievance {
+    background-color: var(--light-grievance-bg);
+    color: var(--light-grievance-text);
+    border-color: #ffcdd2;
+}
+#feelingsPortalScreen .option-box.appreciate {
+    background-color: var(--light-appreciate-bg);
+    color: var(--light-appreciate-text);
+    border-color: #c8e6c9;
+}
+#feelingsPortalScreen .option-box.sad {
+    background-color: var(--light-sad-bg);
+    color: var(--light-sad-text);
+    border-color: #bbdefb;
+}
+#feelingsPortalScreen .option-box.happy {
+    background-color: var(--light-happy-bg);
+    color: var(--light-happy-text);
+    border-color: #ffecb3;
 }
 
-/* Miss You Popup Styles */
-#missYouPopup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #fff;
-    border: 2px solid #d94a6b;
-    padding: 30px; 
-    border-radius: 20px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-    text-align: center;
-    z-index: 1001; 
-    display: none; 
-    max-width: 400px; 
-    width: 90%; 
-    box-sizing: border-box;
-    font-size: 1.1em; 
-    color: #5c3b4c;
-    line-height: 1.6;
+/* Dark Mode Feelings Portal Option Boxes */
+body.dark-mode #feelingsPortalScreen .option-box.grievance {
+    background-color: var(--dark-grievance-bg);
+    color: var(--dark-grievance-text);
+    border-color: var(--dark-grievance-bg);
+}
+body.dark-mode #feelingsPortalScreen .option-box.appreciate {
+    background-color: var(--dark-appreciate-bg);
+    color: var(--dark-appreciate-text);
+    border-color: var(--dark-appreciate-bg);
+}
+body.dark-mode #feelingsPortalScreen .option-box.sad {
+    background-color: var(--dark-sad-bg);
+    color: var(--dark-sad-text);
+    border-color: var(--dark-sad-bg);
+}
+body.dark-mode #feelingsPortalScreen .option-box.happy {
+    background-color: var(--dark-happy-bg);
+    color: var(--dark-happy-text);
+    border-color: var(--dark-happy-bg);
 }
 
-#missYouPopup p {
-    margin: 10px 0;
-    font-weight: 500;
-}
 
-#missYouPopup button {
-    background: linear-gradient(45deg, #d94a6b, #ff80a0);
-    color: white;
-    border: none;
-    padding: 12px 25px; 
-    border-radius: 25px;
-    cursor: pointer;
-    font-size: 1em; 
-    font-weight: bold;
+/* Entries List (Feelings & Diary) */
+.entries-list {
+    text-align: left;
     margin-top: 20px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-#missYouPopup button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-}
-
-#overlay { 
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.6); 
-    z-index: 1000; 
-    display: none; 
-    backdrop-filter: blur(3px); 
-}
-
-
-/* Entries List Styles */
-.entries-list-container {
-    max-height: 400px; 
+    max-height: 500px; /* Fixed height for scrolling */
     overflow-y: auto;
-    background: #fcfcfc;
-    border: 1px solid #eee;
+    padding-right: 10px; /* For scrollbar space */
+    border: 1px solid var(--light-border-color);
     border-radius: 15px;
     padding: 15px;
-    margin-top: 20px;
-    text-align: left;
-    box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);
+    background: var(--light-card-bg);
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.02);
+    transition: background var(--transition-speed), border-color var(--transition-speed);
 }
 
-.feelings-table {
+body.dark-mode .entries-list {
+    background: #2b2b2b;
+    border-color: var(--dark-border-color);
+}
+
+.entries-list p {
+    color: var(--light-text-color);
+    font-style: italic;
+    transition: color var(--transition-speed);
+}
+body.dark-mode .entries-list p {
+    color: var(--dark-text-color);
+}
+
+.feelings-table, .diary-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 15px;
     font-size: 0.9em;
 }
 
-.feelings-table th, .feelings-table td {
-    border: 1px solid #eee;
-    padding: 10px 8px;
+.feelings-table th, .diary-table th {
+    background-color: var(--light-border-color);
+    color: var(--light-text-color);
+    padding: 12px 10px;
+    border: 1px solid #ddd;
     text-align: left;
-    vertical-align: top; 
-    word-wrap: break-word;
-    min-width: 80px; 
+    transition: background-color var(--transition-speed), color var(--transition-speed);
 }
-
-.feelings-table th {
-    background-color: #f5f5f5;
-    font-weight: bold;
-    color: #d94a6b;
-    font-size: 0.85em;
-    position: sticky; 
-    top: -1px; 
-    z-index: 1;
-}
-
-.feelings-table tr:nth-child(even) {
-    background-color: #fbfbfb;
-}
-.feelings-table tr:hover {
-    background-color: #fff3f8; 
+body.dark-mode .feelings-table th, body.dark-mode .diary-table th {
+    background-color: var(--dark-border-color);
+    color: var(--dark-text-color);
+    border-color: #555;
 }
 
 
-.emotion-tag {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 12px;
-    font-size: 0.8em;
-    font-weight: 600;
-    white-space: nowrap;
+.feelings-table td, .diary-table td {
+    padding: 10px;
+    border: 1px solid #eee;
+    color: var(--light-text-color);
+    vertical-align: top;
+    transition: border-color var(--transition-speed), color var(--transition-speed);
 }
-.emotion-tag.grievance { background-color: #ffcdd2; color: #c51162; }
-.emotion-tag.appreciate { background-color: #c8e6c9; color: #1b5e20; }
-.emotion-tag.sad { background-color: #bbdefb; color: #0d47a1; }
-.emotion-tag.happy { background-color: #ffecb3; color: #ff6f00; }
-.emotion-tag.unknown { background-color: #e0e0e0; color: #424242; }
+body.dark-mode .feelings-table td, body.dark-mode .diary-table td {
+    border-color: #444;
+    color: var(--dark-text-color);
+}
+
+.feelings-table tr:nth-child(even), .diary-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+body.dark-mode .feelings-table tr:nth-child(even), body.dark-mode .diary-table tr:nth-child(even) {
+    background-color: #333;
+}
 
 
-/* Calendar Styles */
-.calendar-header {
+/* Diary Calendar Styles */
+.calendar-nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    background: #f8f8f8;
-    padding: 15px;
-    border-radius: 15px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    margin-bottom: 25px;
+    padding: 0 10px;
 }
 
-.calendar-header h2 {
+#currentMonthYear {
+    font-size: 1.8em;
+    color: var(--light-accent-color);
+    transition: color var(--transition-speed);
+}
+body.dark-mode #currentMonthYear {
+    color: var(--dark-accent-color);
+}
+
+.calendar-nav button {
+    background: var(--light-border-color);
+    color: var(--light-text-color);
+    padding: 10px 15px;
+    font-size: 1em;
+    border-radius: 20px;
+    box-shadow: none;
     margin: 0;
-    color: #d94a6b;
-    font-size: clamp(1.4em, 5vw, 1.8em);
-    text-align: center;
-    flex: 1;
 }
-
-.calendar-header button {
-    background: #f0f0f0;
-    color: #666;
-    border: 1px solid #ddd;
-    padding: 12px 15px;
-    border-radius: 12px;
-    font-size: 1.2em;
-    min-width: 50px;
-    min-height: 48px;
-    touch-action: manipulation;
-}
-
-.calendar-header button:hover, .calendar-header button:active {
+.calendar-nav button:hover {
     background: #e0e0e0;
+}
+body.dark-mode .calendar-nav button {
+    background: var(--dark-border-color);
+    color: var(--dark-text-color);
+}
+body.dark-mode .calendar-nav button:hover {
+    background: #555;
 }
 
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 8px;
+    max-width: 700px;
+    margin: 0 auto;
+    background: var(--light-card-bg);
     padding: 15px;
-    background: #fdfdfd;
     border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    box-shadow: 0 5px 15px var(--light-shadow-color);
+    transition: background var(--transition-speed), box-shadow var(--transition-speed);
+}
+
+body.dark-mode .calendar-grid {
+    background: var(--dark-card-bg);
+    box-shadow: 0 5px 15px var(--dark-shadow-color);
 }
 
 .calendar-day-header {
     font-weight: bold;
-    color: #d94a6b;
-    text-align: center;
-    padding: 8px 0;
-    font-size: clamp(0.7em, 3vw, 0.9em);
+    color: var(--light-accent-color);
+    padding: 10px 0;
+    transition: color var(--transition-speed);
+}
+body.dark-mode .calendar-day-header {
+    color: var(--dark-accent-color);
 }
 
 .calendar-day {
-    background: #fcfcfc;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    aspect-ratio: 1 / 1;
+    background: #f0f8ff; /* Light pastel blue for days */
+    border: 1px solid #e0f2f7;
+    border-radius: 10px;
+    padding: 15px 5px;
+    min-height: 80px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    justify-content: space-between;
     align-items: center;
-    font-size: clamp(0.8em, 3.5vw, 1.1em);
     cursor: pointer;
-    transition: background 0.2s ease, transform 0.2s ease;
-    color: #5c3b4c;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
-    min-height: 40px;
-    touch-action: manipulation;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease, border-color var(--transition-speed);
+    font-size: 0.9em;
+    color: var(--light-text-color);
 }
 
-.calendar-day.empty {
-    background: #f0f0f0;
-    cursor: default;
-    box-shadow: none;
-    border-color: #ddd;
+body.dark-mode .calendar-day {
+    background: #3b3b3b;
+    border-color: #555;
+    color: var(--dark-text-color);
 }
 
-.calendar-day:not(.empty):hover,
-.calendar-day:not(.empty):active {
-    background: #ffe6f0;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+.calendar-day.inactive {
+    background: #f8f8f8;
+    color: #b0b0b0;
+    cursor: not-allowed;
+    border-color: #f0f0f0;
+}
+body.dark-mode .calendar-day.inactive {
+    background: #2a2a2a;
+    color: #666;
+    border-color: #333;
 }
 
-.calendar-day.today {
-    background: linear-gradient(45deg, #ff9eb2, #ff80a0);
-    color: white;
-    border: 1px solid #ff80a0;
-    font-weight: bold;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
 
 .calendar-day.has-entry {
-    background: #d94a6b;
-    color: white;
+    background: #d8f5d8; /* Light green for entries */
+    border-color: #c0eac0;
     font-weight: bold;
-    border: 1px solid #c03a5b;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+    color: #4CAF50;
 }
-.calendar-day.has-entry.today { 
-    background: linear-gradient(45deg, #c03a5b, #d94a6b); 
-}
-
-
-.calendar-day.has-entry:hover,
-.calendar-day.has-entry:active {
-    background: #c03a5b;
+body.dark-mode .calendar-day.has-entry {
+    background: #1e5c26;
+    border-color: #2e7d32;
+    color: #a5d6a7;
 }
 
-/* Diary Entry Styles */
-.date-display {
-    font-size: clamp(1em, 4vw, 1.2em);
-    color: #d94a6b;
-    font-weight: bold;
+.calendar-day.current-day {
+    background: #ffdcdc; /* Light red for current day */
+    border-color: #ffc0c0;
+    box-shadow: 0 0 15px rgba(255, 192, 192, 0.5);
+}
+body.dark-mode .calendar-day.current-day {
+    background: #8b0000;
+    border-color: #cc0000;
+    box-shadow: 0 0 15px rgba(139, 0, 0, 0.6);
+}
+
+.calendar-day:not(.inactive):hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    background-color: #e6f7ff; /* Lighter hover for normal days */
+}
+body.dark-mode .calendar-day:not(.inactive):hover {
+    background-color: #4a4a4a;
+}
+
+.calendar-day.has-entry:hover {
+    background-color: #c0e0c0; /* Lighter green hover */
+}
+body.dark-mode .calendar-day.has-entry:hover {
+    background-color: #357a38;
+}
+
+.day-number {
+    font-size: 1.2em;
+    margin-bottom: 5px;
+}
+
+.entry-indicator {
+    width: 8px;
+    height: 8px;
+    background-color: var(--light-accent-color);
+    border-radius: 50%;
+    margin-top: 5px;
+    transition: background-color var(--transition-speed);
+}
+body.dark-mode .entry-indicator {
+    background-color: var(--dark-accent-color);
+}
+
+/* Diary Entry Page */
+#diaryEntryDate {
+    font-size: 1.8em;
+    color: var(--light-accent-color);
     margin-bottom: 20px;
-    line-height: 1.3;
+    transition: color var(--transition-speed);
+}
+body.dark-mode #diaryEntryDate {
+    color: var(--dark-accent-color);
 }
 
-.notebook.view-only p {
-    text-align: left;
-    font-size: clamp(1em, 3.5vw, 1.1em);
-    color: #444;
-    line-height: 1.6;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    margin-bottom: 8px; 
-}
-.entry-attribution {
-    font-size: 0.85em;
-    color: #777;
-    font-style: italic;
-    text-align: left;
-    margin-top: 5px;
-    margin-bottom: 15px; 
-}
-
-
-.diary-entry-list-item {
-    padding: 15px;
-    margin-bottom: 15px;
-    background: #fff;
-    border: 1px solid #f0f0f0;
-    border-radius: 12px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-}
-.diary-entry-list-item:hover {
-    border-color: #e0e0e0;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-}
-
-.diary-entry-list-item h3 {
-    color: #d94a6b;
-    margin-top: 0;
-    margin-bottom: 10px;
-    font-size: clamp(1.1em, 4vw, 1.2em);
-    line-height: 1.3;
-}
-
-.diary-entry-list-item p.entry-content { 
-    color: #5c3b4c;
-    font-size: clamp(0.9em, 3.5vw, 0.95em);
-    line-height: 1.5;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    margin: 0 0 8px 0; 
-}
-.diary-entry-list-item .entry-attribution { 
-    font-size: 0.8em;
-    color: #888;
-    font-style: italic;
-    margin-bottom: 10px;
-}
-
-
-.diary-entry-list-item hr {
-    border: none;
-    border-top: 1px dashed #ffe0f0;
-    margin-top: 15px;
-    margin-bottom: 0;
-}
-
-.diary-actions {
-    text-align: center;
-    margin-top: 20px;
-}
-
-/* --- STYLES FOR REPLY FUNCTIONALITY & ATTRIBUTION --- */
-.reply-btn {
-    background: linear-gradient(45deg, #4CAF50, #81C784); 
-    color: white !important; 
-    padding: 8px 15px;
-    font-size: 0.9em;
+/* Dare Game & Song Game Styles */
+.game-box {
+    background: var(--light-card-bg);
+    padding: 40px 30px;
     border-radius: 20px;
-    margin-top: 10px;
-    border: none;
+    box-shadow: 0 10px 30px var(--light-shadow-color);
+    margin: 30px auto;
+    max-width: 600px;
+    text-align: center;
+    transition: background var(--transition-speed), box-shadow var(--transition-speed);
+}
+body.dark-mode .game-box {
+    background: var(--dark-card-bg);
+    box-shadow: 0 10px 30px var(--dark-shadow-color);
+}
+
+.game-text {
+    font-size: 1.5em;
+    font-weight: 500;
+    color: var(--light-text-color);
+    min-height: 80px; /* Ensure space for text */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+    line-height: 1.5;
+    transition: color var(--transition-speed);
+}
+body.dark-mode .game-text {
+    color: var(--dark-text-color);
+}
+
+
+/* Popup/Modal Styles */
+.popup, .modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0,0,0,0.5); /* Black w/ opacity */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeInBackground 0.3s ease-out;
+}
+
+@keyframes fadeInBackground {
+    from { background-color: rgba(0,0,0,0); }
+    to { background-color: rgba(0,0,0,0.5); }
+}
+
+.popup-content, .modal-content {
+    background-color: var(--light-card-bg);
+    margin: auto;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+    max-width: 90%;
+    width: 500px;
+    text-align: center;
+    position: relative;
+    animation: slideInFromTop 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    transition: background-color var(--transition-speed);
+}
+
+body.dark-mode .popup-content, body.dark-mode .modal-content {
+    background-color: var(--dark-card-bg);
+}
+
+
+@keyframes slideInFromTop {
+    0% { transform: translateY(-100px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+.close-button {
+    color: var(--light-text-color);
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
     cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: color 0.3s ease;
 }
 
-.reply-btn:hover, .reply-btn:active {
-    background: linear-gradient(45deg, #388E3C, #66BB6A);
-    transform: translateY(-1px);
-    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+.close-button:hover,
+.close-button:focus {
+    color: var(--light-accent-color);
+    text-decoration: none;
 }
-
-.reply-btn:disabled { 
-    background: #cccccc;
-    color: #666666;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
+body.dark-mode .close-button {
+    color: var(--dark-text-color);
 }
-
-.small-reply-btn {
-    padding: 6px 12px;
-    font-size: 0.8em;
-}
-
-.reply-display {
-    margin-top: 10px;
-    padding: 12px 15px; 
-    background-color: #e8f5e9; 
-    border-left: 4px solid #66bb6a; 
-    border-radius: 6px; 
-    font-size: 0.9em;
-    text-align: left; 
-}
-.reply-display.chikoo-reply { 
-    background-color: #fff0f5; 
-    border-left-color: #ff80a0; 
-}
-.reply-display.prath-reply { 
-    background-color: #e3f2fd; 
-    border-left-color: #5ab9ea; 
+body.dark-mode .close-button:hover,
+body.dark-mode .close-button:focus {
+    color: var(--dark-accent-color);
 }
 
 
-.reply-display p {
-    margin: 5px 0 !important; 
-    color: #333;
+#missYouMessage, #customMessageText {
+    font-size: 1.6em;
+    color: var(--light-text-color);
+    margin: 20px 0;
     line-height: 1.4;
+    transition: color var(--transition-speed);
 }
-.reply-display strong { 
-    color: #1e8e3e; 
-}
-.reply-display.chikoo-reply strong { color: #d94a6b; } 
-.reply-display.prath-reply strong { color: #1976d2; } 
-
-
-.reply-timestamp {
-    font-size: 0.8em;
-    color: #555;
-    font-style: italic;
-    margin-top: 3px !important;
+body.dark-mode #missYouMessage, body.dark-mode #customMessageText {
+    color: var(--dark-text-color);
 }
 
-.entry-meta-info { 
-    font-size: 0.9em;
-    color: #666;
-    margin-bottom: 8px;
-    font-style: italic;
-}
-.entry-meta-info strong { 
-    font-weight: bold;
-}
-.entry-meta-info.chikoo-entry strong { color: #d94a6b; }
-.entry-meta-info.prath-entry strong { color: #1976d2; }
-
-
-.reply-section-container { 
-    padding: 10px;
-    margin-top: 15px;
-    background-color: #fdfdfd; 
-    border-radius: 8px;
-    border: 1px solid #f0f0f0;
-    box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 999;
 }
 
-.diary-entry-list-item .entry-reply-section {
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px dashed #e0e0e0; 
-}
 
-.feelings-table td .reply-btn {
-    padding: 5px 10px;
-    font-size: 0.85em;
-    margin-top: 5px;
-}
-
-.feelings-table td .reply-display {
-    font-size: 0.85em;
-    padding: 8px;
-    margin-top: 5px;
-}
-
-.feelings-table td .reply-display p {
-    margin: 3px 0 !important;
-}
-/* --- END STYLES FOR REPLY FUNCTIONALITY --- */
-
-/* --- STYLES FOR DARE GAME --- */
-.dare-display-area {
-    background: #fff8e1; /* Light yellow, playful */
-    border: 2px dashed #ffc107; /* Amber dashed border */
-    border-radius: 15px;
-    padding: 25px 20px;
-    margin: 20px auto;
-    min-height: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    box-shadow: 0 5px 15px rgba(255, 193, 7, 0.2);
-}
-
-#dareText {
-    font-size: clamp(1.1em, 4vw, 1.5em); /* Larger font for dare */
-    color: #856404; /* Darker yellow/brown for text */
-    font-weight: bold;
-    line-height: 1.5;
-    margin: 0;
-}
-
-.dare-actions {
-    text-align: center;
-    margin-top: 25px;
-}
-
-#nextDareBtn {
-    background: linear-gradient(45deg, #ff7e5f, #feb47b); /* Fiery gradient */
-    color: white;
-    font-size: 1.2em;
-    padding: 15px 30px;
-    box-shadow: 0 5px 15px rgba(255, 126, 95, 0.4);
-}
-
-#nextDareBtn:hover, #nextDareBtn:active {
-    background: linear-gradient(45deg, #ff6a4f, #fea46b);
-    box-shadow: 0 7px 20px rgba(255, 126, 95, 0.5);
-}
-/* --- END STYLES FOR DARE GAME --- */
-
-/* --- STYLES FOR SONG GAME (New) --- */
-.song-display-area {
-    background: #e0f7fa; /* Light blue, calm */
-    border: 2px dashed #00bcd4; /* Cyan dashed border */
-    border-radius: 15px;
-    padding: 25px 20px;
-    margin: 20px auto;
-    min-height: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    box-shadow: 0 5px 15px rgba(0, 188, 212, 0.2);
-}
-
-#songText {
-    font-size: clamp(1.1em, 4vw, 1.5em); /* Larger font for song */
-    color: #006064; /* Darker teal for text */
-    font-weight: bold;
-    line-height: 1.5;
-    margin: 0;
-}
-
-.song-actions {
-    text-align: center;
-    margin-top: 25px;
-}
-
-#nextSongBtn {
-    background: linear-gradient(45deg, #6a11cb, #2575fc); /* Purple to blue gradient */
-    color: white;
-    font-size: 1.2em;
-    padding: 15px 30px;
-    box-shadow: 0 5px 15px rgba(106, 17, 203, 0.4);
-}
-
-#nextSongBtn:hover, #nextSongBtn:active {
-    background: linear-gradient(45deg, #5a0ebc, #1a64ea);
-    box-shadow: 0 7px 20px rgba(106, 17, 203, 0.5);
-}
-/* --- END STYLES FOR SONG GAME --- */
-
-
-/* Additional mobile-specific improvements */
-@media (max-width: 480px) {
+/* Responsive Design */
+@media (max-width: 768px) {
     body {
         padding: 10px;
     }
-    
-    .login-box {
-        padding: 20px;
+
+    .login-box, .container, .game-box, .popup-content, .modal-content {
+        padding: 20px 15px;
+        border-radius: 15px;
     }
+
+    .login-box h1 {
+        font-size: 1.8em;
+    }
+
     .login-options button {
-        padding: 15px;
+        padding: 15px 20px;
         font-size: 1.1em;
     }
 
     .app-header-info {
-        padding: 8px 10px;
-        margin-bottom: 10px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 10px 15px;
+        margin-bottom: 20px;
     }
-    #loggedInUserDisplay { font-size: 0.85em; }
-    .logout-btn { padding: 6px 10px; font-size: 0.8em; }
-    
-    .container {
-        padding: 15px 12px;
-        border-radius: 15px;
+
+    .header-controls {
+        width: 100%;
+        justify-content: space-between;
     }
-    
+
+    #homeScreen .main-header h1 {
+        font-size: 2em;
+    }
+
     .options-grid {
-        gap: 15px;
-        padding: 10px;
+        grid-template-columns: 1fr; /* Single column on smaller screens */
+        gap: 20px;
     }
-    
+
     .option-box {
-        padding: 20px 15px;
-        border-radius: 15px;
-    }
-    
-    .main-option {
-        min-height: 85px;
-    }
-    
-    .bunny-button { 
-        min-height: 80px; 
-        padding: 20px; 
-    }
-    
-    .notebook {
-        padding: 15px;
-        margin: 15px auto;
-    }
-    
-    .notebook textarea {
-        padding: 12px;
         min-height: 100px;
+        font-size: 1.2em;
+        padding: 20px;
     }
-    
+
+    .bunny-button {
+        grid-column: span 1; /* Ensure it stays single column on mobile */
+        min-height: 120px;
+    }
+
+    .container header h1 {
+        font-size: 1.8em;
+        padding-top: 45px;
+    }
+
+    .back-to-home-btn {
+        top: 10px;
+        left: 10px;
+        padding: 8px 12px;
+        font-size: 0.8em;
+    }
+
+    .notebook textarea {
+        min-height: 100px;
+        font-size: 1em;
+    }
+
     button {
         padding: 12px 18px;
-        margin: 6px 3px;
-        font-size: 0.95em;
-    }
-    
-    .calendar-grid {
-        gap: 6px;
-        padding: 12px;
-    }
-    
-    .calendar-day {
-        min-height: 35px;
-        border-radius: 6px;
-    }
-    
-    .feelings-table th, .feelings-table td {
-        padding: 8px 6px;
-        font-size: 0.85em;
-    }
-    
-    .emotion-tag {
-        padding: 3px 6px;
-        font-size: 0.75em;
-    }
-    
-    .confirmation-box {
-        padding: 25px 15px;
-    }
-    
-    #missYouPopup { 
-        padding: 20px 15px; 
-        width: 90%;
+        font-size: 0.9em;
+        min-height: 45px;
     }
 
-    .dare-display-area, .song-display-area { /* Apply to both game areas */
-        padding: 20px 15px;
+    .calendar-grid {
+        gap: 5px;
+        padding: 10px;
     }
-    #dareText, #songText { /* Apply to both game texts */
+
+    .calendar-day {
+        min-height: 60px;
+        padding: 10px 2px;
+        font-size: 0.8em;
+    }
+
+    .day-number {
         font-size: 1em;
     }
-    #nextDareBtn, #nextSongBtn { /* Apply to both game buttons */
-        font-size: 1em;
-        padding: 12px 25px;
+
+    .game-text {
+        font-size: 1.2em;
+        min-height: 60px;
+    }
+
+    #missYouMessage, #customMessageText {
+        font-size: 1.2em;
     }
 }
 
-/* Tablet styles */
+/* Tablet styles (adjust grid for 2 columns) */
 @media (min-width: 481px) and (max-width: 768px) {
     .options-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr); /* Adjusted for potentially 3 items + bunny */
-        gap: 20px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 25px;
         max-width: 600px;
-        margin: 0 auto;
     }
-     /* Ensure bunny button spans full width if it's the last odd item */
+    /* Ensure bunny button spans full width if it's the last odd item, otherwise 1 column */
     .options-grid > .bunny-button:last-child:nth-child(odd) {
         grid-column: span 2;
-    }
-    
-    .option-box {
-        max-width: none; /* Allow option boxes to fill grid cells */
-    }
-    
-    .calendar-grid {
-        max-width: 600px;
-        margin: 0 auto;
-    }
-}
-
-/* Desktop styles */
-@media (min-width: 769px) {
-    body {
-        padding: 20px;
-    }
-    
-    .options-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Adjusted minmax */
-        gap: 30px;
-        padding: 20px;
-        max-width: none;
-    }
-    
-    .option-box { 
-        min-height: 120px;
-        padding: 30px;
-        font-size: 1.4em;
-        max-width: none;
-    }
-    
-    .main-option {
-        min-height: 120px;
-    }
-        
-    .container {
-        padding: 30px;
-    }
-    
-    .notebook {
-        padding: 25px;
-        max-width: 600px; 
-    }
-    
-    .notebook textarea {
-        min-height: 150px;
-        padding: 15px;
-        font-size: 1.1em;
-    }
-    
-    button {
-        padding: 12px 25px; 
-        font-size: 1.1em;
-        margin: 10px 5px;
     }
 }
