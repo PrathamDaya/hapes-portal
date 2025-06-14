@@ -968,6 +968,48 @@ button:disabled {
 }
 /* --- END STYLES FOR DARE GAME --- */
 
+/* --- STYLES FOR SONG GAME (New) --- */
+.song-display-area {
+    background: #e0f7fa; /* Light blue, calm */
+    border: 2px dashed #00bcd4; /* Cyan dashed border */
+    border-radius: 15px;
+    padding: 25px 20px;
+    margin: 20px auto;
+    min-height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 188, 212, 0.2);
+}
+
+#songText {
+    font-size: clamp(1.1em, 4vw, 1.5em); /* Larger font for song */
+    color: #006064; /* Darker teal for text */
+    font-weight: bold;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.song-actions {
+    text-align: center;
+    margin-top: 25px;
+}
+
+#nextSongBtn {
+    background: linear-gradient(45deg, #6a11cb, #2575fc); /* Purple to blue gradient */
+    color: white;
+    font-size: 1.2em;
+    padding: 15px 30px;
+    box-shadow: 0 5px 15px rgba(106, 17, 203, 0.4);
+}
+
+#nextSongBtn:hover, #nextSongBtn:active {
+    background: linear-gradient(45deg, #5a0ebc, #1a64ea);
+    box-shadow: 0 7px 20px rgba(106, 17, 203, 0.5);
+}
+/* --- END STYLES FOR SONG GAME --- */
+
 
 /* Additional mobile-specific improvements */
 @media (max-width: 480px) {
@@ -1059,13 +1101,13 @@ button:disabled {
         width: 90%;
     }
 
-    .dare-display-area {
+    .dare-display-area, .song-display-area { /* Apply to both game areas */
         padding: 20px 15px;
     }
-    #dareText {
+    #dareText, #songText { /* Apply to both game texts */
         font-size: 1em;
     }
-    #nextDareBtn {
+    #nextDareBtn, #nextSongBtn { /* Apply to both game buttons */
         font-size: 1em;
         padding: 12px 25px;
     }
@@ -1141,4 +1183,3 @@ button:disabled {
         margin: 10px 5px;
     }
 }
-
