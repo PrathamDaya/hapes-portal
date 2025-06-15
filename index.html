@@ -1,3 +1,4 @@
+index.html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,9 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>For my Hetu</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
-        /* Login Screen Styles - Already in style.css */
-        /* App Header Info Styles - Already in style.css */
+        /* Specific styles previously in style.css might be here or integrated */
     </style>
 </head>
 <body>
@@ -15,8 +16,8 @@
         <div class="login-box">
             <h1>Welcome! Who are you?</h1>
             <div class="login-options">
-                <button class="chikoo-btn" onclick="login('Chikoo')">I am Chikoo 🐰</button>
-                <button class="prath-btn" onclick="login('Prath')">I am Prath 🐼</button>
+                <button class="chikoo-btn login-main-btn" onclick="login('Chikoo')">I am Chikoo <span class="user-emoji">🐰</span></button>
+                <button class="prath-btn login-main-btn" onclick="login('Prath')">I am Prath <span class="user-emoji">🐼</span></button>
             </div>
         </div>
     </div>
@@ -24,7 +25,16 @@
     <div id="appContainer">
         <div class="app-header-info">
             <span id="loggedInUserDisplay">User: Not logged in</span>
-            <button class="logout-btn" onclick="logout()">Logout</button>
+            <div class="header-controls">
+                <div class="theme-switch-wrapper">
+                    <span class="theme-icon-label" id="themeIcon">☀️</span>
+                    <label class="theme-switch" for="themeSwitch">
+                        <input type="checkbox" id="themeSwitch" />
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
         </div>
 
         <section id="homeScreen" class="screen active">
@@ -33,19 +43,15 @@
             </header>
             <main class="options-grid">
                 <div class="option-box main-option" onclick="navigateToApp('feelingsPortalScreen')">
-                    💖 Hetu's Feelings Portal 💖
+                    <span class="material-icons option-icon">sentiment_very_satisfied</span> Hetu's Feelings Portal
                 </div>
                 <div class="option-box main-option" onclick="navigateToApp('diaryScreen')">
-                    📅 Hetu's Diary 📅
+                    <span class="material-icons option-icon">event_note</span> Hetu's Diary
                 </div>
                 <div class="option-box main-option" onclick="navigateToApp('dareGameScreen')">
-                    😈 Couple's Dare Game 😈
+                    <span class="material-icons option-icon">whatshot</span> Couple's Dare Game
                 </div>
-                <!-- New Song Game Button -->
-                <div class="option-box main-option" onclick="navigateToApp('songGameScreen')">
-                    🎵 Random Song Game 🎶
-                </div>
-                <div class="option-box bunny-button" onclick="showMissYouPopup()">
+                <div class="option-box option-box-emoji bunny-button" onclick="showMissYouPopup()">
                     <span class="bunny-face">🐰</span>
                 </div>
             </main>
@@ -57,36 +63,38 @@
         <section id="feelingsPortalScreen" class="screen">
             <div class="container">
                 <header>
-                    <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
+                    <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')"><span class="material-icons">home</span> Home</button>
                     <h1>Hi <span class="dynamicUserName">User</span>, how can I help you?</h1>
                 </header>
                 <main>
                     <section id="feelingsPage1" class="page active">
-                        <div class="option-box grievance" onclick="navigateToFeelingsPage('feelingsPage2', 'Grievance')">Grievance</div>
-                        <div class="option-box appreciate" onclick="navigateToFeelingsPage('feelingsPage2', 'Appreciate')">Appreciate</div>
-                        <div class="option-box sad" onclick="navigateToFeelingsPage('feelingsPage2', 'Sad')">Sad</div>
-                        <div class="option-box happy" onclick="navigateToFeelingsPage('feelingsPage2', 'Happy')">Happy</div>
-                        <button class="view-all-btn" onclick="fetchAndDisplayFeelingsEntries()">View All Entries</button>
+                        <div class="feelings-options-grid">
+                            <div class="option-box feeling-option grievance" onclick="navigateToFeelingsPage('feelingsPage2', 'Grievance')"><span class="material-icons feeling-icon">report_problem</span>Grievance</div>
+                            <div class="option-box feeling-option appreciate" onclick="navigateToFeelingsPage('feelingsPage2', 'Appreciate')"><span class="material-icons feeling-icon">thumb_up_alt</span>Appreciate</div>
+                            <div class="option-box feeling-option sad" onclick="navigateToFeelingsPage('feelingsPage2', 'Sad')"><span class="material-icons feeling-icon">sentiment_sad</span>Sad</div>
+                            <div class="option-box feeling-option happy" onclick="navigateToFeelingsPage('feelingsPage2', 'Happy')"><span class="material-icons feeling-icon">sentiment_very_satisfied</span>Happy</div>
+                        </div>
+                        <button class="view-all-btn styled-button" onclick="fetchAndDisplayFeelingsEntries()"><span class="material-icons">list_alt</span> View All Entries</button>
                     </section>
 
                     <section id="feelingsPage2" class="page">
                         <h2></h2>
                         <div class="notebook">
                             <textarea id="feelingsMessage" placeholder="Write your thoughts here..."></textarea>
-                            <button id="submitFeelingsBtn" onclick="submitFeelingsEntry()">Submit Entry</button>
+                            <button id="submitFeelingsBtn" class="styled-button primary" onclick="submitFeelingsEntry()"><span class="material-icons">send</span> Submit Entry</button>
                         </div>
-                        <button class="back-btn" onclick="navigateToFeelingsPage('feelingsPage1')">Back</button>
+                        <button class="back-btn styled-button" onclick="navigateToFeelingsPage('feelingsPage1')"><span class="material-icons">arrow_back</span> Back</button>
                     </section>
 
                     <section id="feelingsPage3" class="page">
                         <div class="confirmation-box">
                             <div id="feelings-animation-container">
-                                <span id="feelings-mail-icon">📧</span>
+                                <span id="feelings-mail-icon" class="material-icons">mark_email_read</span>
                                 <div id="feelings-message-box"></div>
                             </div>
                             <p id="feelings-thank-you-message">Thank you for sharing! Your thoughts have been recorded.</p>
-                            <button class="main-home-btn" onclick="navigateToApp('homeScreen')">🏠 Main Home</button>
-                            <button class="back-to-feelings-btn" onclick="navigateToFeelingsPage('feelingsPage1')">New Entry</button>
+                            <button class="main-home-btn styled-button" onclick="navigateToApp('homeScreen')"><span class="material-icons">home</span> Main Home</button>
+                            <button class="back-to-feelings-btn styled-button secondary" onclick="navigateToFeelingsPage('feelingsPage1')"><span class="material-icons">add_circle_outline</span> New Entry</button>
                         </div>
                     </section>
 
@@ -95,10 +103,10 @@
                         <div id="feelingsEntriesList" class="entries-list-container">
                             <p>Loading entries...</p>
                         </div>
-                        <button onclick="navigateToFeelingsPage('feelingsPage1')">Back to Feelings Portal</button>
+                        <button class="styled-button" onclick="navigateToFeelingsPage('feelingsPage1')"><span class="material-icons">arrow_back</span> Back to Feelings Portal</button>
                     </section>
                 </main>
-                <footer class="portal-footer">
+                 <footer class="portal-footer">
                     <p>&copy; 2025 For Hetu with Love</p>
                 </footer>
             </div>
@@ -107,20 +115,20 @@
         <section id="diaryScreen" class="screen">
             <div class="container">
                 <header>
-                    <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
+                    <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')"><span class="material-icons">home</span> Home</button>
                     <h1><span class="dynamicUserName">User</span>'s Diary</h1>
                 </header>
                 <main>
                     <section id="diaryCalendarPage" class="page active">
                         <div class="calendar-header">
-                            <button id="prevMonthBtn">←</button>
+                            <button id="prevMonthBtn" class="calendar-nav-btn"><span class="material-icons">chevron_left</span></button>
                             <h2 id="currentMonthYear"></h2>
-                            <button id="nextMonthBtn">→</button>
+                            <button id="nextMonthBtn" class="calendar-nav-btn"><span class="material-icons">chevron_right</span></button>
                         </div>
                         <div id="calendarGrid" class="calendar-grid">
                         </div>
                         <div class="diary-actions">
-                            <button onclick="fetchAndDisplayAllDiaryEntries()">View All Entries</button>
+                            <button class="styled-button" onclick="fetchAndDisplayAllDiaryEntries()"><span class="material-icons">list_alt</span> View All Entries</button>
                         </div>
                     </section>
 
@@ -130,16 +138,16 @@
                         <div class="notebook">
                             <textarea id="diaryThoughts" placeholder="Write your diary entry here..."></textarea>
                             <input type="hidden" id="selectedDate">
-                            <button onclick="submitDiaryEntry()">Save Entry</button>
+                            <button class="styled-button primary" onclick="submitDiaryEntry()"><span class="material-icons">save</span> Save Entry</button>
                         </div>
-                        <button class="back-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Calendar</button>
+                        <button class="back-btn styled-button" onclick="navigateToDiaryPage('diaryCalendarPage')"><span class="material-icons">arrow_back</span> Back to Calendar</button>
                     </section>
 
                     <section id="diaryConfirmationPage" class="page">
                         <div class="confirmation-box">
                             <p>Your diary entry has been saved!</p>
-                            <button class="main-home-btn" onclick="navigateToApp('homeScreen')">🏠 Main Home</button>
-                            <button class="back-to-diary-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Diary</button>
+                            <button class="main-home-btn styled-button" onclick="navigateToApp('homeScreen')"><span class="material-icons">home</span> Main Home</button>
+                            <button class="back-to-diary-btn styled-button secondary" onclick="navigateToDiaryPage('diaryCalendarPage')"><span class="material-icons">arrow_back</span> Back to Diary</button>
                         </div>
                     </section>
 
@@ -150,8 +158,8 @@
                              <p id="diaryEntryAttribution" class="entry-attribution"></p>
                         </div>
                         <div id="diaryViewPageReplySection" class="reply-section-container">
-                            </div>
-                        <button class="back-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Calendar</button>
+                        </div>
+                        <button class="back-btn styled-button" onclick="navigateToDiaryPage('diaryCalendarPage')"><span class="material-icons">arrow_back</span> Back to Calendar</button>
                     </section>
 
                     <section id="allDiaryEntriesPage" class="page">
@@ -159,7 +167,7 @@
                         <div id="allDiaryEntriesList" class="entries-list-container">
                             <p>Loading entries...</p>
                         </div>
-                        <button onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Calendar</button>
+                        <button class="styled-button" onclick="navigateToDiaryPage('diaryCalendarPage')"><span class="material-icons">arrow_back</span> Back to Calendar</button>
                     </section>
 
                 </main>
@@ -172,7 +180,7 @@
         <section id="dareGameScreen" class="screen">
             <div class="container">
                 <header>
-                    <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
+                    <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')"><span class="material-icons">home</span> Home</button>
                     <h1>Couple's Dare Game</h1>
                 </header>
                 <main>
@@ -180,7 +188,7 @@
                         <p id="dareText">Click the button below to get your first dare!</p>
                     </div>
                     <div class="dare-actions">
-                        <button id="nextDareBtn" onclick="generateDare()">Next Dare 🔥</button>
+                        <button id="nextDareBtn" class="styled-button dare-button" onclick="generateDare()">Next Dare <span class="material-icons">whatshot</span></button>
                     </div>
                 </main>
                 <footer class="portal-footer">
@@ -188,43 +196,19 @@
                 </footer>
             </div>
         </section>
-
-        <!-- New Song Game Section -->
-        <section id="songGameScreen" class="screen">
-            <div class="container">
-                <header>
-                    <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
-                    <h1>Random Song Game</h1>
-                </header>
-                <main>
-                    <div class="song-display-area">
-                        <p id="songText">Click the button below to get a random song!</p>
-                    </div>
-                    <div class="song-actions">
-                        <button id="nextSongBtn" onclick="generateSong()">Next Song 🎶</button>
-                    </div>
-                </main>
-                <footer class="portal-footer">
-                    <p>&copy; 2025 For Hetu with Love</p>
-                </footer>
-            </div>
-        </section>
-
     </div>
     
     <div id="missYouPopup">
-        <p id="missYouMessage"></p> <button onclick="closeMissYouPopup()">Okay ❤️</button>
+        <p id="missYouMessage"></p> <button onclick="closeMissYouPopup()" class="styled-button primary">Okay ❤️</button>
     </div>
 
     <div id="overlay"></div>
 
     <script>
-        // Inline JS from original file
         console.log('HTML JavaScript is working!');
         
         document.addEventListener('DOMContentLoaded', function() {
             console.log('DOM loaded, checking for external script functions...');
-            // The main script.js will handle initialization now
         });
 
         const missYouMessages = [
@@ -254,7 +238,7 @@
                 document.getElementById('missYouMessage').innerHTML = message;
                 document.getElementById('missYouPopup').style.display = 'block';
                 document.getElementById('overlay').style.display = 'block';
-            }, 2000);
+            }, 1000); // Reduced spin time for better UX
         }
 
         function closeMissYouPopup() {
