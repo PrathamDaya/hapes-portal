@@ -1,0 +1,1296 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    background: linear-gradient(to bottom right, #fceaff, #fff0f5); /* Main app background */
+    display: flex; /* This will be controlled by JS for login/app visibility */
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 15px;
+    color: #5c3b4c;
+    overflow-x: hidden;
+    box-sizing: border-box;
+}
+
+/* LOGIN SCREEN STYLES */
+#loginContainer {
+    display: flex; 
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%; 
+    padding: 20px;
+    box-sizing: border-box;
+    background: linear-gradient(to bottom right, #fde4f0, #fff5f8); 
+    animation: fadeInSimple 0.5s ease-out;
+}
+
+.login-box {
+    background: #fff;
+    padding: 30px 40px;
+    border-radius: 25px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-box h1 {
+    color: #d94a6b;
+    margin-bottom: 25px;
+    font-size: clamp(1.8em, 5vw, 2.4em);
+}
+
+.login-options button {
+    display: block;
+    width: 100%;
+    padding: 18px 20px;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+    font-weight: bold;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: none;
+}
+
+.login-options button.chikoo-btn {
+    background: linear-gradient(45deg, #ffadc5, #ff80a0);
+    color: white;
+    box-shadow: 0 4px 12px rgba(255, 128, 160, 0.3);
+}
+.login-options button.chikoo-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(255, 128, 160, 0.4);
+}
+
+.login-options button.prath-btn {
+    background: linear-gradient(45deg, #7fd2ff, #5ab9ea);
+    color: white;
+    box-shadow: 0 4px 12px rgba(90, 185, 234, 0.3);
+}
+.login-options button.prath-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(90, 185, 234, 0.4);
+}
+
+@keyframes fadeInSimple {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+/* END LOGIN SCREEN STYLES */
+
+
+#appContainer {
+    display: none; 
+    width: 100%;
+    max-width: 800px;
+    box-sizing: border-box;
+}
+
+/* APP HEADER INFO (LOGGED IN USER & LOGOUT) */
+.app-header-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px; 
+    background-color: rgba(255, 255, 255, 0.85);
+    border-radius: 12px;
+    margin-bottom: 15px; 
+    box-shadow: 0 3px 8px rgba(0,0,0,0.07);
+}
+
+#loggedInUserDisplay {
+    font-size: 0.95em;
+    color: #c73f60;
+    font-weight: bold;
+}
+
+.logout-btn {
+    background: #e9edf0; 
+    color: #555; 
+    border: 1px solid #d5d9dc;
+    padding: 8px 15px; 
+    font-size: 0.9em; 
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+.logout-btn:hover {
+    background: #d8dde1;
+    border-color: #c8ccd0;
+}
+
+
+.screen {
+    display: none;
+    width: 100%;
+    animation: fadeInScale 0.6s ease-out forwards;
+    transform-origin: center center;
+}
+
+.screen.active {
+    display: block;
+}
+
+@keyframes fadeInScale {
+    from { opacity: 0; transform: translateY(20px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Main Home Page Styles */
+#homeScreen .main-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 15px;
+}
+
+#homeScreen .main-header h1 {
+    color: #d94a6b;
+    font-size: clamp(2em, 6vw, 2.8em); 
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.05);
+    margin: 0;
+    line-height: 1.2;
+}
+
+.options-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 15px;
+    align-items: center;
+}
+
+.option-box {
+    background: #fff;
+    border-radius: 20px;
+    padding: 25px 20px;
+    text-align: center;
+    font-size: clamp(1.1em, 4vw, 1.4em);
+    color: #d94a6b;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    border: 1px solid #ffe0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80px;
+    width: 100%;
+    max-width: 320px; /* Increased max-width for better look */
+}
+
+.option-box:hover, .option-box:active {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+}
+
+.main-option { /* Style for all main options including new game button */
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    min-height: 100px;
+}
+/* Specific style for the new game button if needed, can be like others */
+.option-box.game-dare-option {
+    /* Example: if you want a different background or icon */
+    /* background: linear-gradient(45deg, #ff6b6b, #ee5253); */
+    /* color: white; */
+}
+
+
+#homeScreen .main-footer, .portal-footer {
+    text-align: center;
+    margin-top: 30px;
+    color: #a07a8b;
+    font-size: 0.85em;
+    padding: 0 15px;
+}
+
+/* Bunny Button Styles */
+.bunny-button {
+    background: linear-gradient(45deg, #ffc0cb, #ff80a0); 
+    color: white;
+    font-size: 1.5em; 
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0px; 
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); 
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+    border: 1px solid #ff6699;
+    cursor: pointer;
+    padding: 30px; 
+    min-height: 120px; 
+}
+
+.bunny-button:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+    background: linear-gradient(45deg, #ff80a0, #ffc0cb); 
+}
+
+.bunny-button .bunny-face {
+    display: inline-block;
+    font-size: 3em; 
+    line-height: 1; 
+    animation: bounce 0.8s infinite alternate ease-in-out; 
+}
+
+.bunny-button .bunny-face.spinning {
+    animation: spin 2s linear infinite; 
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes bounce { 
+    0% { transform: translateY(0); }
+    100% { transform: translateY(-5px); } 
+}
+
+
+/* Common Portal Styles */
+.container {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    padding: 20px 15px;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+    position: relative;
+    margin: 0 auto;
+}
+
+.container header {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    position: relative;
+}
+
+.container header h1 {
+    color: #d94a6b;
+    font-size: clamp(1.6em, 5vw, 2.2em);
+    margin: 0;
+    padding-top: 40px; 
+    line-height: 1.2;
+}
+
+.back-to-home-btn {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background: #f0f0f0;
+    color: #666;
+    border: none;
+    padding: 12px 16px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    touch-action: manipulation; 
+}
+
+.back-to-home-btn:hover, .back-to-home-btn:active {
+    background: #e0e0e0;
+}
+
+.page {
+    display: none;
+    padding: 15px 0;
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+.page.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.notebook {
+    background: #fdfdfd;
+    border: 1px solid #e0e0e0;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px auto;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
+    max-width: 100%;
+}
+
+.notebook textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 12px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1em;
+    color: #444;
+    resize: vertical;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    line-height: 1.5;
+}
+
+.notebook textarea:focus {
+    outline: none;
+    border-color: #d94a6b;
+    box-shadow: 0 0 8px rgba(217, 74, 107, 0.3);
+}
+
+button {
+    background: linear-gradient(45deg, #ff80a0, #d94a6b);
+    color: white;
+    border: none;
+    padding: 14px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    margin: 8px 4px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s ease; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    touch-action: manipulation;
+    min-height: 48px; 
+}
+
+button:hover, button:active {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+button:disabled {
+    background: #cccccc;
+    color: #666666; 
+    cursor: not-allowed;
+    box-shadow: none;
+    transform: none;
+}
+
+.back-btn, .view-all-btn {
+    background: #f0f0f0;
+    color: #666;
+    border: 1px solid #ddd;
+}
+
+.back-btn:hover, .view-all-btn:hover, 
+.back-btn:active, .view-all-btn:active {
+    background: #e0e0e0;
+}
+
+.confirmation-box {
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 20px;
+    padding: 30px 20px;
+    margin: 20px auto;
+    max-width: 100%;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+/* Feelings Portal Specific Styles */
+#feelingsPortalScreen .option-box {
+    font-size: clamp(1em, 4vw, 1.2em); 
+    padding: 20px 15px; 
+    min-height: 70px; 
+    max-width: 280px; 
+    margin: 8px auto; 
+    font-weight: 600; 
+    letter-spacing: 0.3px; 
+}
+#feelingsPortalScreen .option-box.grievance { 
+    background-color: #ffebf0; color: #c51162; border-color: #ffcdd2; 
+}
+#feelingsPortalScreen .option-box.appreciate { 
+    background-color: #e8f5e9; color: #2e7d32; border-color: #c8e6c9; 
+}
+#feelingsPortalScreen .option-box.sad { 
+    background-color: #e3f2fd; color: #1565c0; border-color: #bbdefb; 
+}
+#feelingsPortalScreen .option-box.happy { 
+    background-color: #fff8e1; color: #ff8f00; border-color: #ffecb3; 
+}
+
+#feelingsPortalScreen .option-box.grievance,
+#feelingsPortalScreen .option-box.appreciate,
+#feelingsPortalScreen .option-box.sad,
+#feelingsPortalScreen .option-box.happy {
+    font-size: 1.4em;
+    padding: 30px;
+    min-height: 120px;
+}
+
+
+#feelingsPortalScreen .option-box:hover,
+#feelingsPortalScreen .option-box:active {
+    transform: translateY(-3px) scale(1.01);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Animation Styles */
+#feelings-animation-container {
+    width: clamp(120px, 30vw, 200px);
+    height: clamp(90px, 25vw, 150px);
+    margin: 0 auto 20px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#feelings-mail-icon {
+    font-size: clamp(2em, 8vw, 3em);
+    color: #d94a6b;
+    position: relative;
+    animation: bounceIn 1s forwards;
+    display: inline-block;
+    z-index: 2;
+}
+
+#feelings-message-box {
+    background: #fff;
+    border: 1px solid #d94a6b;
+    border-radius: 10px;
+    padding: 8px 12px;
+    position: absolute;
+    font-size: clamp(0.7em, 3vw, 0.8em);
+    color: #5c3b4c;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    animation: messageBoxRise 1.5s 0.5s forwards;
+    max-width: 140px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 1;
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0); opacity: 0; }
+    50% { transform: scale(1.2); opacity: 1; }
+    70% { transform: scale(0.9); }
+    100% { transform: scale(1); }
+}
+
+@keyframes messageBoxRise {
+    0% { opacity: 0; transform: translate(-50%, 0%); }
+    100% { opacity: 1; transform: translate(-50%, -120%); }
+}
+
+#feelings-thank-you-message, #diaryConfirmationPage p {
+    font-size: clamp(1em, 4vw, 1.1em);
+    color: #5c3b4c;
+    margin-bottom: 25px;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
+/* Miss You Popup Styles */
+#missYouPopup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #fff;
+    border: 2px solid #d94a6b;
+    padding: 30px; 
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    text-align: center;
+    z-index: 1001; 
+    display: none; 
+    max-width: 400px; 
+    width: 90%; 
+    box-sizing: border-box;
+    font-size: 1.1em; 
+    color: #5c3b4c;
+    line-height: 1.6;
+}
+
+#missYouPopup p {
+    margin: 10px 0;
+    font-weight: 500;
+}
+
+#missYouPopup button {
+    background: linear-gradient(45deg, #d94a6b, #ff80a0);
+    color: white;
+    border: none;
+    padding: 12px 25px; 
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1em; 
+    font-weight: bold;
+    margin-top: 20px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#missYouPopup button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+#overlay { 
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6); 
+    z-index: 1000; 
+    display: none; 
+    backdrop-filter: blur(3px); 
+}
+
+
+/* Entries List Styles */
+.entries-list-container {
+    max-height: 400px; 
+    overflow-y: auto;
+    background: #fcfcfc;
+    border: 1px solid #eee;
+    border-radius: 15px;
+    padding: 15px;
+    margin-top: 20px;
+    text-align: left;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);
+}
+
+.feelings-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 0.9em;
+}
+
+.feelings-table th, .feelings-table td {
+    border: 1px solid #eee;
+    padding: 10px 8px;
+    text-align: left;
+    vertical-align: top; 
+    word-wrap: break-word;
+    min-width: 80px; 
+}
+
+.feelings-table th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+    color: #d94a6b;
+    font-size: 0.85em;
+    position: sticky; 
+    top: -1px; 
+    z-index: 1;
+}
+
+.feelings-table tr:nth-child(even) {
+    background-color: #fbfbfb;
+}
+.feelings-table tr:hover {
+    background-color: #fff3f8; 
+}
+
+
+.emotion-tag {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.emotion-tag.grievance { background-color: #ffcdd2; color: #c51162; }
+.emotion-tag.appreciate { background-color: #c8e6c9; color: #1b5e20; }
+.emotion-tag.sad { background-color: #bbdefb; color: #0d47a1; }
+.emotion-tag.happy { background-color: #ffecb3; color: #ff6f00; }
+.emotion-tag.unknown { background-color: #e0e0e0; color: #424242; }
+
+
+/* Calendar Styles */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background: #f8f8f8;
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.calendar-header h2 {
+    margin: 0;
+    color: #d94a6b;
+    font-size: clamp(1.4em, 5vw, 1.8em);
+    text-align: center;
+    flex: 1;
+}
+
+.calendar-header button {
+    background: #f0f0f0;
+    color: #666;
+    border: 1px solid #ddd;
+    padding: 12px 15px;
+    border-radius: 12px;
+    font-size: 1.2em;
+    min-width: 50px;
+    min-height: 48px;
+    touch-action: manipulation;
+}
+
+.calendar-header button:hover, .calendar-header button:active {
+    background: #e0e0e0;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    padding: 15px;
+    background: #fdfdfd;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+.calendar-day-header {
+    font-weight: bold;
+    color: #d94a6b;
+    text-align: center;
+    padding: 8px 0;
+    font-size: clamp(0.7em, 3vw, 0.9em);
+}
+
+.calendar-day {
+    background: #fcfcfc;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: clamp(0.8em, 3.5vw, 1.1em);
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+    color: #5c3b4c;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    min-height: 40px;
+    touch-action: manipulation;
+}
+
+.calendar-day.empty {
+    background: #f0f0f0;
+    cursor: default;
+    box-shadow: none;
+    border-color: #ddd;
+}
+
+.calendar-day:not(.empty):hover,
+.calendar-day:not(.empty):active {
+    background: #ffe6f0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+}
+
+.calendar-day.today {
+    background: linear-gradient(45deg, #ff9eb2, #ff80a0);
+    color: white;
+    border: 1px solid #ff80a0;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.calendar-day.has-entry {
+    background: #d94a6b;
+    color: white;
+    font-weight: bold;
+    border: 1px solid #c03a5b;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+.calendar-day.has-entry.today { 
+    background: linear-gradient(45deg, #c03a5b, #d94a6b); 
+}
+
+
+.calendar-day.has-entry:hover,
+.calendar-day.has-entry:active {
+    background: #c03a5b;
+}
+
+/* Diary Entry Styles */
+.date-display {
+    font-size: clamp(1em, 4vw, 1.2em);
+    color: #d94a6b;
+    font-weight: bold;
+    margin-bottom: 20px;
+    line-height: 1.3;
+}
+
+.notebook.view-only p {
+    text-align: left;
+    font-size: clamp(1em, 3.5vw, 1.1em);
+    color: #444;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin-bottom: 8px; 
+}
+.entry-attribution {
+    font-size: 0.85em;
+    color: #777;
+    font-style: italic;
+    text-align: left;
+    margin-top: 5px;
+    margin-bottom: 15px; 
+}
+
+
+.diary-entry-list-item {
+    padding: 15px;
+    margin-bottom: 15px;
+    background: #fff;
+    border: 1px solid #f0f0f0;
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+}
+.diary-entry-list-item:hover {
+    border-color: #e0e0e0;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.diary-entry-list-item h3 {
+    color: #d94a6b;
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: clamp(1.1em, 4vw, 1.2em);
+    line-height: 1.3;
+}
+
+.diary-entry-list-item p.entry-content { 
+    color: #5c3b4c;
+    font-size: clamp(0.9em, 3.5vw, 0.95em);
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin: 0 0 8px 0; 
+}
+.diary-entry-list-item .entry-attribution { 
+    font-size: 0.8em;
+    color: #888;
+    font-style: italic;
+    margin-bottom: 10px;
+}
+
+
+.diary-entry-list-item hr {
+    border: none;
+    border-top: 1px dashed #ffe0f0;
+    margin-top: 15px;
+    margin-bottom: 0;
+}
+
+.diary-actions {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* --- STYLES FOR REPLY FUNCTIONALITY & ATTRIBUTION --- */
+.reply-btn {
+    background: linear-gradient(45deg, #4CAF50, #81C784); 
+    color: white !important; 
+    padding: 8px 15px;
+    font-size: 0.9em;
+    border-radius: 20px;
+    margin-top: 10px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.reply-btn:hover, .reply-btn:active {
+    background: linear-gradient(45deg, #388E3C, #66BB6A);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+}
+
+.reply-btn:disabled { 
+    background: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.small-reply-btn {
+    padding: 6px 12px;
+    font-size: 0.8em;
+}
+
+.reply-display {
+    margin-top: 10px;
+    padding: 12px 15px; 
+    background-color: #e8f5e9; 
+    border-left: 4px solid #66bb6a; 
+    border-radius: 6px; 
+    font-size: 0.9em;
+    text-align: left; 
+}
+.reply-display.chikoo-reply { 
+    background-color: #fff0f5; 
+    border-left-color: #ff80a0; 
+}
+.reply-display.prath-reply { 
+    background-color: #e3f2fd; 
+    border-left-color: #5ab9ea; 
+}
+
+
+.reply-display p {
+    margin: 5px 0 !important; 
+    color: #333;
+    line-height: 1.4;
+}
+.reply-display strong { 
+    color: #1e8e3e; 
+}
+.reply-display.chikoo-reply strong { color: #d94a6b; } 
+.reply-display.prath-reply strong { color: #1976d2; } 
+
+
+.reply-timestamp {
+    font-size: 0.8em;
+    color: #555;
+    font-style: italic;
+    margin-top: 3px !important;
+}
+
+.entry-meta-info { 
+    font-size: 0.9em;
+    color: #666;
+    margin-bottom: 8px;
+    font-style: italic;
+}
+.entry-meta-info strong { 
+    font-weight: bold;
+}
+.entry-meta-info.chikoo-entry strong { color: #d94a6b; }
+.entry-meta-info.prath-entry strong { color: #1976d2; }
+
+
+.reply-section-container { 
+    padding: 10px;
+    margin-top: 15px;
+    background-color: #fdfdfd; 
+    border-radius: 8px;
+    border: 1px solid #f0f0f0;
+    box-shadow: inset 0 1px 2px rgba(0,0,0,0.03);
+}
+
+.diary-entry-list-item .entry-reply-section {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed #e0e0e0; 
+}
+
+.feelings-table td .reply-btn {
+    padding: 5px 10px;
+    font-size: 0.85em;
+    margin-top: 5px;
+}
+
+.feelings-table td .reply-display {
+    font-size: 0.85em;
+    padding: 8px;
+    margin-top: 5px;
+}
+
+.feelings-table td .reply-display p {
+    margin: 3px 0 !important;
+}
+/* --- END STYLES FOR REPLY FUNCTIONALITY --- */
+
+/* --- STYLES FOR DARE GAME --- */
+.dare-display-area {
+    background: #fff8e1; /* Light yellow, playful */
+    border: 2px dashed #ffc107; /* Amber dashed border */
+    border-radius: 15px;
+    padding: 25px 20px;
+    margin: 20px auto;
+    min-height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(255, 193, 7, 0.2);
+}
+
+#dareText {
+    font-size: clamp(1.1em, 4vw, 1.5em); /* Larger font for dare */
+    color: #856404; /* Darker yellow/brown for text */
+    font-weight: bold;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.dare-actions {
+    text-align: center;
+    margin-top: 25px;
+}
+
+#nextDareBtn {
+    background: linear-gradient(45deg, #ff7e5f, #feb47b); /* Fiery gradient */
+    color: white;
+    font-size: 1.2em;
+    padding: 15px 30px;
+    box-shadow: 0 5px 15px rgba(255, 126, 95, 0.4);
+}
+
+#nextDareBtn:hover, #nextDareBtn:active {
+    background: linear-gradient(45deg, #ff6a4f, #fea46b);
+    box-shadow: 0 7px 20px rgba(255, 126, 95, 0.5);
+}
+/* --- END STYLES FOR DARE GAME --- */
+
+
+/* Additional mobile-specific improvements */
+@media (max-width: 480px) {
+    body {
+        padding: 10px;
+    }
+    
+    .login-box {
+        padding: 20px;
+    }
+    .login-options button {
+        padding: 15px;
+        font-size: 1.1em;
+    }
+
+    .app-header-info {
+        padding: 8px 10px;
+        margin-bottom: 10px;
+    }
+    #loggedInUserDisplay { font-size: 0.85em; }
+    .logout-btn { padding: 6px 10px; font-size: 0.8em; }
+    
+    .container {
+        padding: 15px 12px;
+        border-radius: 15px;
+    }
+    
+    .options-grid {
+        gap: 15px;
+        padding: 10px;
+    }
+    
+    .option-box {
+        padding: 20px 15px;
+        border-radius: 15px;
+    }
+    
+    .main-option {
+        min-height: 85px;
+    }
+    
+    .bunny-button { 
+        min-height: 80px; 
+        padding: 20px; 
+    }
+    
+    .notebook {
+        padding: 15px;
+        margin: 15px auto;
+    }
+    
+    .notebook textarea {
+        padding: 12px;
+        min-height: 100px;
+    }
+    
+    button {
+        padding: 12px 18px;
+        margin: 6px 3px;
+        font-size: 0.95em;
+    }
+    
+    .calendar-grid {
+        gap: 6px;
+        padding: 12px;
+    }
+    
+    .calendar-day {
+        min-height: 35px;
+        border-radius: 6px;
+    }
+    
+    .feelings-table th, .feelings-table td {
+        padding: 8px 6px;
+        font-size: 0.85em;
+    }
+    
+    .emotion-tag {
+        padding: 3px 6px;
+        font-size: 0.75em;
+    }
+    
+    .confirmation-box {
+        padding: 25px 15px;
+    }
+    
+    #missYouPopup { 
+        padding: 20px 15px; 
+        width: 90%;
+    }
+
+    .dare-display-area {
+        padding: 20px 15px;
+    }
+    #dareText {
+        font-size: 1em;
+    }
+    #nextDareBtn {
+        font-size: 1em;
+        padding: 12px 25px;
+    }
+}
+
+/* Tablet styles */
+@media (min-width: 481px) and (max-width: 768px) {
+    .options-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr); /* Adjusted for potentially 3 items + bunny */
+        gap: 20px;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+     /* Ensure bunny button spans full width if it's the last odd item */
+    .options-grid > .bunny-button:last-child:nth-child(odd) {
+        grid-column: span 2;
+    }
+    
+    .option-box {
+        max-width: none; /* Allow option boxes to fill grid cells */
+    }
+    
+    .calendar-grid {
+        max-width: 600px;
+        margin: 0 auto;
+    }
+}
+
+/* Desktop styles */
+@media (min-width: 769px) {
+    body {
+        padding: 20px;
+    }
+    
+    .options-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Adjusted minmax */
+        gap: 30px;
+        padding: 20px;
+        max-width: none;
+    }
+    
+    .option-box { 
+        min-height: 120px;
+        padding: 30px;
+        font-size: 1.4em;
+        max-width: none;
+    }
+    
+    .main-option {
+        min-height: 120px;
+    }
+        
+    .container {
+        padding: 30px;
+    }
+    
+    .notebook {
+        padding: 25px;
+        max-width: 600px; 
+    }
+    
+    .notebook textarea {
+        min-height: 150px;
+        padding: 15px;
+        font-size: 1.1em;
+    }
+    
+    button {
+        padding: 12px 25px; 
+        font-size: 1.1em;
+        margin: 10px 5px;
+    }
+}
+/* --- New Styles for Books Feature --- */
+
+.book-list-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.book-item {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.book-item:hover {
+    transform: translateY(-5px);
+}
+
+.book-thumbnail {
+    width: 100%;
+    height: 150px;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 50px; /* For generic PDF icon */
+    color: #ccc;
+    margin-bottom: 10px;
+    overflow: hidden;
+    border-radius: 4px;
+}
+
+.book-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Optional: Style for the generic PDF icon if you use it */
+.book-thumbnail .pdf-icon {
+    font-size: 60px; /* Make the icon larger */
+    color: #a0a0a0; /* A slightly darker grey */
+}
+
+.book-item p {
+    margin: 0;
+    font-weight: bold;
+    font-size: 0.9em;
+    color: #333;
+    word-break: break-word; /* Helps with long titles */
+}
+
+.pdf-viewer-container {
+    width: 100%;
+    height: 70vh; /* Adjust as needed for vertical space */
+    border: 1px solid #ccc;
+    margin-top: 20px;
+    background-color: #f9f9f9; /* Light background for viewer area */
+    display: flex; /* To center the iframe if it shrinks */
+    justify-content: center;
+    align-items: center;
+}
+
+.pdf-viewer-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: #fff; /* White background for the PDF content */
+}
+
+.upload-section {
+    margin-top: 30px;
+    padding: 25px;
+    border: 2px dashed #d1c4e9; /* Softer dashed border */
+    border-radius: 12px;
+    text-align: center;
+    background-color: #fefefe;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.upload-section h3 {
+    color: #6a1b9a; /* A pleasant purple */
+    margin-bottom: 15px;
+}
+
+.upload-section input[type="file"] {
+    display: block; /* Make it take full width */
+    width: calc(100% - 40px); /* Adjust for padding */
+    margin: 0 auto 20px auto;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.upload-section button {
+    background-color: #673ab7; /* A pleasing violet */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.upload-section button:hover {
+    background-color: #5e35b1; /* Slightly darker violet on hover */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Responsive Adjustments for Books Screen */
+@media (max-width: 480px) {
+    .book-list-container {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 15px;
+        padding: 10px;
+    }
+    .book-thumbnail {
+        height: 120px;
+    }
+    .book-thumbnail .pdf-icon {
+        font-size: 45px;
+    }
+    .upload-section {
+        padding: 15px;
+    }
+    .upload-section input[type="file"] {
+        width: calc(100% - 20px);
+    }
+    .upload-section button {
+        padding: 10px 15px;
+        font-size: 0.9em;
+    }
+}
+
+@media (min-width: 769px) {
+    .book-list-container {
+        max-width: 900px; /* Constrain max width on large screens */
+        margin: 0 auto;
+    }
+    .upload-section {
+        max-width: 700px;
+        margin: 30px auto;
+    }
+}
+
