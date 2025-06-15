@@ -1141,3 +1141,155 @@ button:disabled {
         margin: 10px 5px;
     }
 }
+/* --- New Styles for Books Feature --- */
+
+.book-list-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.book-item {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.book-item:hover {
+    transform: translateY(-5px);
+}
+
+.book-thumbnail {
+    width: 100%;
+    height: 150px;
+    background-color: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 50px; /* For generic PDF icon */
+    color: #ccc;
+    margin-bottom: 10px;
+    overflow: hidden;
+    border-radius: 4px;
+}
+
+.book-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Optional: Style for the generic PDF icon if you use it */
+.book-thumbnail .pdf-icon {
+    font-size: 60px; /* Make the icon larger */
+    color: #a0a0a0; /* A slightly darker grey */
+}
+
+.book-item p {
+    margin: 0;
+    font-weight: bold;
+    font-size: 0.9em;
+    color: #333;
+    word-break: break-word; /* Helps with long titles */
+}
+
+.pdf-viewer-container {
+    width: 100%;
+    height: 70vh; /* Adjust as needed for vertical space */
+    border: 1px solid #ccc;
+    margin-top: 20px;
+    background-color: #f9f9f9; /* Light background for viewer area */
+    display: flex; /* To center the iframe if it shrinks */
+    justify-content: center;
+    align-items: center;
+}
+
+.pdf-viewer-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: #fff; /* White background for the PDF content */
+}
+
+.upload-section {
+    margin-top: 30px;
+    padding: 25px;
+    border: 2px dashed #d1c4e9; /* Softer dashed border */
+    border-radius: 12px;
+    text-align: center;
+    background-color: #fefefe;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.upload-section h3 {
+    color: #6a1b9a; /* A pleasant purple */
+    margin-bottom: 15px;
+}
+
+.upload-section input[type="file"] {
+    display: block; /* Make it take full width */
+    width: calc(100% - 40px); /* Adjust for padding */
+    margin: 0 auto 20px auto;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+.upload-section button {
+    background-color: #673ab7; /* A pleasing violet */
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+.upload-section button:hover {
+    background-color: #5e35b1; /* Slightly darker violet on hover */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Responsive Adjustments for Books Screen */
+@media (max-width: 480px) {
+    .book-list-container {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 15px;
+        padding: 10px;
+    }
+    .book-thumbnail {
+        height: 120px;
+    }
+    .book-thumbnail .pdf-icon {
+        font-size: 45px;
+    }
+    .upload-section {
+        padding: 15px;
+    }
+    .upload-section input[type="file"] {
+        width: calc(100% - 20px);
+    }
+    .upload-section button {
+        padding: 10px 15px;
+        font-size: 0.9em;
+    }
+}
+
+@media (min-width: 769px) {
+    .book-list-container {
+        max-width: 900px; /* Constrain max width on large screens */
+        margin: 0 auto;
+    }
+    .upload-section {
+        max-width: 700px;
+        margin: 30px auto;
+    }
+}
