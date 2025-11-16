@@ -1,0 +1,1008 @@
+/* ===== CSS VARIABLES FOR LIGHT/DARK MODE ===== */
+:root {
+    --bg-primary: linear-gradient(135deg, #fceaff 0%, #fff0f5 100%);
+    --bg-secondary: #ffffff;
+    --text-primary: #5c3b4c;
+    --text-secondary: #a07a8b;
+    --accent-color: #d94a6b;
+    --accent-gradient: linear-gradient(45deg, #ff80a0, #d94a6b);
+    --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    --card-hover-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+    --border-color: #ffe0f0;
+    --button-hover: #c03a5b;
+    --chikoo-gradient: linear-gradient(45deg, #ffadc5, #ff80a0);
+    --prath-gradient: linear-gradient(45deg, #7fd2ff, #5ab9ea);
+}
+
+[data-theme="dark"] {
+    --bg-primary: linear-gradient(135deg, #2d1b2e 0%, #1a121f 100%);
+    --bg-secondary: #2a2a2a;
+    --text-primary: #f5e9f0;
+    --text-secondary: #d0a0b0;
+    --accent-color: #ff6b95;
+    --accent-gradient: linear-gradient(45deg, #ff9eb2, #ff6b95);
+    --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    --card-hover-shadow: 0 12px 25px rgba(0, 0, 0, 0.4);
+    --border-color: #4a2a3a;
+    --button-hover: #ff5a85;
+    --chikoo-gradient: linear-gradient(45deg, #ff85b3, #ff5a85);
+    --prath-gradient: linear-gradient(45deg, #6ac5ff, #4a9de8);
+}
+
+/* ===== BASE STYLES ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    overflow-x: hidden;
+    transition: background 0.5s ease, color 0.3s ease;
+}
+
+/* ===== FLOATING EMOJI BACKGROUND ===== */
+.floating-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.floating-emoji {
+    position: absolute;
+    font-size: 2em;
+    opacity: 0.15;
+    animation: float 6s ease-in-out infinite;
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
+}
+
+[data-theme="dark"] .floating-emoji {
+    opacity: 0.08;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-30px) rotate(10deg); }
+}
+
+/* ===== THEME TOGGLE BUTTON ===== */
+.theme-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: var(--accent-gradient);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.2em;
+    transition: transform 0.3s ease;
+    z-index: 100;
+    box-shadow: var(--card-shadow);
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1) rotate(15deg);
+}
+
+/* ===== LOGIN SCREEN ===== */
+#loginContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+    animation: fadeInSimple 0.5s ease-out;
+}
+
+@keyframes fadeInSimple {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.login-box {
+    background: var(--bg-secondary);
+    padding: 40px;
+    border-radius: 25px;
+    box-shadow: var(--card-shadow);
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+}
+
+.login-box h1 {
+    color: var(--accent-color);
+    margin-bottom: 30px;
+    font-size: clamp(1.8em, 5vw, 2.4em);
+}
+
+.login-options button {
+    display: block;
+    width: 100%;
+    padding: 18px 20px;
+    margin-bottom: 15px;
+    font-size: 1.2em;
+    font-weight: bold;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Ripple effect */
+.login-options button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255,255,255,0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.login-options button:active::before {
+    width: 300px;
+    height: 300px;
+}
+
+.chikoo-btn {
+    background: var(--chikoo-gradient);
+    color: white;
+    box-shadow: 0 4px 12px rgba(255, 128, 160, 0.3);
+}
+
+.prath-btn {
+    background: var(--prath-gradient);
+    color: white;
+    box-shadow: 0 4px 12px rgba(90, 185, 234, 0.3);
+}
+
+.login-options button:hover {
+    transform: translateY(-5px) scale(1.02);
+    box-shadow: var(--card-hover-shadow);
+}
+
+/* ===== APP CONTAINER ===== */
+#appContainer {
+    display: none;
+    width: 100%;
+    max-width: 800px;
+}
+
+.app-header-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    margin-bottom: 15px;
+    box-shadow: var(--card-shadow);
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+#loggedInUserDisplay {
+    font-size: 0.95em;
+    color: var(--accent-color);
+    font-weight: bold;
+}
+
+.logout-btn {
+    background: #e9edf0;
+    color: #555;
+    border: 1px solid #d5d9dc;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.logout-btn:hover {
+    background: #d8dde1;
+    transform: scale(1.05);
+}
+
+/* ===== SCREEN MANAGEMENT ===== */
+.screen {
+    display: none;
+    width: 100%;
+    animation: fadeInScale 0.6s ease-out forwards;
+}
+
+.screen.active {
+    display: block;
+}
+
+@keyframes fadeInScale {
+    from { opacity: 0; transform: translateY(20px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ===== MAIN MENU - ENHANCED CARDS ===== */
+.options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 15px;
+}
+
+/* Card Effect from Effect.css - Enhanced */
+.option-box {
+    background: var(--bg-secondary);
+    border-radius: 20px;
+    padding: 30px 20px;
+    text-align: center;
+    font-size: clamp(1.1em, 4vw, 1.4em);
+    color: var(--accent-color);
+    box-shadow: var(--card-shadow);
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(5px);
+}
+
+/* Shimmer effect */
+.option-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    transition: left 0.5s;
+}
+
+.option-box:hover::before {
+    left: 100%;
+}
+
+.option-box:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: var(--card-hover-shadow);
+    filter: brightness(1.1);
+}
+
+/* Blur other cards on hover */
+.options-grid:hover > .option-box:not(:hover) {
+    filter: blur(2px) brightness(0.9);
+    transform: scale(0.95);
+}
+
+.main-option {
+    font-weight: bold;
+    letter-spacing: 0.5px;
+}
+
+.bunny-button {
+    background: var(--accent-gradient);
+    color: white;
+    font-size: 1.5em;
+    grid-column: span 2;
+}
+
+.bunny-button .bunny-face {
+    font-size: 3em;
+    animation: bounce 0.8s infinite alternate ease-in-out;
+}
+
+@keyframes bounce {
+    0% { transform: translateY(0) rotate(0deg); }
+    100% { transform: translateY(-10px) rotate(5deg); }
+}
+
+.bunny-button .bunny-face.spinning {
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* ===== PORTAL CONTAINERS ===== */
+.container {
+    background: var(--bg-secondary);
+    border-radius: 20px;
+    box-shadow: var(--card-shadow);
+    padding: 20px 15px;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+}
+
+.container header {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
+}
+
+.container header h1 {
+    color: var(--accent-color);
+    font-size: clamp(1.6em, 5vw, 2.2em);
+    margin: 0;
+    padding-top: 40px;
+}
+
+.back-to-home-btn {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    padding: 12px 16px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.back-to-home-btn:hover {
+    background: var(--accent-color);
+    color: white;
+    transform: scale(1.1);
+}
+
+.page {
+    display: none;
+    padding: 15px 0;
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+.page.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== NOTEBOOK STYLES ===== */
+.notebook {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px auto;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
+    max-width: 100%;
+    transition: all 0.3s ease;
+}
+
+.notebook:hover {
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.notebook textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 15px;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 1em;
+    color: var(--text-primary);
+    resize: vertical;
+    margin-bottom: 15px;
+    background: var(--bg-secondary);
+    transition: all 0.3s ease;
+}
+
+.notebook textarea:focus {
+    outline: none;
+    border-color: var(--accent-color);
+    box-shadow: 0 0 8px var(--accent-color);
+}
+
+/* ===== BUTTON STYLES ===== */
+button {
+    background: var(--accent-gradient);
+    color: white;
+    border: none;
+    padding: 14px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    margin: 8px 4px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Shine effect */
+button::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 20px;
+    height: 200%;
+    background: rgba(255,255,255,0.3);
+    transform: rotate(25deg);
+    transition: all 0.6s;
+}
+
+button:hover::after {
+    left: 120%;
+}
+
+button:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+button:disabled {
+    background: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.back-btn, .view-all-btn {
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.back-btn:hover, .view-all-btn:hover {
+    background: var(--accent-color);
+    color: white;
+}
+
+/* ===== FEELINGS PORTAL ===== */
+#feelingsPortalScreen .option-box {
+    font-size: 1.2em;
+    padding: 25px;
+    margin: 8px auto;
+    max-width: 280px;
+}
+
+#feelingsPortalScreen .option-box.grievance {
+    background: linear-gradient(45deg, #ffcdd2, #ef9a9a);
+    color: #c51162;
+}
+#feelingsPortalScreen .option-box.appreciate {
+    background: linear-gradient(45deg, #c8e6c9, #a5d6a7);
+    color: #1b5e20;
+}
+#feelingsPortalScreen .option-box.sad {
+    background: linear-gradient(45deg, #bbdefb, #90caf9);
+    color: #0d47a1;
+}
+#feelingsPortalScreen .option-box.happy {
+    background: linear-gradient(45deg, #ffecb3, #ffe082);
+    color: #ff6f00;
+}
+
+/* Animation for feelings submission */
+#feelings-animation-container {
+    width: 150px;
+    height: 120px;
+    margin: 0 auto 20px;
+    position: relative;
+}
+
+#feelings-mail-icon {
+    font-size: 3em;
+    color: var(--accent-color);
+    animation: bounceIn 1s forwards;
+}
+
+#feelings-message-box {
+    background: var(--bg-secondary);
+    border: 2px solid var(--accent-color);
+    border-radius: 10px;
+    padding: 8px 12px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    animation: messageBoxRise 1.5s 0.5s forwards;
+    max-width: 140px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0) rotate(0deg); opacity: 0; }
+    50% { transform: scale(1.2) rotate(10deg); opacity: 1; }
+    70% { transform: scale(0.9) rotate(-5deg); }
+    100% { transform: scale(1) rotate(0deg); }
+}
+
+@keyframes messageBoxRise {
+    0% { opacity: 0; transform: translate(-50%, 0%) rotate(-5deg); }
+    100% { opacity: 1; transform: translate(-50%, -120%) rotate(0deg); }
+}
+
+/* ===== DIARY CALENDAR ===== */
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    background: var(--bg-secondary);
+    padding: 15px;
+    border-radius: 15px;
+    box-shadow: var(--card-shadow);
+}
+
+.calendar-header h2 {
+    color: var(--accent-color);
+    flex: 1;
+}
+
+.calendar-header button {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    padding: 12px 15px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.calendar-header button:hover {
+    background: var(--accent-color);
+    color: white;
+    transform: scale(1.1);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    padding: 15px;
+    background: var(--bg-secondary);
+    border-radius: 15px;
+    box-shadow: var(--card-shadow);
+}
+
+.calendar-day {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    overflow: hidden;
+}
+
+.calendar-day::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--accent-gradient);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.calendar-day:hover::before {
+    opacity: 0.2;
+}
+
+.calendar-day:hover {
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.calendar-day.today {
+    background: var(--accent-gradient);
+    color: white;
+    font-weight: bold;
+}
+
+.calendar-day.has-entry {
+    background: linear-gradient(45deg, #d94a6b, #ff80a0);
+    color: white;
+}
+
+/* ===== PERIOD TRACKER STYLES ===== */
+.period-day {
+    background: linear-gradient(45deg, #ff6b9d, #ff9e7d) !important;
+    color: white;
+}
+
+.predicted-period {
+    background: linear-gradient(45deg, #ffb6c1, #ffd1dc) !important;
+    color: var(--text-primary);
+}
+
+.period-marker {
+    font-size: 0.5em;
+    position: absolute;
+    bottom: 2px;
+}
+
+.period-tracker-panel {
+    background: var(--bg-secondary);
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border-color);
+}
+
+.period-input-group {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 15px 0;
+}
+
+.period-input-group input {
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.mood-selector {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 10px 0;
+    flex-wrap: wrap;
+}
+
+.mood-btn {
+    padding: 8px 12px;
+    font-size: 1.5em;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    transition: all 0.3s ease;
+}
+
+.mood-btn:hover {
+    transform: scale(1.2);
+}
+
+.mood-btn.active {
+    background: var(--accent-gradient);
+    transform: scale(1.2);
+}
+
+.period-status, .next-period-info {
+    font-size: 1.1em;
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 10px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+}
+
+/* ===== ENTRIES LIST ===== */
+.entries-list-container {
+    max-height: 400px;
+    overflow-y: auto;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 15px;
+    margin-top: 20px;
+    text-align: left;
+}
+
+/* Custom scrollbar */
+.entries-list-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.entries-list-container::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 10px;
+}
+
+.entries-list-container::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border-radius: 10px;
+}
+
+.feelings-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.feelings-table th {
+    background: var(--accent-color);
+    color: white;
+    padding: 12px;
+    position: sticky;
+    top: -1px;
+    z-index: 1;
+}
+
+.feelings-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--border-color);
+    transition: background 0.2s ease;
+}
+
+.feelings-table tr:hover td {
+    background: rgba(217, 74, 107, 0.05);
+}
+
+.emotion-tag {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: 600;
+}
+
+/* ===== REPLY SYSTEM ===== */
+.reply-btn {
+    background: linear-gradient(45deg, #4CAF50, #81C784);
+    color: white;
+    padding: 8px 15px;
+    font-size: 0.9em;
+    border-radius: 20px;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+}
+
+.reply-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.reply-display {
+    margin-top: 10px;
+    padding: 12px 15px;
+    background: var(--bg-secondary);
+    border-left: 4px solid #4CAF50;
+    border-radius: 6px;
+    font-size: 0.9em;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.reply-display.chikoo-reply {
+    border-left-color: #ff80a0;
+}
+
+.reply-display.prath-reply {
+    border-left-color: #5ab9ea;
+}
+
+.entry-attribution {
+    font-size: 0.85em;
+    color: var(--text-secondary);
+    font-style: italic;
+    text-align: left;
+    margin-top: 5px;
+    margin-bottom: 15px;
+}
+
+/* ===== DARE GAME ===== */
+.dare-display-area {
+    background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+    border: 2px dashed #ffc107;
+    border-radius: 15px;
+    padding: 25px;
+    margin: 20px auto;
+    min-height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    box-shadow: var(--card-shadow);
+    transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .dare-display-area {
+    background: linear-gradient(135deg, #3e2723 0%, #5d4037 100%);
+    border-color: #ffab40;
+}
+
+#dareText {
+    font-size: clamp(1.2em, 4vw, 1.5em);
+    color: #856404;
+    font-weight: bold;
+    line-height: 1.5;
+}
+
+[data-theme="dark"] #dareText {
+    color: #ffd54f;
+}
+
+#nextDareBtn {
+    background: linear-gradient(45deg, #ff7e5f, #feb47b);
+    font-size: 1.2em;
+    padding: 15px 30px;
+    transition: all 0.3s ease;
+}
+
+#nextDareBtn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 20px rgba(255, 126, 95, 0.4);
+}
+
+/* ===== CUSTOM MESSAGE POPUP ===== */
+.custom-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(5px);
+    animation: fadeInSimple 0.3s ease;
+}
+
+.custom-popup {
+    background: var(--bg-secondary);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+    animation: scaleIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid var(--border-color);
+}
+
+@keyframes scaleIn {
+    from { transform: scale(0.7) translateY(20px); opacity: 0; }
+    to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.custom-popup h3 {
+    color: var(--accent-color);
+    margin-bottom: 15px;
+    font-size: 1.4em;
+}
+
+.custom-popup p {
+    color: var(--text-primary);
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+.custom-popup button {
+    padding: 10px 25px;
+    font-size: 1em;
+}
+
+/* ===== FOOTER ===== */
+.main-footer, .portal-footer {
+    text-align: center;
+    margin-top: 30px;
+    color: var(--text-secondary);
+    font-size: 0.85em;
+    padding: 0 15px;
+}
+
+/* ===== MISS YOU POPUP ===== */
+#missYouPopup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--bg-secondary);
+    border: 2px solid var(--accent-color);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    text-align: center;
+    z-index: 1001;
+    display: none;
+    max-width: 400px;
+    width: 90%;
+    font-size: 1.1em;
+    color: var(--text-primary);
+}
+
+#missYouPopup button {
+    background: var(--accent-gradient);
+    margin-top: 20px;
+}
+
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 1000;
+    display: none;
+    backdrop-filter: blur(3px);
+}
+
+/* ===== MOBILE RESPONSIVENESS ===== */
+@media (max-width: 480px) {
+    .options-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .bunny-button {
+        grid-column: span 1;
+    }
+    
+    .theme-toggle {
+        top: 10px;
+        right: 10px;
+        padding: 10px;
+        font-size: 1em;
+    }
+    
+    .login-box {
+        padding: 25px;
+    }
+    
+    .container {
+        padding: 15px 12px;
+    }
+}
+
+@media (min-width: 769px) {
+    body {
+        padding: 20px;
+    }
+    
+    .container {
+        padding: 30px;
+    }
+    
+    .notebook {
+        max-width: 600px;
+    }
+}
