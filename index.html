@@ -43,8 +43,8 @@
                 <div class="option-box main-option" onclick="navigateToApp('diaryScreen')">
                     📅 Hetu's Diary 📅
                 </div>
-                <div class="option-box main-option" onclick="navigateToApp('dareGameScreen')">
-                    😈 Couple's Dare Game 😈
+                <div class="option-box main-option" onclick="navigateToApp('gamesScreen')">
+                    🎮 Games & Dares 🎮
                 </div>
                 <div class="option-box main-option" onclick="navigateToApp('periodTrackerScreen')">
                     🌸 Period Tracker 🌸
@@ -172,20 +172,98 @@
             </div>
         </section>
 
-        <!-- Dare Game Screen -->
-        <section id="dareGameScreen" class="screen">
+        <!-- Games & Dares Screen -->
+        <section id="gamesScreen" class="screen">
             <div class="container">
                 <header>
                     <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
-                    <h1>Couple's Dare Game 😈</h1>
+                    <h1>Games & Dares 🎮</h1>
                 </header>
                 <main>
-                    <div class="dare-display-area">
-                        <p id="dareText">Click the button below to get your first dare!</p>
-                    </div>
-                    <div class="dare-actions">
-                        <button id="nextDareBtn" onclick="generateDare()">Next Dare 🔥</button>
-                    </div>
+                    <!-- Games Selection Menu -->
+                    <section id="gamesMenuPage" class="page active">
+                        <div class="games-grid">
+                            <div class="game-card" onclick="startGame('dare')">
+                                <div class="game-icon">😈</div>
+                                <h3>Couple's Dare</h3>
+                                <p>Spicy dares for two</p>
+                                <div class="high-score">Best: <span id="dareHighScore">0</span> dares</div>
+                            </div>
+                            <div class="game-card" onclick="startGame('memory')">
+                                <div class="game-icon">🧠</div>
+                                <h3>Memory Match</h3>
+                                <p>Match our photos!</p>
+                                <div class="high-score">Best Time: <span id="memoryHighScore">--</span></div>
+                            </div>
+                            <div class="game-card" onclick="startGame('fruit')">
+                                <div class="game-icon">🔪</div>
+                                <h3>Fruit Slash</h3>
+                                <p>Slice the fruits!</p>
+                                <div class="high-score">High Score: <span id="fruitHighScore">0</span></div>
+                            </div>
+                            <div class="game-card" onclick="startGame('hearts')">
+                                <div class="game-icon">💖</div>
+                                <h3>Catch Hearts</h3>
+                                <p>Catch our love!</p>
+                                <div class="high-score">High Score: <span id="heartsHighScore">0</span></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Dare Game -->
+                    <section id="dareGamePage" class="page">
+                        <div class="dare-display-area">
+                            <p id="dareText">Click the button below to get your first dare!</p>
+                        </div>
+                        <div class="dare-actions">
+                            <button id="nextDareBtn" onclick="generateDare()">Next Dare 🔥</button>
+                            <button class="back-btn" onclick="backToGamesMenu()">Back to Games</button>
+                        </div>
+                        <div class="game-stats">
+                            <p>Dares Completed: <span id="dareCount">0</span> / <span id="totalDares">50</span></p>
+                        </div>
+                    </section>
+
+                    <!-- Memory Game -->
+                    <section id="memoryGamePage" class="page">
+                        <div class="memory-game-header">
+                            <h3>Memory Match</h3>
+                            <div class="memory-stats">
+                                <span>Time: <span id="memoryTimer">0</span>s</span>
+                                <span>Moves: <span id="memoryMoves">0</span></span>
+                            </div>
+                        </div>
+                        <div id="memoryGameGrid" class="memory-grid"></div>
+                        <button class="back-btn" onclick="backToGamesMenu()">Back to Games</button>
+                    </section>
+
+                    <!-- Fruit Slash Game -->
+                    <section id="fruitGamePage" class="page">
+                        <div class="fruit-game-header">
+                            <h3>Fruit Slash</h3>
+                            <div class="fruit-stats">
+                                <span>Score: <span id="fruitScore">0</span></span>
+                                <span>Lives: <span id="fruitLives">❤️❤️❤️</span></span>
+                            </div>
+                        </div>
+                        <canvas id="fruitCanvas" class="game-canvas"></canvas>
+                        <button class="back-btn" onclick="backToGamesMenu()">Back to Games</button>
+                    </section>
+
+                    <!-- Catch Hearts Game -->
+                    <section id="heartsGamePage" class="page">
+                        <div class="hearts-game-header">
+                            <h3>Catch Hearts</h3>
+                            <div class="hearts-stats">
+                                <span>Score: <span id="heartsScore">0</span></span>
+                                <span>Lives: <span id="heartsLives">❤️❤️❤️</span></span>
+                            </div>
+                        </div>
+                        <div id="heartsGameArea" class="hearts-game-area">
+                            <div id="heartsBasket" class="hearts-basket">🧺</div>
+                        </div>
+                        <button class="back-btn" onclick="backToGamesMenu()">Back to Games</button>
+                    </section>
                 </main>
                 <footer class="portal-footer">
                     <p>&copy; 2025 For Hetu with Love 💝</p>
