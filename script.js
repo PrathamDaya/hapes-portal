@@ -13,7 +13,7 @@ let usedDares = [];
 
 // ===== GAME STATE VARIABLES =====
 // Toggle this to TRUE if you put photos in 'assets/mem1.jpg' etc.
-const usePhotoAssets = false; 
+const usePhotoAssets = true; 
 
 // Memory Game Vars
 let memMoves = 0;
