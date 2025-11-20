@@ -12,6 +12,31 @@ let diaryEntries = {};
 let periodData = [];
 let usedDares = [];
 
+// ===== GAME STATE VARIABLES =====
+// Toggle this to TRUE if you put photos in 'assets/mem1.jpg' etc.
+const usePhotoAssets = false; 
+
+let memMoves = 0;
+let memLock = false;
+let memHasFlippedCard = false;
+let memFirstCard, memSecondCard;
+
+let catchGameRunning = false;
+let catchScore = 0;
+let catchLoopId;
+
+let slasherGameRunning = false;
+let slasherScore = 0;
+let slasherLoopId;
+
+// High Scores
+let gameHighScores = {
+    memory: 100, // Lower is better for memory (moves)
+    catch: 0,
+    slasher: 0
+};
+
+
 // ===== DARES LIST =====
 const coupleDares = [
     "Give your partner a slow, sensual massage on their neck and shoulders for 5 minutes.",
@@ -124,6 +149,12 @@ function checkLoginStatus() {
         document.body.style.alignItems = 'flex-start';
         navigateToApp('homeScreen');
     }
+    // Load high scores
+    const storedScores = localStorage.getItem('hetuApp_highscores');
+    if(storedScores) {
+        gameHighScores = JSON.parse(storedScores);
+    }
+    updateHighScoreDisplays();
 }
 
 // ===== THEME MANAGEMENT =====
@@ -158,7 +189,6 @@ function createFloatingEmojis() {
 
 // ===== CUSTOM POPUP SYSTEM =====
 function showCustomPopup(title, message, inputPlaceholder = null, callback = null) {
-    // Remove existing popups
     document.querySelectorAll('.custom-popup-overlay').forEach(p => p.remove());
     
     const overlay = document.createElement('div');
@@ -223,6 +253,9 @@ function navigateToApp(screenId) {
         return;
     }
     
+    // Stop any running games
+    quitGame(false);
+
     document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
     const targetScreen = document.getElementById(screenId);
     if (targetScreen) {
@@ -240,11 +273,389 @@ function navigateToApp(screenId) {
             document.getElementById('dareText').textContent = "Click the button below to get your first dare!";
         } else if (screenId === 'periodTrackerScreen') {
             loadPeriodTracker();
+        } else if (screenId === 'gameHubScreen') {
+            updateHighScoreDisplays();
         }
     } else {
         showCustomPopup('Error', 'Screen not found!');
     }
 }
+
+function quitGame(navigate = true) {
+    catchGameRunning = false;
+    slasherGameRunning = false;
+    cancelAnimationFrame(catchLoopId);
+    cancelAnimationFrame(slasherLoopId);
+    if (navigate) navigateToApp('gameHubScreen');
+}
+
+// ===== GAME ARCADE LOGIC =====
+
+function updateHighScoreDisplays() {
+    document.getElementById('memHighScore').textContent = gameHighScores.memory === 100 ? '-' : gameHighScores.memory + " moves";
+    document.getElementById('catchHighScore').textContent = gameHighScores.catch;
+    document.getElementById('slashHighScore').textContent = gameHighScores.slasher;
+}
+
+function saveHighScores() {
+    localStorage.setItem('hetuApp_highscores', JSON.stringify(gameHighScores));
+    updateHighScoreDisplays();
+}
+
+// --- MEMORY GAME ---
+function startMemoryGame() {
+    navigateToApp('memoryGameScreen');
+    const grid = document.getElementById('memoryGrid');
+    grid.innerHTML = '';
+    memMoves = 0;
+    document.getElementById('memoryMoves').textContent = memMoves;
+    memLock = false;
+    memHasFlippedCard = false;
+
+    // Assets or Emojis
+    const items = usePhotoAssets 
+        ? ['assets/mem1.jpg', 'assets/mem2.jpg', 'assets/mem3.jpg', 'assets/mem4.jpg', 'assets/mem5.jpg', 'assets/mem6.jpg'] 
+        : ['🐼', '🐰', '💖', '🍓', '💋', '🌹'];
+
+    // Duplicate and shuffle
+    const deck = [...items, ...items].sort(() => 0.5 - Math.random());
+
+    deck.forEach(item => {
+        const card = document.createElement('div');
+        card.classList.add('memory-card');
+        card.dataset.framework = item;
+
+        const frontFace = document.createElement('div');
+        frontFace.classList.add('front-face');
+        if (usePhotoAssets) {
+            const img = document.createElement('img');
+            img.src = item;
+            frontFace.appendChild(img);
+        } else {
+            frontFace.textContent = item;
+        }
+
+        const backFace = document.createElement('div');
+        backFace.classList.add('back-face');
+        backFace.textContent = '?';
+
+        card.appendChild(frontFace);
+        card.appendChild(backFace);
+        card.addEventListener('click', flipCard);
+        grid.appendChild(card);
+    });
+}
+
+function flipCard() {
+    if (memLock) return;
+    if (this === memFirstCard) return;
+
+    this.classList.add('flip');
+
+    if (!memHasFlippedCard) {
+        memHasFlippedCard = true;
+        memFirstCard = this;
+        return;
+    }
+
+    memSecondCard = this;
+    checkForMatch();
+}
+
+function checkForMatch() {
+    memMoves++;
+    document.getElementById('memoryMoves').textContent = memMoves;
+
+    let isMatch = memFirstCard.dataset.framework === memSecondCard.dataset.framework;
+    isMatch ? disableCards() : unflipCards();
+}
+
+function disableCards() {
+    memFirstCard.removeEventListener('click', flipCard);
+    memSecondCard.removeEventListener('click', flipCard);
+    resetBoard();
+    
+    // Check win
+    if (document.querySelectorAll('.memory-card.flip').length === 12) {
+        setTimeout(() => {
+            if (memMoves < gameHighScores.memory) {
+                gameHighScores.memory = memMoves;
+                saveHighScores();
+                showCustomPopup("New High Score!", `You won in ${memMoves} moves! 🎉`);
+            } else {
+                showCustomPopup("You Won!", `Finished in ${memMoves} moves.`);
+            }
+        }, 500);
+    }
+}
+
+function unflipCards() {
+    memLock = true;
+    setTimeout(() => {
+        memFirstCard.classList.remove('flip');
+        memSecondCard.classList.remove('flip');
+        resetBoard();
+    }, 1000);
+}
+
+function resetBoard() {
+    [memHasFlippedCard, memLock] = [false, false];
+    [memFirstCard, memSecondCard] = [null, null];
+}
+
+// --- CATCH THE HEART GAME ---
+function startCatchGame() {
+    navigateToApp('catchGameScreen');
+    document.getElementById('catchStartOverlay').style.display = 'flex';
+    const canvas = document.getElementById('catchGameCanvas');
+    // Resize canvas
+    const container = document.getElementById('catchGameCanvasContainer');
+    canvas.width = container.clientWidth;
+    canvas.height = container.clientHeight;
+}
+
+function initCatchGame() {
+    document.getElementById('catchStartOverlay').style.display = 'none';
+    const canvas = document.getElementById('catchGameCanvas');
+    const ctx = canvas.getContext('2d');
+    catchScore = 0;
+    document.getElementById('catchScore').textContent = catchScore;
+    catchGameRunning = true;
+
+    const basket = { x: canvas.width / 2 - 25, y: canvas.height - 50, width: 50, height: 30 };
+    let items = []; // {x, y, type, speed}
+    let frame = 0;
+
+    // Input handling
+    function moveBasket(e) {
+        const rect = canvas.getBoundingClientRect();
+        let clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        basket.x = clientX - rect.left - basket.width / 2;
+        // Keep in bounds
+        if (basket.x < 0) basket.x = 0;
+        if (basket.x + basket.width > canvas.width) basket.x = canvas.width - basket.width;
+    }
+
+    canvas.addEventListener('mousemove', moveBasket);
+    canvas.addEventListener('touchmove', moveBasket);
+
+    function loop() {
+        if (!catchGameRunning) return;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw Basket
+        ctx.fillStyle = '#d94a6b';
+        ctx.fillRect(basket.x, basket.y, basket.width, basket.height);
+        ctx.fillStyle = 'white';
+        ctx.font = '20px Arial';
+        ctx.fillText('🗑️', basket.x + 10, basket.y + 22);
+
+        // Spawn items
+        if (frame % 40 === 0) {
+            const isBad = Math.random() < 0.3;
+            items.push({
+                x: Math.random() * (canvas.width - 30),
+                y: -30,
+                type: isBad ? '💔' : '💖',
+                speed: 2 + Math.random() * 3
+            });
+        }
+
+        // Update Items
+        for (let i = items.length - 1; i >= 0; i--) {
+            let item = items[i];
+            item.y += item.speed;
+            ctx.font = '30px Arial';
+            ctx.fillText(item.type, item.x, item.y);
+
+            // Check collision
+            if (item.y > basket.y && item.y < basket.y + basket.height &&
+                item.x + 30 > basket.x && item.x < basket.x + basket.width) {
+                
+                if (item.type === '💔') {
+                    endCatchGame();
+                    return;
+                } else {
+                    catchScore++;
+                    document.getElementById('catchScore').textContent = catchScore;
+                    items.splice(i, 1);
+                }
+            } else if (item.y > canvas.height) {
+                items.splice(i, 1);
+            }
+        }
+
+        frame++;
+        catchLoopId = requestAnimationFrame(loop);
+    }
+    loop();
+}
+
+function endCatchGame() {
+    catchGameRunning = false;
+    if (catchScore > gameHighScores.catch) {
+        gameHighScores.catch = catchScore;
+        saveHighScores();
+        showCustomPopup('Game Over', `New High Score: ${catchScore}! 🏆`);
+    } else {
+        showCustomPopup('Game Over', `Score: ${catchScore}`);
+    }
+    document.getElementById('catchStartOverlay').style.display = 'flex';
+}
+
+// --- LOVE SLASHER GAME ---
+function startSlasherGame() {
+    navigateToApp('slasherGameScreen');
+    document.getElementById('slasherStartOverlay').style.display = 'flex';
+    const canvas = document.getElementById('slasherCanvas');
+    const container = document.getElementById('slasherCanvasContainer');
+    canvas.width = container.clientWidth;
+    canvas.height = container.clientHeight;
+}
+
+function initSlasherGame() {
+    document.getElementById('slasherStartOverlay').style.display = 'none';
+    const canvas = document.getElementById('slasherCanvas');
+    const ctx = canvas.getContext('2d');
+    slasherScore = 0;
+    document.getElementById('slasherScore').textContent = slasherScore;
+    slasherGameRunning = true;
+
+    let fruits = []; // {x, y, vx, vy, type, size}
+    let particles = []; // Slice effects
+    let frame = 0;
+    const gravity = 0.15;
+    
+    // Trail
+    let trail = [];
+
+    function inputHandler(e) {
+        const rect = canvas.getBoundingClientRect();
+        let clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        let clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        const x = clientX - rect.left;
+        const y = clientY - rect.top;
+        
+        trail.push({x, y, life: 10});
+
+        // Check slice
+        for (let i = fruits.length - 1; i >= 0; i--) {
+            let f = fruits[i];
+            const dist = Math.sqrt((x - f.x) ** 2 + (y - f.y) ** 2);
+            if (dist < f.size) {
+                if (f.type === '💣') {
+                    endSlasherGame();
+                    return;
+                }
+                // Slash success
+                slasherScore++;
+                document.getElementById('slasherScore').textContent = slasherScore;
+                // Add particle effect
+                createParticles(f.x, f.y, f.color);
+                fruits.splice(i, 1);
+            }
+        }
+    }
+
+    canvas.addEventListener('mousemove', inputHandler);
+    canvas.addEventListener('touchmove', inputHandler);
+
+    function createParticles(x, y, color) {
+        for(let i=0; i<5; i++) {
+            particles.push({
+                x: x, y: y,
+                vx: (Math.random() - 0.5) * 10,
+                vy: (Math.random() - 0.5) * 10,
+                life: 20,
+                color: color
+            });
+        }
+    }
+
+    function loop() {
+        if (!slasherGameRunning) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw Trail
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        for (let i = 0; i < trail.length; i++) {
+            let p = trail[i];
+            if (i === 0) ctx.moveTo(p.x, p.y);
+            else ctx.lineTo(p.x, p.y);
+            p.life--;
+        }
+        ctx.stroke();
+        trail = trail.filter(p => p.life > 0);
+
+        // Spawn Fruits
+        if (frame % 50 === 0) {
+            const types = [
+                {emoji: '🍓', color: 'red'}, 
+                {emoji: '🍉', color: 'green'}, 
+                {emoji: '🍑', color: 'orange'}, 
+                {emoji: '💣', color: 'black'}
+            ];
+            const obj = types[Math.floor(Math.random() * types.length)];
+            fruits.push({
+                x: Math.random() * (canvas.width - 60) + 30,
+                y: canvas.height,
+                vx: (Math.random() - 0.5) * 4,
+                vy: -(Math.random() * 5 + 8),
+                type: obj.emoji,
+                color: obj.color,
+                size: 30
+            });
+        }
+
+        // Update Fruits
+        for (let i = fruits.length - 1; i >= 0; i--) {
+            let f = fruits[i];
+            f.x += f.vx;
+            f.y += f.vy;
+            f.vy += gravity;
+
+            ctx.font = '40px Arial';
+            ctx.fillText(f.type, f.x - 15, f.y + 15);
+
+            if (f.y > canvas.height + 50) fruits.splice(i, 1);
+        }
+
+        // Update Particles
+        for (let i = particles.length - 1; i >= 0; i--) {
+            let p = particles[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            p.life--;
+            ctx.fillStyle = p.color;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+            ctx.fill();
+            if(p.life <= 0) particles.splice(i, 1);
+        }
+
+        frame++;
+        slasherLoopId = requestAnimationFrame(loop);
+    }
+    loop();
+}
+
+function endSlasherGame() {
+    slasherGameRunning = false;
+    if (slasherScore > gameHighScores.slasher) {
+        gameHighScores.slasher = slasherScore;
+        saveHighScores();
+        showCustomPopup('BOOM! 💥', `New High Score: ${slasherScore}! 🏆`);
+    } else {
+        showCustomPopup('BOOM! 💥', `Game Over. Score: ${slasherScore}`);
+    }
+    document.getElementById('slasherStartOverlay').style.display = 'flex';
+    // Clear trails
+    trail = [];
+}
+
 
 // ===== FEELINGS PORTAL =====
 function navigateToFeelingsPage(pageId, emotion = '') {
