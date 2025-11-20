@@ -7,13 +7,10 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Floating Emoji Background -->
     <div class="floating-bg" id="floatingBg"></div>
 
-    <!-- Theme Toggle -->
     <button class="theme-toggle" id="themeToggle">🌓</button>
 
-    <!-- Login Screen -->
     <div id="loginContainer">
         <div class="login-box">
             <h1>Welcome! Who are you?</h1>
@@ -24,14 +21,12 @@
         </div>
     </div>
 
-    <!-- Main App Container -->
     <div id="appContainer">
         <div class="app-header-info">
             <span id="loggedInUserDisplay">User: Not logged in</span>
             <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
 
-        <!-- Home Screen -->
         <section id="homeScreen" class="screen active">
             <header class="main-header">
                 <h1>For my Hetu 💖</h1>
@@ -43,8 +38,8 @@
                 <div class="option-box main-option" onclick="navigateToApp('diaryScreen')">
                     📅 Hetu's Diary 📅
                 </div>
-                <div class="option-box main-option" onclick="navigateToApp('dareGameScreen')">
-                    😈 Couple's Dare Game 😈
+                <div class="option-box main-option" onclick="navigateToApp('gameHubScreen')">
+                    🎮 Love Arcade 🎮
                 </div>
                 <div class="option-box main-option" onclick="navigateToApp('periodTrackerScreen')">
                     🌸 Period Tracker 🌸
@@ -58,7 +53,6 @@
             </footer>
         </section>
 
-        <!-- Feelings Portal -->
         <section id="feelingsPortalScreen" class="screen">
             <div class="container">
                 <header>
@@ -103,13 +97,9 @@
                         <button onclick="navigateToFeelingsPage('feelingsPage1')">Back to Feelings Portal</button>
                     </section>
                 </main>
-                <footer class="portal-footer">
-                    <p>&copy; 2025 For Hetu with Love 💝</p>
-                </footer>
             </div>
         </section>
 
-        <!-- Diary Screen -->
         <section id="diaryScreen" class="screen">
             <div class="container">
                 <header>
@@ -166,17 +156,39 @@
                         <button onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Calendar</button>
                     </section>
                 </main>
-                <footer class="portal-footer">
-                    <p>&copy; 2025 For Hetu with Love 💝</p>
-                </footer>
             </div>
         </section>
 
-        <!-- Dare Game Screen -->
-        <section id="dareGameScreen" class="screen">
+        <section id="gameHubScreen" class="screen">
             <div class="container">
                 <header>
                     <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
+                    <h1>Love Arcade 🕹️</h1>
+                </header>
+                <main class="options-grid">
+                    <div class="option-box main-option" onclick="navigateToApp('dareGameScreen')">
+                        😈 Couple's Dare Game 😈
+                    </div>
+                    <div class="option-box main-option" onclick="startMemoryGame()">
+                        🧠 Memory Match 🧠
+                        <div class="high-score-display">Best: <span id="memHighScore">0</span></div>
+                    </div>
+                    <div class="option-box main-option" onclick="startCatchGame()">
+                        💖 Catch the Heart 💖
+                        <div class="high-score-display">Best: <span id="catchHighScore">0</span></div>
+                    </div>
+                    <div class="option-box main-option" onclick="startSlasherGame()">
+                        🍉 Love Slasher 🍉
+                        <div class="high-score-display">Best: <span id="slashHighScore">0</span></div>
+                    </div>
+                </main>
+            </div>
+        </section>
+
+        <section id="dareGameScreen" class="screen">
+            <div class="container">
+                <header>
+                    <button class="back-to-home-btn" onclick="navigateToApp('gameHubScreen')">🕹️ Games</button>
                     <h1>Couple's Dare Game 😈</h1>
                 </header>
                 <main>
@@ -187,13 +199,63 @@
                         <button id="nextDareBtn" onclick="generateDare()">Next Dare 🔥</button>
                     </div>
                 </main>
-                <footer class="portal-footer">
-                    <p>&copy; 2025 For Hetu with Love 💝</p>
-                </footer>
             </div>
         </section>
 
-        <!-- Period Tracker Screen -->
+        <section id="memoryGameScreen" class="screen">
+            <div class="container">
+                <header>
+                    <button class="back-to-home-btn" onclick="quitGame()">🕹️ Quit</button>
+                    <h1>Memory Match</h1>
+                    <div class="score-board">Moves: <span id="memoryMoves">0</span></div>
+                </header>
+                <main>
+                    <div class="memory-grid" id="memoryGrid"></div>
+                    <button id="restartMemoryBtn" onclick="startMemoryGame()">Restart Game</button>
+                </main>
+            </div>
+        </section>
+
+        <section id="catchGameScreen" class="screen">
+            <div class="container">
+                <header>
+                    <button class="back-to-home-btn" onclick="quitGame()">🕹️ Quit</button>
+                    <h1>Catch The Heart</h1>
+                    <div class="score-board">Score: <span id="catchScore">0</span></div>
+                </header>
+                <main>
+                    <div id="catchGameCanvasContainer" class="game-canvas-container">
+                        <canvas id="catchGameCanvas"></canvas>
+                        <div id="catchStartOverlay" class="game-overlay">
+                            <p>Tap/Drag basket to catch hearts!</p>
+                            <p>Avoid the broken hearts 💔</p>
+                            <button onclick="initCatchGame()">Start</button>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </section>
+
+        <section id="slasherGameScreen" class="screen">
+            <div class="container">
+                <header>
+                    <button class="back-to-home-btn" onclick="quitGame()">🕹️ Quit</button>
+                    <h1>Love Slasher</h1>
+                    <div class="score-board">Score: <span id="slasherScore">0</span></div>
+                </header>
+                <main>
+                    <div id="slasherCanvasContainer" class="game-canvas-container">
+                        <canvas id="slasherCanvas"></canvas>
+                        <div id="slasherStartOverlay" class="game-overlay">
+                            <p>Swipe/Mouse over fruits to slash!</p>
+                            <p>Don't touch the Bomb 💣</p>
+                            <button onclick="initSlasherGame()">Start</button>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </section>
+
         <section id="periodTrackerScreen" class="screen">
             <div class="container">
                 <header>
@@ -231,14 +293,10 @@
                     </div>
                     <button onclick="navigateToApp('homeScreen')">Back to Home</button>
                 </main>
-                <footer class="portal-footer">
-                    <p>&copy; 2025 For Hetu with Love 💝</p>
-                </footer>
             </div>
         </section>
     </div>
 
-    <!-- Miss You Popup -->
     <div id="missYouPopup">
         <p id="missYouMessage"></p>
         <button onclick="closeMissYouPopup()">Okay ❤️</button>
