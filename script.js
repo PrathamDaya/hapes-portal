@@ -1,5 +1,4 @@
 // ===== GLOBAL CONFIGURATION =====
-// IMPORTANT: Replace with your actual Google Apps Script URL
 const scriptURL = 'https://script.google.com/macros/s/AKfycbxMsH6HVLcv0yGQBKZCdOwdAUi9k_Jv4JeIOotqicQlef0mP_mIADlEVbUuzS8pPsZ27g/exec';
 
 // Application State
@@ -16,11 +15,13 @@ let usedDares = [];
 // Toggle this to TRUE if you put photos in 'assets/mem1.jpg' etc.
 const usePhotoAssets = false; 
 
+// Memory Game Vars
 let memMoves = 0;
 let memLock = false;
 let memHasFlippedCard = false;
 let memFirstCard, memSecondCard;
 
+// Canvas Game Vars
 let catchGameRunning = false;
 let catchScore = 0;
 let catchLoopId;
@@ -35,7 +36,6 @@ let gameHighScores = {
     catch: 0,
     slasher: 0
 };
-
 
 // ===== DARES LIST =====
 const coupleDares = [
@@ -253,7 +253,7 @@ function navigateToApp(screenId) {
         return;
     }
     
-    // Stop any running games
+    // Stop any running games explicitly
     quitGame(false);
 
     document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
@@ -330,6 +330,7 @@ function startMemoryGame() {
         if (usePhotoAssets) {
             const img = document.createElement('img');
             img.src = item;
+            img.onerror = function() { this.style.display='none'; frontFace.textContent='📸'; }; // Fallback if image missing
             frontFace.appendChild(img);
         } else {
             frontFace.textContent = item;
@@ -406,56 +407,86 @@ function resetBoard() {
 // --- CATCH THE HEART GAME ---
 function startCatchGame() {
     navigateToApp('catchGameScreen');
-    document.getElementById('catchStartOverlay').style.display = 'flex';
     const canvas = document.getElementById('catchGameCanvas');
-    // Resize canvas
     const container = document.getElementById('catchGameCanvasContainer');
-    canvas.width = container.clientWidth;
-    canvas.height = container.clientHeight;
+    
+    // CRITICAL: Force resize only AFTER the element is displayed
+    setTimeout(() => {
+        canvas.width = container.clientWidth;
+        canvas.height = container.clientHeight;
+        document.getElementById('catchStartOverlay').style.display = 'flex';
+    }, 100);
 }
 
 function initCatchGame() {
     document.getElementById('catchStartOverlay').style.display = 'none';
     const canvas = document.getElementById('catchGameCanvas');
+    
+    // Re-confirm size just in case
+    const container = document.getElementById('catchGameCanvasContainer');
+    canvas.width = container.clientWidth;
+    canvas.height = container.clientHeight;
+
     const ctx = canvas.getContext('2d');
     catchScore = 0;
     document.getElementById('catchScore').textContent = catchScore;
     catchGameRunning = true;
 
-    const basket = { x: canvas.width / 2 - 25, y: canvas.height - 50, width: 50, height: 30 };
+    // Reset basket position safely
+    const basket = { 
+        x: canvas.width / 2 - 25, 
+        y: canvas.height - 50, 
+        width: 50, 
+        height: 30 
+    };
     let items = []; // {x, y, type, speed}
     let frame = 0;
 
-    // Input handling
+    // Remove old listeners to prevent stacking (simple approach: clone node)
+    const newCanvas = canvas.cloneNode(true);
+    canvas.parentNode.replaceChild(newCanvas, canvas);
+    // Get context from the NEW canvas
+    const activeCtx = newCanvas.getContext('2d');
+
     function moveBasket(e) {
-        const rect = canvas.getBoundingClientRect();
-        let clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        if (!catchGameRunning) return;
+        e.preventDefault(); // Stop scrolling
+        const rect = newCanvas.getBoundingClientRect();
+        
+        let clientX;
+        if (e.touches && e.touches.length > 0) {
+            clientX = e.touches[0].clientX;
+        } else {
+            clientX = e.clientX;
+        }
+        
         basket.x = clientX - rect.left - basket.width / 2;
+        
         // Keep in bounds
         if (basket.x < 0) basket.x = 0;
-        if (basket.x + basket.width > canvas.width) basket.x = canvas.width - basket.width;
+        if (basket.x + basket.width > newCanvas.width) basket.x = newCanvas.width - basket.width;
     }
 
-    canvas.addEventListener('mousemove', moveBasket);
-    canvas.addEventListener('touchmove', moveBasket);
+    newCanvas.addEventListener('mousemove', moveBasket);
+    newCanvas.addEventListener('touchmove', moveBasket, { passive: false });
 
     function loop() {
         if (!catchGameRunning) return;
 
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        activeCtx.clearRect(0, 0, newCanvas.width, newCanvas.height);
 
         // Draw Basket
-        ctx.fillStyle = '#d94a6b';
-        ctx.fillRect(basket.x, basket.y, basket.width, basket.height);
-        ctx.fillStyle = 'white';
-        ctx.font = '20px Arial';
-        ctx.fillText('🗑️', basket.x + 10, basket.y + 22);
+        activeCtx.fillStyle = '#d94a6b';
+        activeCtx.fillRect(basket.x, basket.y, basket.width, basket.height);
+        activeCtx.fillStyle = 'white';
+        activeCtx.font = '20px Arial';
+        activeCtx.fillText('🗑️', basket.x + 10, basket.y + 22);
 
         // Spawn items
         if (frame % 40 === 0) {
             const isBad = Math.random() < 0.3;
             items.push({
-                x: Math.random() * (canvas.width - 30),
+                x: Math.random() * (newCanvas.width - 30),
                 y: -30,
                 type: isBad ? '💔' : '💖',
                 speed: 2 + Math.random() * 3
@@ -466,8 +497,8 @@ function initCatchGame() {
         for (let i = items.length - 1; i >= 0; i--) {
             let item = items[i];
             item.y += item.speed;
-            ctx.font = '30px Arial';
-            ctx.fillText(item.type, item.x, item.y);
+            activeCtx.font = '30px Arial';
+            activeCtx.fillText(item.type, item.x, item.y);
 
             // Check collision
             if (item.y > basket.y && item.y < basket.y + basket.height &&
@@ -481,7 +512,7 @@ function initCatchGame() {
                     document.getElementById('catchScore').textContent = catchScore;
                     items.splice(i, 1);
                 }
-            } else if (item.y > canvas.height) {
+            } else if (item.y > newCanvas.height) {
                 items.splice(i, 1);
             }
         }
@@ -507,33 +538,57 @@ function endCatchGame() {
 // --- LOVE SLASHER GAME ---
 function startSlasherGame() {
     navigateToApp('slasherGameScreen');
-    document.getElementById('slasherStartOverlay').style.display = 'flex';
     const canvas = document.getElementById('slasherCanvas');
     const container = document.getElementById('slasherCanvasContainer');
-    canvas.width = container.clientWidth;
-    canvas.height = container.clientHeight;
+    
+    // CRITICAL: Force resize only AFTER the element is displayed
+    setTimeout(() => {
+        canvas.width = container.clientWidth;
+        canvas.height = container.clientHeight;
+        document.getElementById('slasherStartOverlay').style.display = 'flex';
+    }, 100);
 }
 
 function initSlasherGame() {
     document.getElementById('slasherStartOverlay').style.display = 'none';
     const canvas = document.getElementById('slasherCanvas');
+    
+    // Re-confirm size
+    const container = document.getElementById('slasherCanvasContainer');
+    canvas.width = container.clientWidth;
+    canvas.height = container.clientHeight;
+
     const ctx = canvas.getContext('2d');
     slasherScore = 0;
     document.getElementById('slasherScore').textContent = slasherScore;
     slasherGameRunning = true;
 
-    let fruits = []; // {x, y, vx, vy, type, size}
-    let particles = []; // Slice effects
+    let fruits = []; 
+    let particles = []; 
     let frame = 0;
     const gravity = 0.15;
-    
-    // Trail
     let trail = [];
 
+    // Remove old listeners safely
+    const newCanvas = canvas.cloneNode(true);
+    canvas.parentNode.replaceChild(newCanvas, canvas);
+    const activeCtx = newCanvas.getContext('2d');
+
     function inputHandler(e) {
-        const rect = canvas.getBoundingClientRect();
-        let clientX = e.touches ? e.touches[0].clientX : e.clientX;
-        let clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        if (!slasherGameRunning) return;
+        e.preventDefault(); // Stop scrolling
+        
+        const rect = newCanvas.getBoundingClientRect();
+        let clientX, clientY;
+
+        if (e.touches && e.touches.length > 0) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        } else {
+            clientX = e.clientX;
+            clientY = e.clientY;
+        }
+
         const x = clientX - rect.left;
         const y = clientY - rect.top;
         
@@ -558,8 +613,8 @@ function initSlasherGame() {
         }
     }
 
-    canvas.addEventListener('mousemove', inputHandler);
-    canvas.addEventListener('touchmove', inputHandler);
+    newCanvas.addEventListener('mousemove', inputHandler);
+    newCanvas.addEventListener('touchmove', inputHandler, { passive: false });
 
     function createParticles(x, y, color) {
         for(let i=0; i<5; i++) {
@@ -575,19 +630,19 @@ function initSlasherGame() {
 
     function loop() {
         if (!slasherGameRunning) return;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        activeCtx.clearRect(0, 0, newCanvas.width, newCanvas.height);
 
         // Draw Trail
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-        ctx.lineWidth = 3;
-        ctx.beginPath();
+        activeCtx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+        activeCtx.lineWidth = 3;
+        activeCtx.beginPath();
         for (let i = 0; i < trail.length; i++) {
             let p = trail[i];
-            if (i === 0) ctx.moveTo(p.x, p.y);
-            else ctx.lineTo(p.x, p.y);
+            if (i === 0) activeCtx.moveTo(p.x, p.y);
+            else activeCtx.lineTo(p.x, p.y);
             p.life--;
         }
-        ctx.stroke();
+        activeCtx.stroke();
         trail = trail.filter(p => p.life > 0);
 
         // Spawn Fruits
@@ -600,8 +655,8 @@ function initSlasherGame() {
             ];
             const obj = types[Math.floor(Math.random() * types.length)];
             fruits.push({
-                x: Math.random() * (canvas.width - 60) + 30,
-                y: canvas.height,
+                x: Math.random() * (newCanvas.width - 60) + 30,
+                y: newCanvas.height,
                 vx: (Math.random() - 0.5) * 4,
                 vy: -(Math.random() * 5 + 8),
                 type: obj.emoji,
@@ -617,10 +672,10 @@ function initSlasherGame() {
             f.y += f.vy;
             f.vy += gravity;
 
-            ctx.font = '40px Arial';
-            ctx.fillText(f.type, f.x - 15, f.y + 15);
+            activeCtx.font = '40px Arial';
+            activeCtx.fillText(f.type, f.x - 15, f.y + 15);
 
-            if (f.y > canvas.height + 50) fruits.splice(i, 1);
+            if (f.y > newCanvas.height + 50) fruits.splice(i, 1);
         }
 
         // Update Particles
@@ -629,10 +684,10 @@ function initSlasherGame() {
             p.x += p.vx;
             p.y += p.vy;
             p.life--;
-            ctx.fillStyle = p.color;
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
-            ctx.fill();
+            activeCtx.fillStyle = p.color;
+            activeCtx.beginPath();
+            activeCtx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+            activeCtx.fill();
             if(p.life <= 0) particles.splice(i, 1);
         }
 
@@ -652,12 +707,10 @@ function endSlasherGame() {
         showCustomPopup('BOOM! 💥', `Game Over. Score: ${slasherScore}`);
     }
     document.getElementById('slasherStartOverlay').style.display = 'flex';
-    // Clear trails
-    trail = [];
 }
 
 
-// ===== FEELINGS PORTAL =====
+// ===== FEELINGS PORTAL (UNCHANGED BUT REQUIRED FOR FULL FILE) =====
 function navigateToFeelingsPage(pageId, emotion = '') {
     document.querySelectorAll('#feelingsPortalScreen .page').forEach(page => page.classList.remove('active'));
     const targetPage = document.getElementById(pageId);
