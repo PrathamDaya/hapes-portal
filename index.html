@@ -168,13 +168,11 @@
                 <header>
                     <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
                     <h1>Memory Lane 💖</h1>
+                    <button class="add-memory-btn" onclick="openAddMemoryModal()">➕ Add Memory</button>
                 </header>
                 <main>
                     <div id="timelineContainer" class="timeline-container">
                         </div>
-                    <div style="margin-top: 20px; color: var(--text-secondary); font-size: 0.9em;">
-                        Scroll horizontally to see our journey • Click a card to remember
-                    </div>
                 </main>
             </div>
         </section>
@@ -328,6 +326,20 @@
             <img id="modalImg" src="" alt="Memory">
             <p id="modalDesc">Description</p>
             <button onclick="closeMemoryModal()">Close</button>
+        </div>
+    </div>
+
+    <div id="addMemoryModal" class="memory-modal">
+        <div class="memory-modal-content input-mode">
+            <h2>Add New Memory 📝</h2>
+            <input type="text" id="newMemTitle" placeholder="Title (e.g. First Date)">
+            <input type="date" id="newMemDate">
+            <input type="number" id="newMemImgNum" placeholder="Image Number (e.g. 6 for 6.jpg)">
+            <textarea id="newMemDesc" placeholder="Description (The story behind the pic...)"></textarea>
+            <div class="modal-actions">
+                <button onclick="saveNewMemory()">Save Memory 💾</button>
+                <button onclick="closeAddMemoryModal()" style="background: #ccc;">Cancel</button>
+            </div>
         </div>
     </div>
 
