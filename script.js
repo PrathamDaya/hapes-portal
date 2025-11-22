@@ -11,8 +11,17 @@ let diaryEntries = {};
 let periodData = [];
 let usedDares = [];
 
+// ===== TIMELINE DATA CONFIGURATION =====
+// Add your photos in assets/Timeline/1.jpg, 2.jpg etc.
+const timelineData = [
+    { date: "Day 1", title: "Where it all began", img: "assets/Timeline/1.jpg", desc: "The start of our beautiful journey." },
+    { date: "Memory 2", title: "A special day", img: "assets/Timeline/2.jpg", desc: "Another amazing memory together." },
+    { date: "Memory 3", title: "Making memories", img: "assets/Timeline/3.jpg", desc: "Growing closer every day." },
+    { date: "Memory 4", title: "Adventure time", img: "assets/Timeline/4.jpg", desc: "Exploring the world with you." },
+    { date: "Today", title: "Still Going Strong", img: "assets/Timeline/5.jpg", desc: "Looking forward to forever." }
+];
+
 // ===== GAME STATE VARIABLES =====
-// Toggle this to TRUE if you put photos in 'assets/mem1.jpg' etc.
 const usePhotoAssets = true; 
 
 // Memory Game Vars
@@ -91,15 +100,6 @@ const coupleDares = [
     "Close your eyes and describe your ideal romantic evening together."
 ];
 
-const missYouMessages = [
-    "I love you my chikoo! 🥰",
-    "Sending virtual huggies 🤗 to my darling!",
-    "Sending virtual kissy 😘 to my darling!",
-    "Pratham misses you too! ❤️", 
-    "Thinking of you, always! ✨",
-    "You're the best! 💖"
-];
-
 let selectedMood = null;
 
 // ===== USER AUTHENTICATION =====
@@ -113,6 +113,13 @@ function login(userName) {
         document.body.style.alignItems = 'flex-start';
         navigateToApp('homeScreen');
         createFloatingEmojis();
+        
+        // Butterfly release on login welcome
+        setTimeout(() => {
+            const header = document.querySelector('.main-header h1');
+            if(header) releaseButterflies(header);
+        }, 1000);
+        
     } else {
         showCustomPopup('Error', 'Invalid user selection.');
     }
@@ -187,6 +194,38 @@ function createFloatingEmojis() {
     }
 }
 
+// ===== BUTTERFLY RELEASE EFFECT =====
+function releaseButterflies(element) {
+    if (!element) return;
+    
+    const rect = element.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    
+    for (let i = 0; i < 6; i++) {
+        const butterfly = document.createElement('div');
+        butterfly.className = 'butterfly';
+        butterfly.textContent = '🦋';
+        
+        // Random horizontal spread direction
+        const tx = (Math.random() - 0.5) * 200 + 'px'; 
+        butterfly.style.setProperty('--tx', tx);
+        
+        butterfly.style.left = centerX + 'px';
+        butterfly.style.top = centerY + 'px';
+        
+        // Stagger animation slightly
+        butterfly.style.animation = `butterflyFly 2s ease-out forwards ${Math.random() * 0.5}s`;
+        
+        document.body.appendChild(butterfly);
+        
+        // Cleanup after animation
+        setTimeout(() => {
+            butterfly.remove();
+        }, 3000);
+    }
+}
+
 // ===== CUSTOM POPUP SYSTEM =====
 function showCustomPopup(title, message, inputPlaceholder = null, callback = null) {
     document.querySelectorAll('.custom-popup-overlay').forEach(p => p.remove());
@@ -201,6 +240,7 @@ function showCustomPopup(title, message, inputPlaceholder = null, callback = nul
     titleEl.textContent = title;
     
     const messageEl = document.createElement('p');
+    messageEl.style.whiteSpace = "pre-line"; // Allows line breaks
     messageEl.textContent = message;
     
     popup.appendChild(titleEl);
@@ -275,6 +315,8 @@ function navigateToApp(screenId) {
             loadPeriodTracker();
         } else if (screenId === 'gameHubScreen') {
             updateHighScoreDisplays();
+        } else if (screenId === 'timelineScreen') {
+            renderTimeline();
         }
     } else {
         showCustomPopup('Error', 'Screen not found!');
@@ -289,428 +331,64 @@ function quitGame(navigate = true) {
     if (navigate) navigateToApp('gameHubScreen');
 }
 
-// ===== GAME ARCADE LOGIC =====
+// ===== TIMELINE FUNCTIONALITY =====
+function renderTimeline() {
+    const container = document.getElementById('timelineContainer');
+    container.innerHTML = ''; // Clear existing
 
-function updateHighScoreDisplays() {
-    document.getElementById('memHighScore').textContent = gameHighScores.memory === 100 ? '-' : gameHighScores.memory + " moves";
-    document.getElementById('catchHighScore').textContent = gameHighScores.catch;
-    document.getElementById('slashHighScore').textContent = gameHighScores.slasher;
-}
-
-function saveHighScores() {
-    localStorage.setItem('hetuApp_highscores', JSON.stringify(gameHighScores));
-    updateHighScoreDisplays();
-}
-
-// --- MEMORY GAME ---
-function startMemoryGame() {
-    navigateToApp('memoryGameScreen');
-    const grid = document.getElementById('memoryGrid');
-    grid.innerHTML = '';
-    memMoves = 0;
-    document.getElementById('memoryMoves').textContent = memMoves;
-    memLock = false;
-    memHasFlippedCard = false;
-
-    // Assets or Emojis
-    const items = usePhotoAssets 
-        ? ['assets/mem1.jpg', 'assets/mem2.jpg', 'assets/mem3.jpg', 'assets/mem4.jpg', 'assets/mem5.jpg', 'assets/mem6.jpg'] 
-        : ['🐼', '🐰', '💖', '🍓', '💋', '🌹'];
-
-    // Duplicate and shuffle
-    const deck = [...items, ...items].sort(() => 0.5 - Math.random());
-
-    deck.forEach(item => {
+    timelineData.forEach((item, index) => {
         const card = document.createElement('div');
-        card.classList.add('memory-card');
-        card.dataset.framework = item;
+        card.className = 'polaroid-card';
+        
+        // Random rotation between -3 and 3 degrees
+        const rotation = Math.random() * 6 - 3;
+        card.style.setProperty('--rotation', `${rotation}deg`);
 
-        const frontFace = document.createElement('div');
-        frontFace.classList.add('front-face');
-        if (usePhotoAssets) {
-            const img = document.createElement('img');
-            img.src = item;
-            img.onerror = function() { this.style.display='none'; frontFace.textContent='📸'; }; // Fallback if image missing
-            frontFace.appendChild(img);
-        } else {
-            frontFace.textContent = item;
-        }
+        // Create image logic
+        const imgContainer = document.createElement('div');
+        imgContainer.className = 'polaroid-img-container';
+        
+        const img = document.createElement('img');
+        img.src = item.img;
+        img.alt = item.title;
+        img.onerror = function() { 
+            this.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22200%22%20height%3D%22200%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23ddd%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20dominant-baseline%3D%22middle%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2224%22%20fill%3D%22%23aaa%22%3EPhoto%3C%2Ftext%3E%3C%2Fsvg%3E'; 
+        };
+        
+        imgContainer.appendChild(img);
+        
+        const dateEl = document.createElement('div');
+        dateEl.className = 'timeline-date';
+        dateEl.textContent = item.date;
+        
+        const titleEl = document.createElement('div');
+        titleEl.className = 'timeline-title';
+        titleEl.textContent = item.title;
 
-        const backFace = document.createElement('div');
-        backFace.classList.add('back-face');
-        backFace.textContent = '?';
+        card.appendChild(imgContainer);
+        card.appendChild(dateEl);
+        card.appendChild(titleEl);
+        
+        // Click to expand
+        card.onclick = () => openMemoryModal(item);
 
-        card.appendChild(frontFace);
-        card.appendChild(backFace);
-        card.addEventListener('click', flipCard);
-        grid.appendChild(card);
+        container.appendChild(card);
     });
 }
 
-function flipCard() {
-    if (memLock) return;
-    if (this === memFirstCard) return;
-
-    this.classList.add('flip');
-
-    if (!memHasFlippedCard) {
-        memHasFlippedCard = true;
-        memFirstCard = this;
-        return;
-    }
-
-    memSecondCard = this;
-    checkForMatch();
+function openMemoryModal(item) {
+    const modal = document.getElementById('memoryModal');
+    document.getElementById('modalTitle').textContent = item.title;
+    document.getElementById('modalImg').src = item.img;
+    document.getElementById('modalDesc').textContent = item.desc || "No description available.";
+    modal.style.display = 'flex';
 }
 
-function checkForMatch() {
-    memMoves++;
-    document.getElementById('memoryMoves').textContent = memMoves;
-
-    let isMatch = memFirstCard.dataset.framework === memSecondCard.dataset.framework;
-    isMatch ? disableCards() : unflipCards();
+function closeMemoryModal() {
+    document.getElementById('memoryModal').style.display = 'none';
 }
 
-function disableCards() {
-    memFirstCard.removeEventListener('click', flipCard);
-    memSecondCard.removeEventListener('click', flipCard);
-    resetBoard();
-    
-    // Check win
-    if (document.querySelectorAll('.memory-card.flip').length === 12) {
-        setTimeout(() => {
-            if (memMoves < gameHighScores.memory) {
-                gameHighScores.memory = memMoves;
-                saveHighScores();
-                showCustomPopup("New High Score!", `You won in ${memMoves} moves! 🎉`);
-            } else {
-                showCustomPopup("You Won!", `Finished in ${memMoves} moves.`);
-            }
-        }, 500);
-    }
-}
-
-function unflipCards() {
-    memLock = true;
-    setTimeout(() => {
-        memFirstCard.classList.remove('flip');
-        memSecondCard.classList.remove('flip');
-        resetBoard();
-    }, 1000);
-}
-
-function resetBoard() {
-    [memHasFlippedCard, memLock] = [false, false];
-    [memFirstCard, memSecondCard] = [null, null];
-}
-
-// --- CATCH THE HEART GAME ---
-function startCatchGame() {
-    navigateToApp('catchGameScreen');
-    const canvas = document.getElementById('catchGameCanvas');
-    const container = document.getElementById('catchGameCanvasContainer');
-    
-    // CRITICAL: Force resize only AFTER the element is displayed
-    setTimeout(() => {
-        canvas.width = container.clientWidth;
-        canvas.height = container.clientHeight;
-        document.getElementById('catchStartOverlay').style.display = 'flex';
-    }, 100);
-}
-
-function initCatchGame() {
-    document.getElementById('catchStartOverlay').style.display = 'none';
-    const canvas = document.getElementById('catchGameCanvas');
-    
-    // Re-confirm size just in case
-    const container = document.getElementById('catchGameCanvasContainer');
-    canvas.width = container.clientWidth;
-    canvas.height = container.clientHeight;
-
-    const ctx = canvas.getContext('2d');
-    catchScore = 0;
-    document.getElementById('catchScore').textContent = catchScore;
-    catchGameRunning = true;
-
-    // Reset basket position safely
-    const basket = { 
-        x: canvas.width / 2 - 25, 
-        y: canvas.height - 50, 
-        width: 50, 
-        height: 30 
-    };
-    let items = []; // {x, y, type, speed}
-    let frame = 0;
-
-    // Remove old listeners to prevent stacking (simple approach: clone node)
-    const newCanvas = canvas.cloneNode(true);
-    canvas.parentNode.replaceChild(newCanvas, canvas);
-    // Get context from the NEW canvas
-    const activeCtx = newCanvas.getContext('2d');
-
-    function moveBasket(e) {
-        if (!catchGameRunning) return;
-        e.preventDefault(); // Stop scrolling
-        const rect = newCanvas.getBoundingClientRect();
-        
-        let clientX;
-        if (e.touches && e.touches.length > 0) {
-            clientX = e.touches[0].clientX;
-        } else {
-            clientX = e.clientX;
-        }
-        
-        basket.x = clientX - rect.left - basket.width / 2;
-        
-        // Keep in bounds
-        if (basket.x < 0) basket.x = 0;
-        if (basket.x + basket.width > newCanvas.width) basket.x = newCanvas.width - basket.width;
-    }
-
-    newCanvas.addEventListener('mousemove', moveBasket);
-    newCanvas.addEventListener('touchmove', moveBasket, { passive: false });
-
-    function loop() {
-        if (!catchGameRunning) return;
-
-        activeCtx.clearRect(0, 0, newCanvas.width, newCanvas.height);
-
-        // Draw Basket
-        activeCtx.fillStyle = '#d94a6b';
-        activeCtx.fillRect(basket.x, basket.y, basket.width, basket.height);
-        activeCtx.fillStyle = 'white';
-        activeCtx.font = '20px Arial';
-        activeCtx.fillText('🗑️', basket.x + 10, basket.y + 22);
-
-        // Spawn items
-        if (frame % 40 === 0) {
-            const isBad = Math.random() < 0.3;
-            items.push({
-                x: Math.random() * (newCanvas.width - 30),
-                y: -30,
-                type: isBad ? '💔' : '💖',
-                speed: 2 + Math.random() * 3
-            });
-        }
-
-        // Update Items
-        for (let i = items.length - 1; i >= 0; i--) {
-            let item = items[i];
-            item.y += item.speed;
-            activeCtx.font = '30px Arial';
-            activeCtx.fillText(item.type, item.x, item.y);
-
-            // Check collision
-            if (item.y > basket.y && item.y < basket.y + basket.height &&
-                item.x + 30 > basket.x && item.x < basket.x + basket.width) {
-                
-                if (item.type === '💔') {
-                    endCatchGame();
-                    return;
-                } else {
-                    catchScore++;
-                    document.getElementById('catchScore').textContent = catchScore;
-                    items.splice(i, 1);
-                }
-            } else if (item.y > newCanvas.height) {
-                items.splice(i, 1);
-            }
-        }
-
-        frame++;
-        catchLoopId = requestAnimationFrame(loop);
-    }
-    loop();
-}
-
-function endCatchGame() {
-    catchGameRunning = false;
-    if (catchScore > gameHighScores.catch) {
-        gameHighScores.catch = catchScore;
-        saveHighScores();
-        showCustomPopup('Game Over', `New High Score: ${catchScore}! 🏆`);
-    } else {
-        showCustomPopup('Game Over', `Score: ${catchScore}`);
-    }
-    document.getElementById('catchStartOverlay').style.display = 'flex';
-}
-
-// --- LOVE SLASHER GAME ---
-function startSlasherGame() {
-    navigateToApp('slasherGameScreen');
-    const canvas = document.getElementById('slasherCanvas');
-    const container = document.getElementById('slasherCanvasContainer');
-    
-    // CRITICAL: Force resize only AFTER the element is displayed
-    setTimeout(() => {
-        canvas.width = container.clientWidth;
-        canvas.height = container.clientHeight;
-        document.getElementById('slasherStartOverlay').style.display = 'flex';
-    }, 100);
-}
-
-function initSlasherGame() {
-    document.getElementById('slasherStartOverlay').style.display = 'none';
-    const canvas = document.getElementById('slasherCanvas');
-    
-    // Re-confirm size
-    const container = document.getElementById('slasherCanvasContainer');
-    canvas.width = container.clientWidth;
-    canvas.height = container.clientHeight;
-
-    const ctx = canvas.getContext('2d');
-    slasherScore = 0;
-    document.getElementById('slasherScore').textContent = slasherScore;
-    slasherGameRunning = true;
-
-    let fruits = []; 
-    let particles = []; 
-    let frame = 0;
-    const gravity = 0.15;
-    let trail = [];
-
-    // Remove old listeners safely
-    const newCanvas = canvas.cloneNode(true);
-    canvas.parentNode.replaceChild(newCanvas, canvas);
-    const activeCtx = newCanvas.getContext('2d');
-
-    function inputHandler(e) {
-        if (!slasherGameRunning) return;
-        e.preventDefault(); // Stop scrolling
-        
-        const rect = newCanvas.getBoundingClientRect();
-        let clientX, clientY;
-
-        if (e.touches && e.touches.length > 0) {
-            clientX = e.touches[0].clientX;
-            clientY = e.touches[0].clientY;
-        } else {
-            clientX = e.clientX;
-            clientY = e.clientY;
-        }
-
-        const x = clientX - rect.left;
-        const y = clientY - rect.top;
-        
-        trail.push({x, y, life: 10});
-
-        // Check slice
-        for (let i = fruits.length - 1; i >= 0; i--) {
-            let f = fruits[i];
-            const dist = Math.sqrt((x - f.x) ** 2 + (y - f.y) ** 2);
-            if (dist < f.size) {
-                if (f.type === '💣') {
-                    endSlasherGame();
-                    return;
-                }
-                // Slash success
-                slasherScore++;
-                document.getElementById('slasherScore').textContent = slasherScore;
-                // Add particle effect
-                createParticles(f.x, f.y, f.color);
-                fruits.splice(i, 1);
-            }
-        }
-    }
-
-    newCanvas.addEventListener('mousemove', inputHandler);
-    newCanvas.addEventListener('touchmove', inputHandler, { passive: false });
-
-    function createParticles(x, y, color) {
-        for(let i=0; i<5; i++) {
-            particles.push({
-                x: x, y: y,
-                vx: (Math.random() - 0.5) * 10,
-                vy: (Math.random() - 0.5) * 10,
-                life: 20,
-                color: color
-            });
-        }
-    }
-
-    function loop() {
-        if (!slasherGameRunning) return;
-        activeCtx.clearRect(0, 0, newCanvas.width, newCanvas.height);
-
-        // Draw Trail
-        activeCtx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
-        activeCtx.lineWidth = 3;
-        activeCtx.beginPath();
-        for (let i = 0; i < trail.length; i++) {
-            let p = trail[i];
-            if (i === 0) activeCtx.moveTo(p.x, p.y);
-            else activeCtx.lineTo(p.x, p.y);
-            p.life--;
-        }
-        activeCtx.stroke();
-        trail = trail.filter(p => p.life > 0);
-
-        // Spawn Fruits
-        if (frame % 50 === 0) {
-            const types = [
-                {emoji: '🍓', color: 'red'}, 
-                {emoji: '🍉', color: 'green'}, 
-                {emoji: '🍑', color: 'orange'}, 
-                {emoji: '💣', color: 'black'}
-            ];
-            const obj = types[Math.floor(Math.random() * types.length)];
-            fruits.push({
-                x: Math.random() * (newCanvas.width - 60) + 30,
-                y: newCanvas.height,
-                vx: (Math.random() - 0.5) * 4,
-                vy: -(Math.random() * 5 + 8),
-                type: obj.emoji,
-                color: obj.color,
-                size: 30
-            });
-        }
-
-        // Update Fruits
-        for (let i = fruits.length - 1; i >= 0; i--) {
-            let f = fruits[i];
-            f.x += f.vx;
-            f.y += f.vy;
-            f.vy += gravity;
-
-            activeCtx.font = '40px Arial';
-            activeCtx.fillText(f.type, f.x - 15, f.y + 15);
-
-            if (f.y > newCanvas.height + 50) fruits.splice(i, 1);
-        }
-
-        // Update Particles
-        for (let i = particles.length - 1; i >= 0; i--) {
-            let p = particles[i];
-            p.x += p.vx;
-            p.y += p.vy;
-            p.life--;
-            activeCtx.fillStyle = p.color;
-            activeCtx.beginPath();
-            activeCtx.arc(p.x, p.y, 3, 0, Math.PI * 2);
-            activeCtx.fill();
-            if(p.life <= 0) particles.splice(i, 1);
-        }
-
-        frame++;
-        slasherLoopId = requestAnimationFrame(loop);
-    }
-    loop();
-}
-
-function endSlasherGame() {
-    slasherGameRunning = false;
-    if (slasherScore > gameHighScores.slasher) {
-        gameHighScores.slasher = slasherScore;
-        saveHighScores();
-        showCustomPopup('BOOM! 💥', `New High Score: ${slasherScore}! 🏆`);
-    } else {
-        showCustomPopup('BOOM! 💥', `Game Over. Score: ${slasherScore}`);
-    }
-    document.getElementById('slasherStartOverlay').style.display = 'flex';
-}
-
-
-// ===== FEELINGS PORTAL (UNCHANGED BUT REQUIRED FOR FULL FILE) =====
+// ===== FEELINGS PORTAL =====
 function navigateToFeelingsPage(pageId, emotion = '') {
     document.querySelectorAll('#feelingsPortalScreen .page').forEach(page => page.classList.remove('active'));
     const targetPage = document.getElementById(pageId);
@@ -733,13 +411,16 @@ function submitFeelingsEntry() {
         return;
     }
 
+    // Trigger Butterfly Effect
+    const submitBtn = document.getElementById('submitFeelingsBtn');
+    releaseButterflies(submitBtn);
+
     const formData = new FormData();
     formData.append('formType', 'feelingsEntry');
     formData.append('emotion', currentEmotion);
     formData.append('message', message);
     formData.append('submittedBy', currentUser);
 
-    const submitBtn = document.getElementById('submitFeelingsBtn');
     submitBtn.disabled = true;
     submitBtn.textContent = 'Submitting...';
 
@@ -968,13 +649,16 @@ function submitDiaryEntry() {
         return;
     }
 
+    // Trigger Butterfly Effect
+    const submitBtn = document.querySelector('#diaryEntryPage button[onclick="submitDiaryEntry()"]');
+    releaseButterflies(submitBtn);
+
     const formData = new FormData();
     formData.append('formType', 'diaryEntry');
     formData.append('date', date);
     formData.append('thoughts', thoughts);
     formData.append('submittedBy', currentUser);
 
-    const submitBtn = document.querySelector('#diaryEntryPage button[onclick="submitDiaryEntry()"]');
     submitBtn.disabled = true;
     submitBtn.textContent = 'Saving...';
 
@@ -1302,7 +986,401 @@ function renderPeriodCalendar() {
     }
 }
 
-// ===== MISS YOU POPUP =====
+// ===== GAME ARCADE LOGIC (UNCHANGED) =====
+function updateHighScoreDisplays() {
+    document.getElementById('memHighScore').textContent = gameHighScores.memory === 100 ? '-' : gameHighScores.memory + " moves";
+    document.getElementById('catchHighScore').textContent = gameHighScores.catch;
+    document.getElementById('slashHighScore').textContent = gameHighScores.slasher;
+}
+
+function saveHighScores() {
+    localStorage.setItem('hetuApp_highscores', JSON.stringify(gameHighScores));
+    updateHighScoreDisplays();
+}
+
+// --- MEMORY GAME ---
+function startMemoryGame() {
+    navigateToApp('memoryGameScreen');
+    const grid = document.getElementById('memoryGrid');
+    grid.innerHTML = '';
+    memMoves = 0;
+    document.getElementById('memoryMoves').textContent = memMoves;
+    memLock = false;
+    memHasFlippedCard = false;
+
+    const items = usePhotoAssets 
+        ? ['assets/mem1.jpg', 'assets/mem2.jpg', 'assets/mem3.jpg', 'assets/mem4.jpg', 'assets/mem5.jpg', 'assets/mem6.jpg'] 
+        : ['🐼', '🐰', '💖', '🍓', '💋', '🌹'];
+
+    const deck = [...items, ...items].sort(() => 0.5 - Math.random());
+
+    deck.forEach(item => {
+        const card = document.createElement('div');
+        card.classList.add('memory-card');
+        card.dataset.framework = item;
+
+        const frontFace = document.createElement('div');
+        frontFace.classList.add('front-face');
+        if (usePhotoAssets) {
+            const img = document.createElement('img');
+            img.src = item;
+            img.onerror = function() { this.style.display='none'; frontFace.textContent='📸'; };
+            frontFace.appendChild(img);
+        } else {
+            frontFace.textContent = item;
+        }
+
+        const backFace = document.createElement('div');
+        backFace.classList.add('back-face');
+        backFace.textContent = '?';
+
+        card.appendChild(frontFace);
+        card.appendChild(backFace);
+        card.addEventListener('click', flipCard);
+        grid.appendChild(card);
+    });
+}
+
+function flipCard() {
+    if (memLock) return;
+    if (this === memFirstCard) return;
+
+    this.classList.add('flip');
+
+    if (!memHasFlippedCard) {
+        memHasFlippedCard = true;
+        memFirstCard = this;
+        return;
+    }
+
+    memSecondCard = this;
+    checkForMatch();
+}
+
+function checkForMatch() {
+    memMoves++;
+    document.getElementById('memoryMoves').textContent = memMoves;
+
+    let isMatch = memFirstCard.dataset.framework === memSecondCard.dataset.framework;
+    isMatch ? disableCards() : unflipCards();
+}
+
+function disableCards() {
+    memFirstCard.removeEventListener('click', flipCard);
+    memSecondCard.removeEventListener('click', flipCard);
+    resetBoard();
+    
+    if (document.querySelectorAll('.memory-card.flip').length === 12) {
+        setTimeout(() => {
+            if (memMoves < gameHighScores.memory) {
+                gameHighScores.memory = memMoves;
+                saveHighScores();
+                showCustomPopup("New High Score!", `You won in ${memMoves} moves! 🎉`);
+            } else {
+                showCustomPopup("You Won!", `Finished in ${memMoves} moves.`);
+            }
+        }, 500);
+    }
+}
+
+function unflipCards() {
+    memLock = true;
+    setTimeout(() => {
+        memFirstCard.classList.remove('flip');
+        memSecondCard.classList.remove('flip');
+        resetBoard();
+    }, 1000);
+}
+
+function resetBoard() {
+    [memHasFlippedCard, memLock] = [false, false];
+    [memFirstCard, memSecondCard] = [null, null];
+}
+
+// --- CATCH THE HEART GAME ---
+function startCatchGame() {
+    navigateToApp('catchGameScreen');
+    const canvas = document.getElementById('catchGameCanvas');
+    const container = document.getElementById('catchGameCanvasContainer');
+    
+    setTimeout(() => {
+        canvas.width = container.clientWidth;
+        canvas.height = container.clientHeight;
+        document.getElementById('catchStartOverlay').style.display = 'flex';
+    }, 100);
+}
+
+function initCatchGame() {
+    document.getElementById('catchStartOverlay').style.display = 'none';
+    const canvas = document.getElementById('catchGameCanvas');
+    const container = document.getElementById('catchGameCanvasContainer');
+    canvas.width = container.clientWidth;
+    canvas.height = container.clientHeight;
+
+    const ctx = canvas.getContext('2d');
+    catchScore = 0;
+    document.getElementById('catchScore').textContent = catchScore;
+    catchGameRunning = true;
+
+    const basket = { 
+        x: canvas.width / 2 - 25, 
+        y: canvas.height - 50, 
+        width: 50, 
+        height: 30 
+    };
+    let items = [];
+    let frame = 0;
+
+    const newCanvas = canvas.cloneNode(true);
+    canvas.parentNode.replaceChild(newCanvas, canvas);
+    const activeCtx = newCanvas.getContext('2d');
+
+    function moveBasket(e) {
+        if (!catchGameRunning) return;
+        e.preventDefault();
+        const rect = newCanvas.getBoundingClientRect();
+        
+        let clientX;
+        if (e.touches && e.touches.length > 0) {
+            clientX = e.touches[0].clientX;
+        } else {
+            clientX = e.clientX;
+        }
+        
+        basket.x = clientX - rect.left - basket.width / 2;
+        
+        if (basket.x < 0) basket.x = 0;
+        if (basket.x + basket.width > newCanvas.width) basket.x = newCanvas.width - basket.width;
+    }
+
+    newCanvas.addEventListener('mousemove', moveBasket);
+    newCanvas.addEventListener('touchmove', moveBasket, { passive: false });
+
+    function loop() {
+        if (!catchGameRunning) return;
+
+        activeCtx.clearRect(0, 0, newCanvas.width, newCanvas.height);
+
+        activeCtx.fillStyle = '#d94a6b';
+        activeCtx.fillRect(basket.x, basket.y, basket.width, basket.height);
+        activeCtx.fillStyle = 'white';
+        activeCtx.font = '20px Arial';
+        activeCtx.fillText('🗑️', basket.x + 10, basket.y + 22);
+
+        if (frame % 40 === 0) {
+            const isBad = Math.random() < 0.3;
+            items.push({
+                x: Math.random() * (newCanvas.width - 30),
+                y: -30,
+                type: isBad ? '💔' : '💖',
+                speed: 2 + Math.random() * 3
+            });
+        }
+
+        for (let i = items.length - 1; i >= 0; i--) {
+            let item = items[i];
+            item.y += item.speed;
+            activeCtx.font = '30px Arial';
+            activeCtx.fillText(item.type, item.x, item.y);
+
+            if (item.y > basket.y && item.y < basket.y + basket.height &&
+                item.x + 30 > basket.x && item.x < basket.x + basket.width) {
+                
+                if (item.type === '💔') {
+                    endCatchGame();
+                    return;
+                } else {
+                    catchScore++;
+                    document.getElementById('catchScore').textContent = catchScore;
+                    items.splice(i, 1);
+                }
+            } else if (item.y > newCanvas.height) {
+                items.splice(i, 1);
+            }
+        }
+
+        frame++;
+        catchLoopId = requestAnimationFrame(loop);
+    }
+    loop();
+}
+
+function endCatchGame() {
+    catchGameRunning = false;
+    if (catchScore > gameHighScores.catch) {
+        gameHighScores.catch = catchScore;
+        saveHighScores();
+        showCustomPopup('Game Over', `New High Score: ${catchScore}! 🏆`);
+    } else {
+        showCustomPopup('Game Over', `Score: ${catchScore}`);
+    }
+    document.getElementById('catchStartOverlay').style.display = 'flex';
+}
+
+// --- LOVE SLASHER GAME ---
+function startSlasherGame() {
+    navigateToApp('slasherGameScreen');
+    const canvas = document.getElementById('slasherCanvas');
+    const container = document.getElementById('slasherCanvasContainer');
+    
+    setTimeout(() => {
+        canvas.width = container.clientWidth;
+        canvas.height = container.clientHeight;
+        document.getElementById('slasherStartOverlay').style.display = 'flex';
+    }, 100);
+}
+
+function initSlasherGame() {
+    document.getElementById('slasherStartOverlay').style.display = 'none';
+    const canvas = document.getElementById('slasherCanvas');
+    const container = document.getElementById('slasherCanvasContainer');
+    canvas.width = container.clientWidth;
+    canvas.height = container.clientHeight;
+
+    const ctx = canvas.getContext('2d');
+    slasherScore = 0;
+    document.getElementById('slasherScore').textContent = slasherScore;
+    slasherGameRunning = true;
+
+    let fruits = []; 
+    let particles = []; 
+    let frame = 0;
+    const gravity = 0.15;
+    let trail = [];
+
+    const newCanvas = canvas.cloneNode(true);
+    canvas.parentNode.replaceChild(newCanvas, canvas);
+    const activeCtx = newCanvas.getContext('2d');
+
+    function inputHandler(e) {
+        if (!slasherGameRunning) return;
+        e.preventDefault(); 
+        
+        const rect = newCanvas.getBoundingClientRect();
+        let clientX, clientY;
+
+        if (e.touches && e.touches.length > 0) {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        } else {
+            clientX = e.clientX;
+            clientY = e.clientY;
+        }
+
+        const x = clientX - rect.left;
+        const y = clientY - rect.top;
+        
+        trail.push({x, y, life: 10});
+
+        for (let i = fruits.length - 1; i >= 0; i--) {
+            let f = fruits[i];
+            const dist = Math.sqrt((x - f.x) ** 2 + (y - f.y) ** 2);
+            if (dist < f.size) {
+                if (f.type === '💣') {
+                    endSlasherGame();
+                    return;
+                }
+                slasherScore++;
+                document.getElementById('slasherScore').textContent = slasherScore;
+                createParticles(f.x, f.y, f.color);
+                fruits.splice(i, 1);
+            }
+        }
+    }
+
+    newCanvas.addEventListener('mousemove', inputHandler);
+    newCanvas.addEventListener('touchmove', inputHandler, { passive: false });
+
+    function createParticles(x, y, color) {
+        for(let i=0; i<5; i++) {
+            particles.push({
+                x: x, y: y,
+                vx: (Math.random() - 0.5) * 10,
+                vy: (Math.random() - 0.5) * 10,
+                life: 20,
+                color: color
+            });
+        }
+    }
+
+    function loop() {
+        if (!slasherGameRunning) return;
+        activeCtx.clearRect(0, 0, newCanvas.width, newCanvas.height);
+
+        activeCtx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+        activeCtx.lineWidth = 3;
+        activeCtx.beginPath();
+        for (let i = 0; i < trail.length; i++) {
+            let p = trail[i];
+            if (i === 0) activeCtx.moveTo(p.x, p.y);
+            else activeCtx.lineTo(p.x, p.y);
+            p.life--;
+        }
+        activeCtx.stroke();
+        trail = trail.filter(p => p.life > 0);
+
+        if (frame % 50 === 0) {
+            const types = [
+                {emoji: '🍓', color: 'red'}, 
+                {emoji: '🍉', color: 'green'}, 
+                {emoji: '🍑', color: 'orange'}, 
+                {emoji: '💣', color: 'black'}
+            ];
+            const obj = types[Math.floor(Math.random() * types.length)];
+            fruits.push({
+                x: Math.random() * (newCanvas.width - 60) + 30,
+                y: newCanvas.height,
+                vx: (Math.random() - 0.5) * 4,
+                vy: -(Math.random() * 5 + 8),
+                type: obj.emoji,
+                color: obj.color,
+                size: 30
+            });
+        }
+
+        for (let i = fruits.length - 1; i >= 0; i--) {
+            let f = fruits[i];
+            f.x += f.vx;
+            f.y += f.vy;
+            f.vy += gravity;
+
+            activeCtx.font = '40px Arial';
+            activeCtx.fillText(f.type, f.x - 15, f.y + 15);
+
+            if (f.y > newCanvas.height + 50) fruits.splice(i, 1);
+        }
+
+        for (let i = particles.length - 1; i >= 0; i--) {
+            let p = particles[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            p.life--;
+            activeCtx.fillStyle = p.color;
+            activeCtx.beginPath();
+            activeCtx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+            activeCtx.fill();
+            if(p.life <= 0) particles.splice(i, 1);
+        }
+
+        frame++;
+        slasherLoopId = requestAnimationFrame(loop);
+    }
+    loop();
+}
+
+function endSlasherGame() {
+    slasherGameRunning = false;
+    if (slasherScore > gameHighScores.slasher) {
+        gameHighScores.slasher = slasherScore;
+        saveHighScores();
+        showCustomPopup('BOOM! 💥', `New High Score: ${slasherScore}! 🏆`);
+    } else {
+        showCustomPopup('BOOM! 💥', `Game Over. Score: ${slasherScore}`);
+    }
+    document.getElementById('slasherStartOverlay').style.display = 'flex';
+}
+
+// ===== ENHANCED MISS YOU POPUP =====
 function showMissYouPopup() {
     const bunnyFace = document.querySelector('.bunny-button .bunny-face');
     bunnyFace.classList.add('spinning');
@@ -1310,14 +1388,31 @@ function showMissYouPopup() {
     setTimeout(() => {
         bunnyFace.classList.remove('spinning');
         
-        let message = missYouMessages[Math.floor(Math.random() * missYouMessages.length)];
-        if (currentUser === 'Chikoo' && message.includes('Pratham misses you')) {
-            // Keep original message
-        } else if (currentUser === 'Prath' && message.includes('Pratham misses you')) {
-            message = "Chikoo misses you too! ❤️";
+        const hour = new Date().getHours();
+        let message = "";
+
+        if (hour >= 5 && hour < 12) {
+            message = "Good morning, sunshine! ☀️";
+        } else if (hour >= 22 || hour < 5) {
+            message = "Sweet dreams, my love 🌙";
+        } else {
+            // Random messages
+            const msgs = [
+                "You're my favorite notification 📱",
+                "I love you my chikoo! 🥰",
+                "Sending virtual huggies 🤗 to my darling!",
+                "Sending virtual kissy 😘 to my darling!",
+                "Thinking of you, always! ✨",
+                "You're the best! 💖"
+            ];
+            message = msgs[Math.floor(Math.random() * msgs.length)];
+        }
+
+        if (currentUser === 'Prath' && message.includes('kissy') || message.includes('huggies')) {
+             message += "\n(From Chikoo)";
         }
         
-        document.getElementById('missYouMessage').innerHTML = message;
+        document.getElementById('missYouMessage').textContent = message;
         document.getElementById('missYouPopup').style.display = 'block';
         document.getElementById('overlay').style.display = 'block';
     }, 2000);
@@ -1333,10 +1428,8 @@ document.addEventListener('DOMContentLoaded', () => {
     loadTheme();
     checkLoginStatus();
     
-    // Add floating emojis to login screen if not logged in
     if (!currentUser) createFloatingEmojis();
     
-    // Calendar navigation buttons
     const prevBtn = document.getElementById('prevMonthBtn');
     const nextBtn = document.getElementById('nextMonthBtn');
     
@@ -1354,11 +1447,9 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
     
-    // Theme toggle
     document.getElementById('themeToggle').onclick = toggleTheme;
 });
 
-// Prevent zoom on double tap for mobile
 let lastTouchEnd = 0;
 document.addEventListener('touchend', function (event) {
     const now = (new Date()).getTime();
