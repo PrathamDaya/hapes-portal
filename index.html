@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>For my Hetu 💖</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="floating-bg" id="floatingBg"></div>
@@ -43,6 +44,9 @@
                 </div>
                 <div class="option-box main-option" onclick="navigateToApp('periodTrackerScreen')">
                     🌸 Period Tracker 🌸
+                </div>
+                <div class="option-box main-option" onclick="navigateToApp('timelineScreen')">
+                    ⏳ Our Journey ⏳
                 </div>
                 <div class="option-box bunny-button" onclick="showMissYouPopup()">
                     <span class="bunny-face">🐰</span>
@@ -155,6 +159,22 @@
                         </div>
                         <button onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Calendar</button>
                     </section>
+                </main>
+            </div>
+        </section>
+
+        <section id="timelineScreen" class="screen">
+            <div class="container" style="max-width: 100%;">
+                <header>
+                    <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
+                    <h1>Memory Lane 💖</h1>
+                </header>
+                <main>
+                    <div id="timelineContainer" class="timeline-container">
+                        </div>
+                    <div style="margin-top: 20px; color: var(--text-secondary); font-size: 0.9em;">
+                        Scroll horizontally to see our journey • Click a card to remember
+                    </div>
                 </main>
             </div>
         </section>
@@ -301,6 +321,16 @@
         <p id="missYouMessage"></p>
         <button onclick="closeMissYouPopup()">Okay ❤️</button>
     </div>
+    
+    <div id="memoryModal" class="memory-modal" onclick="closeMemoryModal()">
+        <div class="memory-modal-content" onclick="event.stopPropagation()">
+            <h2 id="modalTitle">Title</h2>
+            <img id="modalImg" src="" alt="Memory">
+            <p id="modalDesc">Description</p>
+            <button onclick="closeMemoryModal()">Close</button>
+        </div>
+    </div>
+
     <div id="overlay"></div>
 
     <script src="script.js"></script>
