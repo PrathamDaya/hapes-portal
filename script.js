@@ -11,15 +11,113 @@ let diaryEntries = {};
 let periodData = [];
 let usedDares = [];
 
-// ===== TIMELINE DATA CONFIGURATION =====
-// Add your photos in assets/Timeline/1.jpg, 2.jpg etc.
-const timelineData = [
-    { date: "Day 1", title: "Where it all began", img: "assets/Timeline/1.jpg", desc: "The start of our beautiful journey." },
-    { date: "Memory 2", title: "A special day", img: "assets/Timeline/2.jpg", desc: "Another amazing memory together." },
-    { date: "Memory 3", title: "Making memories", img: "assets/Timeline/3.jpg", desc: "Growing closer every day." },
-    { date: "Memory 4", title: "Adventure time", img: "assets/Timeline/4.jpg", desc: "Exploring the world with you." },
-    { date: "Today", title: "Still Going Strong", img: "assets/Timeline/5.jpg", desc: "Looking forward to forever." }
+// ===== DYNAMIC TIMELINE LOGIC =====
+
+// 1. Initialize Data (Load from LocalStorage OR use Defaults)
+let timelineData = JSON.parse(localStorage.getItem('hetuTimelineData')) || [
+    { date: "2023-01-01", title: "Where it began", img: "assets/Timeline/1.jpg", desc: "The start of us." },
+    { date: "2023-02-14", title: "Valentine's", img: "assets/Timeline/2.jpg", desc: "Our first V-day." }
 ];
+
+// 2. Render Function (Displays the data)
+function renderTimeline() {
+    const container = document.getElementById('timelineContainer');
+    container.innerHTML = ''; 
+
+    // Sort by Date (Newest First)
+    timelineData.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    timelineData.forEach((item) => {
+        const card = document.createElement('div');
+        card.className = 'polaroid-card';
+        
+        // Random tilt
+        const rotation = Math.random() * 6 - 3;
+        card.style.setProperty('--rotation', `${rotation}deg`);
+
+        const imgContainer = document.createElement('div');
+        imgContainer.className = 'polaroid-img-container';
+        
+        const img = document.createElement('img');
+        img.src = item.img;
+        img.onerror = function() { this.src = 'assets/Timeline/1.jpg'; }; // Fallback
+        
+        imgContainer.appendChild(img);
+        
+        const dateEl = document.createElement('div');
+        dateEl.className = 'timeline-date';
+        // Format Date nicely
+        const dateObj = new Date(item.date);
+        dateEl.textContent = isNaN(dateObj) ? item.date : dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        
+        const titleEl = document.createElement('div');
+        titleEl.className = 'timeline-title';
+        titleEl.textContent = item.title;
+
+        card.appendChild(imgContainer);
+        card.appendChild(dateEl);
+        card.appendChild(titleEl);
+        
+        card.onclick = () => openMemoryModal(item);
+        container.appendChild(card);
+    });
+}
+
+// 3. Add Memory Functions
+function openAddMemoryModal() {
+    document.getElementById('addMemoryModal').style.display = 'flex';
+}
+
+function closeAddMemoryModal() {
+    document.getElementById('addMemoryModal').style.display = 'none';
+}
+
+function saveNewMemory() {
+    const title = document.getElementById('newMemTitle').value;
+    const date = document.getElementById('newMemDate').value;
+    const imgNum = document.getElementById('newMemImgNum').value;
+    const desc = document.getElementById('newMemDesc').value;
+
+    if (!title || !date || !imgNum) {
+        showCustomPopup("Error", "Please fill in Title, Date, and Image Number.");
+        return;
+    }
+
+    // Create new entry object
+    const newEntry = {
+        title: title,
+        date: date,
+        img: `assets/Timeline/${imgNum}.jpg`, // Maps number to path
+        desc: desc
+    };
+
+    // Add to array and Save to Storage
+    timelineData.push(newEntry);
+    localStorage.setItem('hetuTimelineData', JSON.stringify(timelineData));
+
+    // Refresh View
+    renderTimeline();
+    closeAddMemoryModal();
+    
+    // Clear inputs
+    document.getElementById('newMemTitle').value = '';
+    document.getElementById('newMemDesc').value = '';
+    document.getElementById('newMemImgNum').value = '';
+    
+    showCustomPopup("Saved!", "Memory added to timeline.");
+}
+
+// Existing View Modal Functions (Keep these)
+function openMemoryModal(item) {
+    // Ensure we are opening the VIEW modal, not the ADD modal
+    const modal = document.getElementById('memoryModal'); 
+    if(!modal) return; // Safety check
+    
+    document.getElementById('modalTitle').textContent = item.title;
+    document.getElementById('modalImg').src = item.img;
+    document.getElementById('modalDesc').textContent = item.desc || "No description.";
+    modal.style.display = 'flex';
+}
 
 // ===== GAME STATE VARIABLES =====
 const usePhotoAssets = true; 
