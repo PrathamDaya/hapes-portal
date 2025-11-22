@@ -325,23 +325,19 @@
             <h2 id="modalTitle">Title</h2>
             <img id="modalImg" src="" alt="Memory">
             <p id="modalDesc">Description</p>
-            <div class="modal-footer-actions">
-                <button class="action-btn edit-btn" id="modalEditBtn">✏️ Edit</button>
-                <button class="action-btn delete-btn" id="modalDeleteBtn">🗑️ Delete</button>
-                <button class="action-btn close-btn" onclick="closeMemoryModal()">Close</button>
-            </div>
+            <button onclick="closeMemoryModal()">Close</button>
         </div>
     </div>
 
     <div id="addMemoryModal" class="memory-modal">
         <div class="memory-modal-content input-mode">
-            <h2 id="addEditModalTitle">Add New Memory 📝</h2>
-            <input type="hidden" id="memoryId"> <input type="text" id="newMemTitle" placeholder="Title (e.g. First Date)">
+            <h2>Add New Memory 📝</h2>
+            <input type="text" id="newMemTitle" placeholder="Title (e.g. First Date)">
             <input type="date" id="newMemDate">
             <input type="number" id="newMemImgNum" placeholder="Image Number (e.g. 6 for 6.jpg)">
             <textarea id="newMemDesc" placeholder="Description (The story behind the pic...)"></textarea>
             <div class="modal-actions">
-                <button onclick="saveMemory()">Save Memory 💾</button>
+                <button onclick="saveNewMemory()">Save Memory 💾</button>
                 <button onclick="closeAddMemoryModal()" style="background: #ccc;">Cancel</button>
             </div>
         </div>
