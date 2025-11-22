@@ -148,7 +148,6 @@ body {
     overflow: hidden;
 }
 
-/* Ripple effect */
 .login-options button::before {
     content: '';
     position: absolute;
@@ -188,7 +187,7 @@ body {
 #appContainer {
     display: none;
     width: 100%;
-    max-width: 800px;
+    max-width: 900px; /* Increased slightly for timeline */
 }
 
 .app-header-info {
@@ -253,7 +252,6 @@ body {
     padding: 15px;
 }
 
-/* Card Effect */
 .option-box {
     background: var(--bg-secondary);
     border-radius: 20px;
@@ -275,7 +273,6 @@ body {
     flex-direction: column;
 }
 
-/* Shimmer effect */
 .option-box::before {
     content: '';
     position: absolute;
@@ -297,7 +294,6 @@ body {
     filter: brightness(1.1);
 }
 
-/* Blur other cards on hover */
 .options-grid:hover > .option-box:not(:hover) {
     filter: blur(2px) brightness(0.9);
     transform: scale(0.95);
@@ -313,6 +309,12 @@ body {
     color: white;
     font-size: 1.5em;
     grid-column: span 2;
+}
+
+@media (max-width: 600px) {
+    .bunny-button {
+        grid-column: span 1;
+    }
 }
 
 .bunny-button .bunny-face {
@@ -407,10 +409,6 @@ body {
     transition: all 0.3s ease;
 }
 
-.notebook:hover {
-    box-shadow: inset 0 2px 8px rgba(0,0,0,0.05);
-}
-
 .notebook textarea {
     width: 100%;
     min-height: 120px;
@@ -449,7 +447,6 @@ button {
     overflow: hidden;
 }
 
-/* Shine effect */
 button::after {
     content: '';
     position: absolute;
@@ -501,22 +498,10 @@ button:disabled {
     max-width: 280px;
 }
 
-#feelingsPortalScreen .option-box.grievance {
-    background: linear-gradient(45deg, #ffcdd2, #ef9a9a);
-    color: #c51162;
-}
-#feelingsPortalScreen .option-box.appreciate {
-    background: linear-gradient(45deg, #c8e6c9, #a5d6a7);
-    color: #1b5e20;
-}
-#feelingsPortalScreen .option-box.sad {
-    background: linear-gradient(45deg, #bbdefb, #90caf9);
-    color: #0d47a1;
-}
-#feelingsPortalScreen .option-box.happy {
-    background: linear-gradient(45deg, #ffecb3, #ffe082);
-    color: #ff6f00;
-}
+#feelingsPortalScreen .option-box.grievance { background: linear-gradient(45deg, #ffcdd2, #ef9a9a); color: #c51162; }
+#feelingsPortalScreen .option-box.appreciate { background: linear-gradient(45deg, #c8e6c9, #a5d6a7); color: #1b5e20; }
+#feelingsPortalScreen .option-box.sad { background: linear-gradient(45deg, #bbdefb, #90caf9); color: #0d47a1; }
+#feelingsPortalScreen .option-box.happy { background: linear-gradient(45deg, #ffecb3, #ffe082); color: #ff6f00; }
 
 /* Animation for feelings submission */
 #feelings-animation-container {
@@ -557,6 +542,140 @@ button:disabled {
 @keyframes messageBoxRise {
     0% { opacity: 0; transform: translate(-50%, 0%) rotate(-5deg); }
     100% { opacity: 1; transform: translate(-50%, -120%) rotate(0deg); }
+}
+
+/* ===== BUTTERFLY ANIMATION ===== */
+.butterfly {
+    position: fixed;
+    font-size: 2em;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0;
+}
+
+@keyframes butterflyFly {
+    0% {
+        transform: translate(0, 0) scale(0.5);
+        opacity: 1;
+    }
+    25% {
+        transform: translate(calc(var(--tx) * 0.5), -25vh) scale(1) rotate(10deg);
+    }
+    50% {
+        transform: translate(var(--tx), -50vh) scale(1.5) rotate(-10deg);
+    }
+    100% {
+        transform: translate(calc(var(--tx) * 1.5), -100vh) scale(2.5);
+        opacity: 0;
+    }
+}
+
+/* ===== TIMELINE STYLES ===== */
+.timeline-container {
+    display: flex;
+    overflow-x: auto;
+    padding: 50px 20px;
+    gap: 40px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-color) var(--bg-secondary);
+    scroll-behavior: smooth;
+    align-items: center;
+    min-height: 400px;
+}
+
+.timeline-container::-webkit-scrollbar {
+    height: 8px;
+}
+.timeline-container::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 4px;
+}
+.timeline-container::-webkit-scrollbar-thumb {
+    background: var(--accent-color);
+    border-radius: 4px;
+}
+
+.polaroid-card {
+    flex: 0 0 auto;
+    background: white;
+    padding: 15px 15px 40px 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    transform: rotate(var(--rotation));
+    transition: all 0.4s ease;
+    width: 280px;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+}
+
+.polaroid-card:hover {
+    transform: rotate(0deg) scale(1.1);
+    z-index: 10;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+}
+
+.polaroid-img-container {
+    width: 100%;
+    height: 220px;
+    background: #eee;
+    overflow: hidden;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+}
+
+.polaroid-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.polaroid-card:hover .polaroid-img-container img {
+    transform: scale(1.1);
+}
+
+.timeline-date {
+    font-family: 'Brush Script MT', 'Dancing Script', cursive;
+    font-size: 1.8em;
+    color: #333;
+    margin-top: 10px;
+}
+
+.timeline-title {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: var(--text-primary);
+    margin-top: 5px;
+}
+
+/* Modal for Expanded Memory */
+.memory-modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 3000;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    backdrop-filter: blur(5px);
+}
+
+.memory-modal-content {
+    background: var(--bg-secondary);
+    padding: 20px;
+    border-radius: 15px;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    animation: scaleIn 0.3s ease;
+}
+
+.memory-modal-content img {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 10px;
+    margin-bottom: 15px;
 }
 
 /* ===== DIARY CALENDAR ===== */
@@ -974,10 +1093,6 @@ button:disabled {
         grid-template-columns: 1fr;
     }
     
-    .bunny-button {
-        grid-column: span 1;
-    }
-    
     .theme-toggle {
         top: 10px;
         right: 10px;
@@ -1008,9 +1123,7 @@ button:disabled {
     }
 }
 
-/* ===== GAME ARCADE STYLES (APPEND THIS TO YOUR CSS) ===== */
-
-/* High Score Display on Cards */
+/* ===== GAME ARCADE STYLES ===== */
 .high-score-display {
     font-size: 0.7em;
     color: var(--text-secondary);
@@ -1019,7 +1132,6 @@ button:disabled {
     pointer-events: none;
 }
 
-/* Score Boards in Game Header */
 .score-board {
     font-size: 1.2em;
     color: var(--accent-color);
@@ -1027,10 +1139,9 @@ button:disabled {
     margin-top: 5px;
 }
 
-/* Memory Game Grid */
 .memory-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3x4 grid = 12 cards */
+    grid-template-columns: repeat(3, 1fr); 
     gap: 10px;
     perspective: 1000px;
     margin: 20px auto;
@@ -1071,7 +1182,7 @@ button:disabled {
 }
 
 .front-face {
-    transform: rotateY(180deg); /* Start hidden */
+    transform: rotateY(180deg); 
     overflow: hidden;
 }
 
@@ -1087,18 +1198,16 @@ button:disabled {
     font-size: 1.5em;
 }
 
-/* Canvas Game Containers (Slasher & Catch) */
 .game-canvas-container {
     position: relative;
-    width: 100%; /* Ensure it fills the container */
-    max-width: 100%; /* Prevent overflow */
-    height: 500px; /* Fixed height for the game area */
+    width: 100%; 
+    max-width: 100%; 
+    height: 500px; 
     margin: 0 auto;
     background: rgba(255, 255, 255, 0.5);
     border-radius: 15px;
     overflow: hidden;
     border: 2px solid var(--accent-color);
-    /* CRITICAL: Prevents scrolling while playing games on mobile */
     touch-action: none; 
 }
 
@@ -1141,7 +1250,6 @@ canvas {
     z-index: 101;
 }
 
-/* Mobile adjustments for games */
 @media (max-width: 350px) {
     .memory-grid {
         grid-template-columns: repeat(3, 1fr);
