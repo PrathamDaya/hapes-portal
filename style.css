@@ -1259,3 +1259,33 @@ canvas {
         height: 400px;
     }
 }
+/* Add Memory Button */
+.add-memory-btn {
+    margin-top: 10px;
+    background: var(--prath-gradient);
+    font-size: 0.9em;
+    padding: 8px 16px;
+}
+
+/* Input Mode for Modal */
+.memory-modal-content.input-mode {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    text-align: left;
+}
+
+.memory-modal-content input,
+.memory-modal-content textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-family: inherit;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
