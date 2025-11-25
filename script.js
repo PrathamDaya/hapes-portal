@@ -10,68 +10,47 @@ let periodCalendarDate = new Date();
 let diaryEntries = {};
 let periodData = [];
 let usedDares = [];
-let selectedMood = null;
 
-// Games state
-let memoryMoves = 0;
-let memoryFlipped = [];
-let memoryLock = false;
-let memHighScore = 0;
+// ===== DYNAMIC TIMELINE LOGIC =====
 
-let catchScore = 0;
-let catchGameRunning = false;
-let catchLoopId = null;
-
-let slasherScore = 0;
-let slasherGameRunning = false;
-let slasherLoopId = null;
-
-let gameHighScores = {
-    memory: 0,
-    catch: 0,
-    slasher: 0
-};
-
-// ===== TIMELINE DATA =====
+// 1. Initialize Data
 let timelineData = JSON.parse(localStorage.getItem('hetuTimelineData')) || [
     { date: "2023-01-01", title: "Where it began", img: "assets/Timeline/1.jpg", desc: "The start of us." },
-    { date: "2023-02-14", title: "Valentine's", img: "assets/Timeline/2.jpg", desc: "Our first Valentine’s Day together." }
+    { date: "2023-02-14", title: "Valentine's", img: "assets/Timeline/2.jpg", desc: "Our first V-day." }
 ];
 
+// 2. Render Function
 function renderTimeline() {
     const container = document.getElementById('timelineContainer');
-    if (!container) return;
-    container.innerHTML = '';
+    container.innerHTML = ''; 
 
+    // Sort by Date (Newest First)
     timelineData.sort((a, b) => new Date(b.date) - new Date(a.date));
 
     timelineData.forEach((item) => {
         const card = document.createElement('div');
         card.className = 'polaroid-card';
-
+        
         const rotation = Math.random() * 6 - 3;
         card.style.setProperty('--rotation', `${rotation}deg`);
 
         const imgContainer = document.createElement('div');
         imgContainer.className = 'polaroid-img-container';
-
+        
         const img = document.createElement('img');
         img.src = item.img;
-        img.onerror = function () { this.src = 'assets/Timeline/1.jpg'; };
-
+        img.onerror = function() { 
+            // SVG Fallback
+            this.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22200%22%20height%3D%22200%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23ddd%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20dominant-baseline%3D%22middle%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2224%22%20fill%3D%22%23aaa%22%3EPhoto%3C%2Ftext%3E%3C%2Fsvg%3E'; 
+        }; 
+        
         imgContainer.appendChild(img);
-
+        
         const dateEl = document.createElement('div');
         dateEl.className = 'timeline-date';
         const dateObj = new Date(item.date);
-        dateEl.textContent = isNaN(dateObj)
-            ? item.date
-            : dateObj.toLocaleDateString('en-US', {
-                month: 'short',
-                day: 'numeric',
-                year: 'numeric'
-            });
-
+        dateEl.textContent = isNaN(dateObj) ? item.date : dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        
         const titleEl = document.createElement('div');
         titleEl.className = 'timeline-title';
         titleEl.textContent = item.title;
@@ -79,27 +58,26 @@ function renderTimeline() {
         card.appendChild(imgContainer);
         card.appendChild(dateEl);
         card.appendChild(titleEl);
-
+        
         card.onclick = () => openMemoryModal(item);
         container.appendChild(card);
     });
 }
 
+// 3. Add Memory Functions
 function openAddMemoryModal() {
-    const modal = document.getElementById('addMemoryModal');
-    if (modal) modal.style.display = 'flex';
+    document.getElementById('addMemoryModal').style.display = 'flex';
 }
 
 function closeAddMemoryModal() {
-    const modal = document.getElementById('addMemoryModal');
-    if (modal) modal.style.display = 'none';
+    document.getElementById('addMemoryModal').style.display = 'none';
 }
 
 function saveNewMemory() {
-    const title = document.getElementById('newMemTitle').value.trim();
+    const title = document.getElementById('newMemTitle').value;
     const date = document.getElementById('newMemDate').value;
-    const imgNum = document.getElementById('newMemImgNum').value.trim();
-    const desc = document.getElementById('newMemDesc').value.trim();
+    const imgNum = document.getElementById('newMemImgNum').value;
+    const desc = document.getElementById('newMemDesc').value;
 
     if (!title || !date || !imgNum) {
         showCustomPopup("Error", "Please fill in Title, Date, and Image Number.");
@@ -107,60 +85,361 @@ function saveNewMemory() {
     }
 
     const newEntry = {
-        title,
-        date,
+        title: title,
+        date: date,
         img: `assets/Timeline/${imgNum}.jpg`,
-        desc
+        desc: desc
     };
 
     timelineData.push(newEntry);
     localStorage.setItem('hetuTimelineData', JSON.stringify(timelineData));
     renderTimeline();
     closeAddMemoryModal();
-
+    
     document.getElementById('newMemTitle').value = '';
-    document.getElementById('newMemDate').value = '';
-    document.getElementById('newMemImgNum').value = '';
     document.getElementById('newMemDesc').value = '';
+    document.getElementById('newMemImgNum').value = '';
+    
+    showCustomPopup("Saved!", "Memory added to timeline.");
 }
 
 function openMemoryModal(item) {
-    const modal = document.getElementById('memoryModal');
-    if (!modal) return;
-
+    const modal = document.getElementById('memoryModal'); 
+    if(!modal) return;
+    
     document.getElementById('modalTitle').textContent = item.title;
     document.getElementById('modalImg').src = item.img;
-    document.getElementById('modalDesc').textContent = item.desc || "No description available.";
+    document.getElementById('modalDesc').textContent = item.desc || "No description.";
     modal.style.display = 'flex';
 }
 
 function closeMemoryModal() {
-    const modal = document.getElementById('memoryModal');
-    if (modal) modal.style.display = 'none';
+    document.getElementById('memoryModal').style.display = 'none';
+}
+
+// ===== GAME STATE VARIABLES =====
+const usePhotoAssets = true; 
+
+let memMoves = 0;
+let memLock = false;
+let memHasFlippedCard = false;
+let memFirstCard, memSecondCard;
+
+let catchGameRunning = false;
+let catchScore = 0;
+let catchLoopId;
+
+let slasherGameRunning = false;
+let slasherScore = 0;
+let slasherLoopId;
+
+let gameHighScores = {
+    memory: 100,
+    catch: 0,
+    slasher: 0
+};
+
+// ===== DARES LIST =====
+const coupleDares = [
+    "Give your partner a slow, sensual massage on their neck and shoulders for 5 minutes.",
+    "Whisper three things you find sexiest about your partner into their ear.",
+    "Blindfold your partner and tease them with light touches for 2 minutes.",
+    "Choose a song and give your partner a private slow dance.",
+    "Write a short, steamy compliment and have your partner read it aloud.",
+    "Let your partner slowly remove one item of your upper clothing.",
+    "Describe your favorite memory of a passionate moment in detail.",
+    "Feed your partner a strawberry in the most seductive way.",
+    "Kiss your partner passionately for at least 60 seconds.",
+    "Take turns tracing words of affection on each other's backs.",
+    "Share a secret fantasy you've had about your partner.",
+    "Let your partner choose a spot on your upper body to kiss.",
+    "Remove your top and let your partner admire you for a minute.",
+    "Sit facing each other, knees touching, maintain eye contact for 2 minutes.",
+    "Give your partner a lingering kiss on their collarbone.",
+    "Tell your partner, in a sultry voice, what you want to do later.",
+    "Gently bite your partner's earlobe while whispering something naughty.",
+    "Take turns applying lotion to each other's arms or chest.",
+    "Lie down together and cuddle with soft kisses for 5 minutes.",
+    "Blindfold your partner and kiss them in three different places.",
+    "Slowly lick honey off your partner's finger or lips.",
+    "Recreate your very first kiss with your partner.",
+    "Give your partner a sensual foot massage.",
+    "Both remove your shirts and compliment each other's physique.",
+    "Write 'I want you' with lipstick on your partner's chest.",
+    "Playfully spank your partner (lightly!) and tell them they've been naughty.",
+    "Share a shower together, focusing on washing each other.",
+    "Let your partner choose one item of your clothing to remove.",
+    "Kiss your partner from lips to neck to chest, very slowly.",
+    "Tell your partner a secret desire for your intimacy.",
+    "Blindfold yourself and let your partner guide your hands.",
+    "Take turns giving each other eskimo and butterfly kisses.",
+    "Whisper your partner's name seductively while looking deep into their eyes.",
+    "Set a timer for 3 minutes, communicate only with kisses and caresses.",
+    "Let your partner draw a temporary tattoo on your upper arm.",
+    "Both remove your tops and dance together to a sexy song.",
+    "Give your partner a sensual 'once-over' look and describe what you see.",
+    "Tease your partner by almost kissing them several times.",
+    "Take turns reading a short, erotic poem to each other.",
+    "If you're Chikoo, remove your top. If you're Prath, give Chikoo a back rub.",
+    "If you're Prath, remove your top. If you're Chikoo, kiss Prath's chest.",
+    "Describe your partner's sexiest feature and why you love it.",
+    "Let your partner pick a dare from this list.",
+    "Give your partner a lap dance.",
+    "Role-play: One is a movie star, the other is an adoring fan.",
+    "Take a sexy selfie together (upper body focus).",
+    "Spend 5 minutes only complimenting each other's bodies.",
+    "Kiss each of your partner's fingertips, one by one, very slowly.",
+    "Dare your partner to make you blush with just words.",
+    "Close your eyes and describe your ideal romantic evening together."
+];
+
+let selectedMood = null;
+
+// ===== USER AUTHENTICATION =====
+function login(userName) {
+    if (userName === 'Chikoo' || userName === 'Prath') {
+        currentUser = userName;
+        localStorage.setItem(SCRIPT_USER_KEY, currentUser);
+        updateUserDisplay();
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('appContainer').style.display = 'block';
+        document.body.style.alignItems = 'flex-start';
+        navigateToApp('homeScreen');
+        
+        // 1. RE-INITIALIZE BACKGROUND WITH YOUR REQUESTED EMOJIS
+        createFloatingEmojis(); 
+        
+        // 2. BUTTERFLIES ON LOGIN
+        setTimeout(() => {
+            const header = document.querySelector('.main-header h1');
+            if(header) releaseButterflies(header);
+        }, 500);
+        
+    } else {
+        showCustomPopup('Error', 'Invalid user selection.');
+    }
+}
+
+function logout() {
+    currentUser = '';
+    localStorage.removeItem(SCRIPT_USER_KEY);
+    updateUserDisplay();
+    document.getElementById('appContainer').style.display = 'none';
+    document.getElementById('loginContainer').style.display = 'flex';
+    document.body.style.alignItems = 'center';
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById('floatingBg').innerHTML = '';
+}
+
+function updateUserDisplay() {
+    const display = document.getElementById('loggedInUserDisplay');
+    if (display) {
+        display.textContent = currentUser ? `User: ${currentUser}` : 'User: Not logged in';
+    }
+    document.querySelectorAll('.dynamicUserName').forEach(el => {
+        el.textContent = currentUser || 'User';
+    });
+}
+
+function checkLoginStatus() {
+    const storedUser = localStorage.getItem(SCRIPT_USER_KEY);
+    if (storedUser) {
+        currentUser = storedUser;
+        updateUserDisplay();
+        document.getElementById('loginContainer').style.display = 'none';
+        document.getElementById('appContainer').style.display = 'block';
+        document.body.style.alignItems = 'flex-start';
+        navigateToApp('homeScreen');
+    }
+    const storedScores = localStorage.getItem('hetuApp_highscores');
+    if(storedScores) {
+        gameHighScores = JSON.parse(storedScores);
+    }
+    updateHighScoreDisplays();
+}
+
+// ===== THEME MANAGEMENT =====
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+}
+
+function loadTheme() {
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+}
+
+// ===== FLOATING EMOJI BACKGROUND (FIXED) =====
+function createFloatingEmojis() {
+    const container = document.getElementById('floatingBg');
+    container.innerHTML = ''; // Clear previous to avoid duplicates
+
+    // FIXED: Added Bunny, Butterfly, Flowers, Heart as requested
+    const emojis = ['💖', '💕', '💗', '🐰', '🦋', '🌸', '🌼', '✨', '🌹', '🐇'];
+    
+    for (let i = 0; i < 20; i++) { // Increased count slightly
+        const emoji = document.createElement('div');
+        emoji.className = 'floating-emoji';
+        emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        emoji.style.left = Math.random() * 100 + '%';
+        emoji.style.top = Math.random() * 100 + '%';
+        emoji.style.animationDelay = Math.random() * 6 + 's';
+        emoji.style.animationDuration = (8 + Math.random() * 6) + 's'; // Slower float
+        container.appendChild(emoji);
+    }
+}
+
+// ===== BUTTERFLY RELEASE EFFECT (FIXED) =====
+function releaseButterflies(element) {
+    if (!element) return;
+    
+    const rect = element.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    
+    for (let i = 0; i < 8; i++) {
+        const butterfly = document.createElement('div');
+        butterfly.className = 'butterfly';
+        butterfly.textContent = '🦋'; // FIXED MOJIBAKE
+        
+        const tx = (Math.random() - 0.5) * 200 + 'px'; 
+        butterfly.style.setProperty('--tx', tx);
+        
+        butterfly.style.left = centerX + 'px';
+        butterfly.style.top = centerY + 'px';
+        butterfly.style.animation = `butterflyFly 2s ease-out forwards ${Math.random() * 0.5}s`;
+        
+        document.body.appendChild(butterfly);
+        
+        setTimeout(() => {
+            butterfly.remove();
+        }, 3000);
+    }
+}
+
+// ===== CUSTOM POPUP SYSTEM =====
+function showCustomPopup(title, message, inputPlaceholder = null, callback = null) {
+    document.querySelectorAll('.custom-popup-overlay').forEach(p => p.remove());
+    
+    const overlay = document.createElement('div');
+    overlay.className = 'custom-popup-overlay';
+    
+    const popup = document.createElement('div');
+    popup.className = 'custom-popup';
+    
+    const titleEl = document.createElement('h3');
+    titleEl.textContent = title;
+    
+    const messageEl = document.createElement('p');
+    messageEl.style.whiteSpace = "pre-line"; 
+    messageEl.textContent = message;
+    
+    popup.appendChild(titleEl);
+    popup.appendChild(messageEl);
+    
+    let input = null;
+    if (inputPlaceholder) {
+        input = document.createElement('textarea');
+        input.rows = 3;
+        input.placeholder = inputPlaceholder;
+        input.style.cssText = 'width: 100%; padding: 10px; margin: 10px 0; border: 1px solid var(--border-color); border-radius: 8px;';
+        popup.appendChild(input);
+    }
+    
+    const buttonContainer = document.createElement('div');
+    buttonContainer.style.display = 'flex';
+    buttonContainer.style.gap = '10px';
+    buttonContainer.style.justifyContent = 'center';
+    buttonContainer.style.marginTop = '15px';
+    
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.style.background = '#ccc';
+    cancelBtn.onclick = () => {
+        overlay.remove();
+        if (callback) callback(null);
+    };
+    
+    const confirmBtn = document.createElement('button');
+    confirmBtn.textContent = inputPlaceholder ? 'Submit' : 'OK';
+    confirmBtn.onclick = () => {
+        overlay.remove();
+        if (callback) callback(input ? input.value : true);
+    };
+    
+    buttonContainer.appendChild(cancelBtn);
+    buttonContainer.appendChild(confirmBtn);
+    popup.appendChild(buttonContainer);
+    overlay.appendChild(popup);
+    document.body.appendChild(overlay);
+    
+    if (input) input.focus();
+}
+
+// ===== NAVIGATION =====
+function navigateToApp(screenId) {
+    if (!currentUser && screenId !== 'loginScreen') {
+        showCustomPopup('Session Expired', 'Please log in again.');
+        logout();
+        return;
+    }
+    
+    quitGame(false);
+
+    document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
+    const targetScreen = document.getElementById(screenId);
+    if (targetScreen) {
+        targetScreen.classList.add('active');
+        
+        if (screenId === 'feelingsPortalScreen') {
+            navigateToFeelingsPage('feelingsPage1');
+        } else if (screenId === 'diaryScreen') {
+            fetchDiaryEntries().then(() => {
+                renderCalendar(calendarCurrentDate);
+                navigateToDiaryPage('diaryCalendarPage');
+            });
+        } else if (screenId === 'dareGameScreen') {
+            if (usedDares.length === coupleDares.length) usedDares = [];
+            document.getElementById('dareText').textContent = "Click the button below to get your first dare!";
+        } else if (screenId === 'periodTrackerScreen') {
+            loadPeriodTracker();
+        } else if (screenId === 'gameHubScreen') {
+            updateHighScoreDisplays();
+        } else if (screenId === 'timelineScreen') {
+            renderTimeline();
+        }
+    } else {
+        showCustomPopup('Error', 'Screen not found!');
+    }
+}
+
+function quitGame(navigate = true) {
+    catchGameRunning = false;
+    slasherGameRunning = false;
+    cancelAnimationFrame(catchLoopId);
+    cancelAnimationFrame(slasherLoopId);
+    if (navigate) navigateToApp('gameHubScreen');
 }
 
 // ===== FEELINGS PORTAL =====
 function navigateToFeelingsPage(pageId, emotion = '') {
-    document.querySelectorAll('#feelingsPortalScreen .page')
-        .forEach(page => page.classList.remove('active'));
-
+    document.querySelectorAll('#feelingsPortalScreen .page').forEach(page => page.classList.remove('active'));
     const targetPage = document.getElementById(pageId);
     if (targetPage) {
         targetPage.classList.add('active');
         if (emotion) currentEmotion = emotion;
-
         if (pageId === 'feelingsPage2' && currentEmotion) {
             const heading = document.querySelector('#feelingsPage2 h2');
-            if (heading) {
-                heading.textContent = `You selected: ${currentEmotion}. ${currentUser}, please let me know your thoughts.`;
-            }
+            if (heading) heading.textContent = `You selected: ${currentEmotion}. ${currentUser}, please let me know your thoughts.`;
         }
     }
 }
 
 function submitFeelingsEntry() {
     if (!currentUser) return;
-
+    
     const message = document.getElementById('feelingsMessage').value.trim();
     if (!currentEmotion || !message) {
         showCustomPopup('Incomplete', 'Please select an emotion and write your thoughts.');
@@ -201,23 +480,19 @@ function submitFeelingsEntry() {
 
 async function fetchAndDisplayFeelingsEntries() {
     if (!currentUser) return;
-
+    
     const listContainer = document.getElementById('feelingsEntriesList');
     listContainer.innerHTML = '<p>Loading entries...</p>';
-
+    
     try {
-        const response = await fetch(`${scriptURL}?action=getFeelingsEntries`, {
-            method: 'GET',
-            mode: 'cors'
-        });
+        const response = await fetch(`${scriptURL}?action=getFeelingsEntries`, { method: 'GET', mode: 'cors' });
         const serverData = await response.json();
-
+        
         if (serverData.status === 'success' && serverData.data?.length > 0) {
             listContainer.innerHTML = '';
-
             const table = document.createElement('table');
             table.className = 'feelings-table';
-
+            
             const thead = table.createTHead();
             const headerRow = thead.insertRow();
             ['Date & Time', 'Entry By', 'Emotion', 'Message', 'Response'].forEach(text => {
@@ -236,7 +511,7 @@ async function fetchAndDisplayFeelingsEntries() {
                     <td>${entry.message || 'No message'}</td>
                     <td id="response-${entry.timestamp}"></td>
                 `;
-
+                
                 const responseCell = row.cells[4];
                 if (entry.repliedBy && entry.replyMessage) {
                     responseCell.innerHTML = `
@@ -247,12 +522,13 @@ async function fetchAndDisplayFeelingsEntries() {
                     `;
                 } else {
                     const replyBtn = document.createElement('button');
-                    replyBtn.textContent = 'Reply 📮';
+                    // FIXED: REPLACED WITH POSTBOX EMOJI
+                    replyBtn.textContent = 'Reply 📮'; 
                     replyBtn.className = 'reply-btn small-reply-btn';
                     replyBtn.onclick = () => showCustomPopup(
                         `Reply to ${entry.submittedBy}`,
                         `Original message: "${entry.message}"\n\nYour reply:`,
-                        'Write your reply here.',
+                        'Write your reply here...',
                         (replyText) => {
                             if (replyText) submitReply('feeling', entry.timestamp, replyText, replyBtn);
                         }
@@ -260,7 +536,7 @@ async function fetchAndDisplayFeelingsEntries() {
                     responseCell.appendChild(replyBtn);
                 }
             });
-
+            
             listContainer.appendChild(table);
         } else {
             listContainer.innerHTML = '<p>No feelings entries yet.</p>';
@@ -280,7 +556,6 @@ function navigateToDiaryPage(pageId) {
 
 async function fetchDiaryEntries() {
     if (!currentUser) return;
-
     try {
         const response = await fetch(`${scriptURL}?action=getDiaryEntries`, { method: 'GET', mode: 'cors' });
         const data = await response.json();
@@ -296,9 +571,9 @@ async function fetchDiaryEntries() {
 function renderCalendar(date) {
     const grid = document.getElementById('calendarGrid');
     const monthYear = document.getElementById('currentMonthYear');
-
+    
     if (!grid || !monthYear) return;
-
+    
     grid.innerHTML = '';
     const month = date.getMonth();
     const year = date.getFullYear();
@@ -325,7 +600,7 @@ function renderCalendar(date) {
         const dayCell = document.createElement('div');
         dayCell.className = 'calendar-day';
         dayCell.textContent = day;
-
+        
         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         dayCell.dataset.date = dateStr;
 
@@ -348,17 +623,59 @@ function renderCalendar(date) {
     }
 }
 
-function openDiaryEntry(dateStr) {
-    document.getElementById('selectedDate').value = dateStr;
+function openDiaryEntry(dateString) {
+    document.getElementById('selectedDate').value = dateString;
+    const dateObj = new Date(dateString);
+    document.getElementById('diaryDateDisplay').textContent = dateObj.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    document.getElementById('diaryEntryTitle').textContent = `Diary for ${dateObj.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}`;
+    document.getElementById('diaryThoughts').value = '';
     navigateToDiaryPage('diaryEntryPage');
+}
+
+function viewDiaryEntry(dateString) {
+    const entry = diaryEntries[dateString];
+    if (!entry) return;
+
+    const dateObj = new Date(dateString);
+    document.getElementById('viewDiaryDateDisplay').textContent = dateObj.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    document.getElementById('viewDiaryThoughts').textContent = entry.thoughts || 'No thoughts.';
+    document.getElementById('diaryEntryAttribution').innerHTML = `<em>${entry.submittedBy || 'Unknown User'} Made a New entry</em>`;
+
+    const replySection = document.getElementById('diaryViewPageReplySection');
+    replySection.innerHTML = '';
+    
+    if (entry.repliedBy && entry.replyMessage) {
+        replySection.innerHTML = `
+            <div class="reply-display ${entry.repliedBy.toLowerCase()}-reply">
+                <p><strong>${entry.repliedBy} Replied:</strong> ${entry.replyMessage}</p>
+                <p class="reply-timestamp">Replied: ${new Date(entry.replyTimestamp).toLocaleString()}</p>
+            </div>
+        `;
+    } else {
+        const replyBtn = document.createElement('button');
+        // FIXED: REPLACED WITH POSTBOX EMOJI
+        replyBtn.textContent = 'Reply 📮';
+        replyBtn.className = 'reply-btn';
+        replyBtn.onclick = () => showCustomPopup(
+            `Reply to Diary Entry`,
+            `Original entry: "${entry.thoughts}"\n\nYour reply:`,
+            'Write your reply here...',
+            (replyText) => {
+                if (replyText) submitReply('diary', dateString, replyText, replyBtn);
+            }
+        );
+        replySection.appendChild(replyBtn);
+    }
+    
+    navigateToDiaryPage('diaryViewPage');
 }
 
 function submitDiaryEntry() {
     if (!currentUser) return;
-
+    
     const thoughts = document.getElementById('diaryThoughts').value.trim();
     const date = document.getElementById('selectedDate').value;
-
+    
     if (!thoughts) {
         showCustomPopup('Incomplete', 'Please write your thoughts.');
         return;
@@ -398,116 +715,68 @@ function submitDiaryEntry() {
         });
 }
 
-function viewDiaryEntry(dateStr) {
-    const entry = diaryEntries[dateStr];
-    if (!entry) return;
-
-    document.getElementById('diaryViewDate').textContent = new Date(dateStr).toLocaleDateString('en-US', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    });
-
-    document.getElementById('diaryViewContent').textContent = entry.thoughts || 'No thoughts.';
-
-    const replyContainer = document.getElementById('diaryViewReplyContainer');
-    replyContainer.innerHTML = '';
-
-    if (entry.repliedBy && entry.replyMessage) {
-        replyContainer.innerHTML = `
-            <div class="reply-display ${entry.repliedBy.toLowerCase()}-reply">
-                <p><strong>${entry.repliedBy} Replied:</strong> ${entry.replyMessage}</p>
-                <p class="reply-timestamp">Replied: ${new Date(entry.replyTimestamp).toLocaleString()}</p>
-            </div>
-        `;
-    } else {
-        const replyBtn = document.createElement('button');
-        replyBtn.textContent = 'Reply 📮';
-        replyBtn.className = 'reply-btn small-reply-btn';
-        replyBtn.onclick = () => showCustomPopup(
-            'Reply to Entry',
-            `Entry: "${entry.thoughts}"\n\nYour reply:`,
-            'Write your reply.',
-            (replyText) => {
-                if (replyText) submitReply('diary', entry.date, replyText, replyBtn);
-            }
-        );
-        replyContainer.appendChild(replyBtn);
-    }
-
-    navigateToDiaryPage('diaryViewPage');
-}
-
 async function fetchAndDisplayAllDiaryEntries() {
     if (!currentUser) return;
-
+    
     const listContainer = document.getElementById('allDiaryEntriesList');
-    listContainer.innerHTML = '<p>Loading entries.</p>';
-
+    listContainer.innerHTML = '<p>Loading entries...</p>';
+    
     try {
         const response = await fetch(`${scriptURL}?action=getDiaryEntries`, { method: 'GET', mode: 'cors' });
         const serverData = await response.json();
-
+        
         if (serverData.status === 'success' && serverData.data?.length > 0) {
             listContainer.innerHTML = '';
-            serverData.data
-                .sort((a, b) => new Date(b.date) - new Date(a.date))
-                .forEach(entry => {
-                    const entryDiv = document.createElement('div');
-                    entryDiv.className = 'diary-entry-list-item';
-
-                    const dateObj = new Date(entry.date);
-                    const formattedDate = dateObj.toLocaleDateString('en-US', {
-                        weekday: 'long',
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    });
-
-                    entryDiv.innerHTML = `
-                        <h3>${formattedDate}</h3>
-                        <div class="entry-meta-info ${entry.submittedBy?.toLowerCase()}-entry">
-                            <strong>${entry.submittedBy || 'Unknown User'}</strong> made a new entry:
+            serverData.data.sort((a, b) => new Date(b.date) - new Date(a.date)).forEach(entry => {
+                const entryDiv = document.createElement('div');
+                entryDiv.className = 'diary-entry-list-item';
+                
+                const dateObj = new Date(entry.date);
+                const formattedDate = dateObj.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                
+                entryDiv.innerHTML = `
+                    <h3>${formattedDate}</h3>
+                    <div class="entry-meta-info ${entry.submittedBy?.toLowerCase()}-entry">
+                        <strong>${entry.submittedBy || 'Unknown User'}</strong> Made a New entry:
+                    </div>
+                    <p class="entry-content">${entry.thoughts || 'No thoughts.'}</p>
+                `;
+                
+                if (entry.repliedBy && entry.replyMessage) {
+                    entryDiv.innerHTML += `
+                        <div class="reply-display ${entry.repliedBy.toLowerCase()}-reply">
+                            <p><strong>${entry.repliedBy} Replied:</strong> ${entry.replyMessage}</p>
+                            <p class="reply-timestamp">Replied: ${new Date(entry.replyTimestamp).toLocaleString()}</p>
                         </div>
-                        <p class="entry-content">${entry.thoughts || 'No thoughts.'}</p>
                     `;
-
-                    if (entry.repliedBy && entry.replyMessage) {
-                        entryDiv.innerHTML += `
-                            <div class="reply-display ${entry.repliedBy.toLowerCase()}-reply">
-                                <p><strong>${entry.repliedBy} Replied:</strong> ${entry.replyMessage}</p>
-                                <p class="reply-timestamp">Replied: ${new Date(entry.replyTimestamp).toLocaleString()}</p>
-                            </div>
-                        `;
-                    } else {
-                        const replyBtn = document.createElement('button');
-                        replyBtn.textContent = 'Reply 📮';
-                        replyBtn.className = 'reply-btn small-reply-btn';
-                        replyBtn.onclick = () => showCustomPopup(
-                            'Reply to Entry',
-                            `Entry: "${entry.thoughts}"\n\nYour reply:`,
-                            'Write your reply.',
-                            (replyText) => {
-                                if (replyText) submitReply('diary', entry.date, replyText, replyBtn);
-                            }
-                        );
-                        entryDiv.appendChild(replyBtn);
-                    }
-
-                    listContainer.appendChild(entryDiv);
-                });
+                } else {
+                    const replyBtn = document.createElement('button');
+                    // FIXED: REPLACED WITH POSTBOX EMOJI
+                    replyBtn.textContent = 'Reply 📮';
+                    replyBtn.className = 'reply-btn small-reply-btn';
+                    replyBtn.onclick = () => showCustomPopup(
+                        'Reply to Entry',
+                        `Entry: "${entry.thoughts}"\n\nYour reply:`,
+                        'Write your reply...',
+                        (replyText) => {
+                            if (replyText) submitReply('diary', entry.date, replyText, replyBtn);
+                        }
+                    );
+                    entryDiv.appendChild(replyBtn);
+                }
+                
+                listContainer.appendChild(entryDiv);
+            });
         } else {
             listContainer.innerHTML = '<p>No diary entries yet.</p>';
         }
-
         navigateToDiaryPage('allDiaryEntriesPage');
     } catch (error) {
         listContainer.innerHTML = `<p>Error loading entries: ${error.message}</p>`;
     }
 }
 
-// ===== REPLY FUNCTION (📮) =====
+// ===== REPLY FUNCTION =====
 async function submitReply(entryType, entryIdentifier, replyMessage, buttonElement) {
     if (!currentUser || !replyMessage.trim()) {
         showCustomPopup('Error', 'Reply cannot be empty.');
@@ -529,10 +798,10 @@ async function submitReply(entryType, entryIdentifier, replyMessage, buttonEleme
     try {
         const response = await fetch(scriptURL, { method: 'POST', body: formData, mode: 'cors' });
         const data = await response.json();
-
+        
         if (data.status === 'success') {
             showCustomPopup('Success', 'Reply sent successfully! 📮');
-
+            
             if (entryType === 'feeling') {
                 fetchAndDisplayFeelingsEntries();
             } else {
@@ -547,7 +816,6 @@ async function submitReply(entryType, entryIdentifier, replyMessage, buttonEleme
         }
     } catch (error) {
         showCustomPopup('Error', 'Failed to send reply: ' + error.message);
-    } finally {
         if (buttonElement) {
             buttonElement.disabled = false;
             buttonElement.textContent = 'Reply 📮';
@@ -558,15 +826,15 @@ async function submitReply(entryType, entryIdentifier, replyMessage, buttonEleme
 // ===== DARE GAME =====
 function generateDare() {
     if (!currentUser) return;
-
+    
     if (usedDares.length === coupleDares.length) {
         usedDares = [];
-        showCustomPopup('All Dares Complete!', "You've gone through all the dares! Resetting for more fun. 😉");
+        showCustomPopup('All Dares Complete!', 'You\'ve gone through all the dares! Resetting for more fun. 😉');
     }
 
     const availableDares = coupleDares.filter(dare => !usedDares.includes(dare));
     const randomDare = availableDares[Math.floor(Math.random() * availableDares.length)];
-
+    
     usedDares.push(randomDare);
     document.getElementById('dareText').textContent = randomDare;
 }
@@ -581,14 +849,14 @@ function selectMood(mood) {
 function addPeriodEntry() {
     const startDate = document.getElementById('periodStartDate').value;
     const endDate = document.getElementById('periodEndDate').value || startDate;
-
+    
     if (!startDate) {
         showCustomPopup('Error', 'Please select at least a start date.');
         return;
     }
 
     periodData = JSON.parse(localStorage.getItem('periodData') || '[]');
-
+    
     periodData.push({
         startDate,
         endDate,
@@ -596,44 +864,92 @@ function addPeriodEntry() {
         loggedBy: currentUser,
         timestamp: new Date().toISOString()
     });
-
+    
     localStorage.setItem('periodData', JSON.stringify(periodData));
-
+    
     document.getElementById('periodStartDate').value = '';
     document.getElementById('periodEndDate').value = '';
     document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('active'));
     selectedMood = null;
-
+    
     loadPeriodTracker();
     showCustomPopup('Success', 'Period entry recorded! 🌸');
 }
 
+function loadPeriodTracker() {
+    periodData = JSON.parse(localStorage.getItem('periodData') || '[]');
+    
+    const statusEl = document.getElementById('periodStatus');
+    const nextInfoEl = document.getElementById('nextPeriodInfo');
+    
+    if (periodData.length === 0) {
+        statusEl.textContent = 'No period data recorded yet.';
+        nextInfoEl.textContent = '';
+        renderPeriodCalendar();
+        return;
+    }
+
+    const sortedData = periodData.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+    const lastPeriod = sortedData[0];
+    const lastStart = new Date(lastPeriod.startDate);
+    const lastEnd = new Date(lastPeriod.endDate);
+    const cycleLength = calculateAverageCycleLength();
+    
+    const nextPeriodDate = new Date(lastStart);
+    nextPeriodDate.setDate(nextPeriodDate.getDate() + cycleLength);
+    
+    const today = new Date();
+    const daysSinceLast = Math.floor((today - lastStart) / (1000 * 60 * 60 * 24));
+    const daysUntilNext = Math.floor((nextPeriodDate - today) / (1000 * 60 * 60 * 24));
+    
+    if (daysSinceLast <= (lastEnd - lastStart) / (1000 * 60 * 60 * 24)) {
+        statusEl.innerHTML = `🌸 Currently on period (Day ${daysSinceLast + 1})<br>Mood: ${lastPeriod.mood || 'Not recorded'}`;
+    } else if (daysUntilNext <= 7 && daysUntilNext > 0) {
+        statusEl.innerHTML = `⚠️ Period expected in ${daysUntilNext} days`;
+    } else if (daysUntilNext <= 0) {
+        statusEl.textContent = '⚠️ Period might be late';
+    } else {
+        statusEl.textContent = `✅ Period tracked. Next expected in ~${daysUntilNext} days`;
+    }
+    
+    nextInfoEl.innerHTML = `
+        <strong>Next Period:</strong> ${nextPeriodDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}<br>
+        <strong>Average Cycle:</strong> ${cycleLength} days<br>
+        <strong>Last Period:</strong> ${lastStart.toLocaleDateString()} - ${lastEnd.toLocaleDateString()}
+    `;
+    
+    renderPeriodCalendar();
+}
+
 function calculateAverageCycleLength() {
     if (periodData.length < 2) return 28;
-    const sorted = [...periodData].sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
-    let total = 0;
-    let count = 0;
-    for (let i = 1; i < sorted.length; i++) {
-        const prev = new Date(sorted[i - 1].startDate);
-        const curr = new Date(sorted[i].startDate);
-        const diff = (curr - prev) / (1000 * 60 * 60 * 24);
-        if (diff > 0 && diff < 60) {
-            total += diff;
-            count++;
-        }
+    
+    let totalDays = 0;
+    const sortedData = periodData.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+    
+    for (let i = 1; i < sortedData.length; i++) {
+        const daysBetween = (new Date(sortedData[i].startDate) - new Date(sortedData[i-1].startDate)) / (1000 * 60 * 60 * 24);
+        totalDays += daysBetween;
     }
-    return count ? Math.round(total / count) : 28;
+    
+    return Math.round(totalDays / (sortedData.length - 1));
+}
+
+function changePeriodMonth(direction) {
+    periodCalendarDate.setMonth(periodCalendarDate.getMonth() + direction);
+    renderPeriodCalendar();
 }
 
 function renderPeriodCalendar() {
     const grid = document.getElementById('periodCalendarGrid');
-    const label = document.getElementById('periodMonthYear');
-    if (!grid || !label) return;
-
+    const monthYear = document.getElementById('periodMonthYear');
+    
+    if (!grid || !monthYear) return;
+    
     grid.innerHTML = '';
     const month = periodCalendarDate.getMonth();
     const year = periodCalendarDate.getFullYear();
-    label.textContent = `${periodCalendarDate.toLocaleString('default', { month: 'long' })} ${year}`;
+    monthYear.textContent = `${periodCalendarDate.toLocaleString('default', { month: 'long' })} ${year}`;
 
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -651,152 +967,165 @@ function renderPeriodCalendar() {
         grid.appendChild(empty);
     }
 
-    const periodDates = new Set();
-    periodData.forEach(entry => {
-        const start = new Date(entry.startDate);
-        const end = new Date(entry.endDate);
-        for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-            if (d.getMonth() === month && d.getFullYear() === year) {
-                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-                periodDates.add(dateStr);
-            }
-        }
-    });
-
+    const today = new Date();
     for (let day = 1; day <= daysInMonth; day++) {
         const dayCell = document.createElement('div');
         dayCell.className = 'calendar-day';
         dayCell.textContent = day;
+        
         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        if (periodDates.has(dateStr)) {
+        
+        const periodEntry = periodData.find(entry => {
+            const start = new Date(entry.startDate);
+            const end = new Date(entry.endDate);
+            const current = new Date(dateStr);
+            return current >= start && current <= end;
+        });
+        
+        if (periodEntry) {
             dayCell.classList.add('period-day');
+            // FIXED MOJIBAKE FLOWER
+            dayCell.innerHTML += '<span class="period-marker">🌸</span>';
         }
+        
+        if (periodData.length > 0) {
+            const lastPeriod = periodData.sort((a, b) => new Date(b.startDate) - new Date(a.startDate))[0];
+            const lastStart = new Date(lastPeriod.startDate);
+            const cycleLength = calculateAverageCycleLength();
+            const nextPeriodDate = new Date(lastStart);
+            nextPeriodDate.setDate(nextPeriodDate.getDate() + cycleLength);
+            
+            if (Math.abs(new Date(dateStr) - nextPeriodDate) < 3 * 24 * 60 * 60 * 1000) {
+                dayCell.classList.add('predicted-period');
+            }
+        }
+        
+        if (dateStr === today.toISOString().split('T')[0]) {
+            dayCell.classList.add('today');
+        }
+        
         grid.appendChild(dayCell);
     }
 }
 
-function loadPeriodTracker() {
-    periodData = JSON.parse(localStorage.getItem('periodData') || '[]');
-
-    const statusEl = document.getElementById('periodStatus');
-    const nextInfoEl = document.getElementById('nextPeriodInfo');
-
-    if (periodData.length === 0) {
-        statusEl.textContent = 'No period data recorded yet.';
-        nextInfoEl.textContent = '';
-        renderPeriodCalendar();
-        return;
-    }
-
-    const sortedData = [...periodData].sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
-    const lastPeriod = sortedData[0];
-    const lastStart = new Date(lastPeriod.startDate);
-    const lastEnd = new Date(lastPeriod.endDate);
-    const cycleLength = calculateAverageCycleLength();
-
-    const nextPeriodDate = new Date(lastStart);
-    nextPeriodDate.setDate(nextPeriodDate.getDate() + cycleLength);
-
-    const today = new Date();
-    const daysSinceLast = Math.floor((today - lastStart) / (1000 * 60 * 60 * 24));
-    const daysUntilNext = Math.floor((nextPeriodDate - today) / (1000 * 60 * 60 * 24));
-
-    const currentLength = Math.floor((lastEnd - lastStart) / (1000 * 60 * 60 * 24)) + 1;
-
-    if (daysSinceLast <= currentLength) {
-        statusEl.innerHTML = `🌸 Currently on period (Day ${daysSinceLast + 1})<br>Mood: ${lastPeriod.mood || 'Not recorded'}`;
-    } else if (daysUntilNext <= 7 && daysUntilNext > 0) {
-        statusEl.textContent = `🌸 Your period may come in ${daysUntilNext} day(s). Take care, my love.`;
-    } else if (daysUntilNext <= 0) {
-        statusEl.textContent = `🌸 Period may be late by ${Math.abs(daysUntilNext)} day(s).`;
-    } else {
-        statusEl.textContent = `🌸 All good right now. Next period is in about ${daysUntilNext} day(s).`;
-    }
-
-    nextInfoEl.textContent = `Estimated next period start: ${nextPeriodDate.toLocaleDateString()}`;
-    renderPeriodCalendar();
+// ===== GAME ARCADE LOGIC =====
+function updateHighScoreDisplays() {
+    document.getElementById('memHighScore').textContent = gameHighScores.memory === 100 ? '-' : gameHighScores.memory + " moves";
+    document.getElementById('catchHighScore').textContent = gameHighScores.catch;
+    document.getElementById('slashHighScore').textContent = gameHighScores.slasher;
 }
 
-// ===== LOVE ARCADE: MEMORY GAME =====
+function saveHighScores() {
+    localStorage.setItem('hetuApp_highscores', JSON.stringify(gameHighScores));
+    updateHighScoreDisplays();
+}
+
+// --- MEMORY GAME ---
 function startMemoryGame() {
     navigateToApp('memoryGameScreen');
     const grid = document.getElementById('memoryGrid');
-    const movesLabel = document.getElementById('memoryMoves');
-    memoryMoves = 0;
-    memoryFlipped = [];
-    memoryLock = false;
-    movesLabel.textContent = memoryMoves;
-
-    const emojis = ['💖', '🐰', '🦋', '🌸', '🍓', '🍉', '⭐', '💌'];
-    const cards = [...emojis, ...emojis]
-        .sort(() => Math.random() - 0.5)
-        .map((emoji, index) => ({ id: index, emoji, matched: false }));
-
     grid.innerHTML = '';
+    memMoves = 0;
+    document.getElementById('memoryMoves').textContent = memMoves;
+    memLock = false;
+    memHasFlippedCard = false;
 
-    cards.forEach(card => {
-        const cardEl = document.createElement('div');
-        cardEl.className = 'memory-card';
-        cardEl.dataset.id = card.id;
-        cardEl.dataset.emoji = card.emoji;
-        cardEl.innerHTML = `<span class="front">?</span><span class="back">${card.emoji}</span>`;
-        cardEl.onclick = () => flipMemoryCard(cardEl);
-        grid.appendChild(cardEl);
+    // FIXED EMOJIS HERE
+    const items = usePhotoAssets 
+        ? ['assets/mem1.jpg', 'assets/mem2.jpg', 'assets/mem3.jpg', 'assets/mem4.jpg', 'assets/mem5.jpg', 'assets/mem6.jpg'] 
+        : ['🧸', '🐰', '💖', '🍓', '💋', '🌹']; 
+
+    const deck = [...items, ...items].sort(() => 0.5 - Math.random());
+
+    deck.forEach(item => {
+        const card = document.createElement('div');
+        card.classList.add('memory-card');
+        card.dataset.framework = item;
+
+        const frontFace = document.createElement('div');
+        frontFace.classList.add('front-face');
+        if (usePhotoAssets) {
+            const img = document.createElement('img');
+            img.src = item;
+            img.onerror = function() { this.style.display='none'; frontFace.textContent='📷'; };
+            frontFace.appendChild(img);
+        } else {
+            frontFace.textContent = item;
+        }
+
+        const backFace = document.createElement('div');
+        backFace.classList.add('back-face');
+        backFace.textContent = '?';
+
+        card.appendChild(frontFace);
+        card.appendChild(backFace);
+        card.addEventListener('click', flipCard);
+        grid.appendChild(card);
     });
 }
 
-function flipMemoryCard(cardEl) {
-    if (memoryLock || cardEl.classList.contains('matched') || cardEl.classList.contains('flipped')) return;
-    cardEl.classList.add('flipped');
-    memoryFlipped.push(cardEl);
+function flipCard() {
+    if (memLock) return;
+    if (this === memFirstCard) return;
 
-    if (memoryFlipped.length === 2) {
-        memoryLock = true;
-        const [c1, c2] = memoryFlipped;
-        const e1 = c1.dataset.emoji;
-        const e2 = c2.dataset.emoji;
+    this.classList.add('flip');
 
-        if (e1 === e2) {
-            setTimeout(() => {
-                c1.classList.add('matched');
-                c2.classList.add('matched');
-                memoryFlipped = [];
-                memoryLock = false;
-                checkMemoryWin();
-            }, 400);
-        } else {
-            setTimeout(() => {
-                c1.classList.remove('flipped');
-                c2.classList.remove('flipped');
-                memoryFlipped = [];
-                memoryLock = false;
-            }, 600);
-        }
+    if (!memHasFlippedCard) {
+        memHasFlippedCard = true;
+        memFirstCard = this;
+        return;
+    }
 
-        memoryMoves++;
-        document.getElementById('memoryMoves').textContent = memoryMoves;
+    memSecondCard = this;
+    checkForMatch();
+}
+
+function checkForMatch() {
+    memMoves++;
+    document.getElementById('memoryMoves').textContent = memMoves;
+
+    let isMatch = memFirstCard.dataset.framework === memSecondCard.dataset.framework;
+    isMatch ? disableCards() : unflipCards();
+}
+
+function disableCards() {
+    memFirstCard.removeEventListener('click', flipCard);
+    memSecondCard.removeEventListener('click', flipCard);
+    resetBoard();
+    
+    if (document.querySelectorAll('.memory-card.flip').length === 12) {
+        setTimeout(() => {
+            if (memMoves < gameHighScores.memory) {
+                gameHighScores.memory = memMoves;
+                saveHighScores();
+                showCustomPopup("New High Score!", `You won in ${memMoves} moves! 🎉`);
+            } else {
+                showCustomPopup("You Won!", `Finished in ${memMoves} moves.`);
+            }
+        }, 500);
     }
 }
 
-function checkMemoryWin() {
-    const allCards = document.querySelectorAll('.memory-card');
-    if ([...allCards].every(c => c.classList.contains('matched'))) {
-        if (memHighScore === 0 || memoryMoves < memHighScore) {
-            memHighScore = memoryMoves;
-            gameHighScores.memory = memoryMoves;
-            saveHighScores();
-        }
-        showCustomPopup('Yay! 🎉', `You finished Memory Match in ${memoryMoves} moves!`);
-        updateHighScoreDisplays();
-    }
+function unflipCards() {
+    memLock = true;
+    setTimeout(() => {
+        memFirstCard.classList.remove('flip');
+        memSecondCard.classList.remove('flip');
+        resetBoard();
+    }, 1000);
 }
 
-// ===== LOVE ARCADE: CATCH THE HEART =====
+function resetBoard() {
+    [memHasFlippedCard, memLock] = [false, false];
+    [memFirstCard, memSecondCard] = [null, null];
+}
+
+// --- CATCH THE HEART GAME ---
 function startCatchGame() {
     navigateToApp('catchGameScreen');
     const canvas = document.getElementById('catchGameCanvas');
     const container = document.getElementById('catchGameCanvasContainer');
-
+    
     setTimeout(() => {
         canvas.width = container.clientWidth;
         canvas.height = container.clientHeight;
@@ -816,6 +1145,12 @@ function initCatchGame() {
     document.getElementById('catchScore').textContent = catchScore;
     catchGameRunning = true;
 
+    const basket = { 
+        x: canvas.width / 2 - 25, 
+        y: canvas.height - 50, 
+        width: 50, 
+        height: 30 
+    };
     let items = [];
     let frame = 0;
 
@@ -823,27 +1158,22 @@ function initCatchGame() {
     canvas.parentNode.replaceChild(newCanvas, canvas);
     const activeCtx = newCanvas.getContext('2d');
 
-    const basket = {
-        width: 70,
-        height: 35,
-        x: newCanvas.width / 2 - 35,
-        y: newCanvas.height - 60
-    };
-
     function moveBasket(e) {
         if (!catchGameRunning) return;
         e.preventDefault();
         const rect = newCanvas.getBoundingClientRect();
+        
         let clientX;
-
         if (e.touches && e.touches.length > 0) {
             clientX = e.touches[0].clientX;
         } else {
             clientX = e.clientX;
         }
-
-        const x = clientX - rect.left;
-        basket.x = Math.max(0, Math.min(x - basket.width / 2, newCanvas.width - basket.width));
+        
+        basket.x = clientX - rect.left - basket.width / 2;
+        
+        if (basket.x < 0) basket.x = 0;
+        if (basket.x + basket.width > newCanvas.width) basket.x = newCanvas.width - basket.width;
     }
 
     newCanvas.addEventListener('mousemove', moveBasket);
@@ -854,36 +1184,33 @@ function initCatchGame() {
 
         activeCtx.clearRect(0, 0, newCanvas.width, newCanvas.height);
 
-        // Basket
         activeCtx.fillStyle = '#d94a6b';
         activeCtx.fillRect(basket.x, basket.y, basket.width, basket.height);
         activeCtx.fillStyle = 'white';
-        activeCtx.font = '24px Arial';
-        activeCtx.fillText('📮', basket.x + 18, basket.y + 26);
+        activeCtx.font = '20px Arial';
+        // FIXED: BASKET EMOJI
+        activeCtx.fillText('🧺', basket.x + 10, basket.y + 22);
 
-        // Spawn hearts
         if (frame % 40 === 0) {
             const isBad = Math.random() < 0.3;
             items.push({
                 x: Math.random() * (newCanvas.width - 30),
                 y: -30,
+                // FIXED: FALLING HEARTS AND BROKEN HEARTS
                 type: isBad ? '💔' : '💖',
                 speed: 2 + Math.random() * 3
             });
         }
 
-        // Move & draw hearts
         for (let i = items.length - 1; i >= 0; i--) {
             let item = items[i];
             item.y += item.speed;
-            activeCtx.font = '32px Arial';
+            activeCtx.font = '30px Arial';
             activeCtx.fillText(item.type, item.x, item.y);
 
-            const hitsBasket =
-                item.y > basket.y && item.y < basket.y + basket.height &&
-                item.x + 26 > basket.x && item.x < basket.x + basket.width;
-
-            if (hitsBasket) {
+            if (item.y > basket.y && item.y < basket.y + basket.height &&
+                item.x + 30 > basket.x && item.x < basket.x + basket.width) {
+                
                 if (item.type === '💔') {
                     endCatchGame();
                     return;
@@ -892,7 +1219,7 @@ function initCatchGame() {
                     document.getElementById('catchScore').textContent = catchScore;
                     items.splice(i, 1);
                 }
-            } else if (item.y > newCanvas.height + 40) {
+            } else if (item.y > newCanvas.height) {
                 items.splice(i, 1);
             }
         }
@@ -900,13 +1227,11 @@ function initCatchGame() {
         frame++;
         catchLoopId = requestAnimationFrame(loop);
     }
-
     loop();
 }
 
 function endCatchGame() {
     catchGameRunning = false;
-    if (catchLoopId) cancelAnimationFrame(catchLoopId);
     if (catchScore > gameHighScores.catch) {
         gameHighScores.catch = catchScore;
         saveHighScores();
@@ -917,12 +1242,12 @@ function endCatchGame() {
     document.getElementById('catchStartOverlay').style.display = 'flex';
 }
 
-// ===== LOVE ARCADE: LOVE SLASHER (FRUIT + BOMB 💣) =====
+// --- LOVE SLASHER GAME ---
 function startSlasherGame() {
     navigateToApp('slasherGameScreen');
     const canvas = document.getElementById('slasherCanvas');
     const container = document.getElementById('slasherCanvasContainer');
-
+    
     setTimeout(() => {
         canvas.width = container.clientWidth;
         canvas.height = container.clientHeight;
@@ -942,8 +1267,8 @@ function initSlasherGame() {
     document.getElementById('slasherScore').textContent = slasherScore;
     slasherGameRunning = true;
 
-    let fruits = [];
-    let particles = [];
+    let fruits = []; 
+    let particles = []; 
     let frame = 0;
     const gravity = 0.15;
     let trail = [];
@@ -954,8 +1279,8 @@ function initSlasherGame() {
 
     function inputHandler(e) {
         if (!slasherGameRunning) return;
-        e.preventDefault();
-
+        e.preventDefault(); 
+        
         const rect = newCanvas.getBoundingClientRect();
         let clientX, clientY;
 
@@ -969,8 +1294,8 @@ function initSlasherGame() {
 
         const x = clientX - rect.left;
         const y = clientY - rect.top;
-
-        trail.push({ x, y, life: 10 });
+        
+        trail.push({x, y, life: 10});
 
         for (let i = fruits.length - 1; i >= 0; i--) {
             let f = fruits[i];
@@ -992,7 +1317,7 @@ function initSlasherGame() {
     newCanvas.addEventListener('touchmove', inputHandler, { passive: false });
 
     function createParticles(x, y, color) {
-        for (let i = 0; i < 5; i++) {
+        for(let i=0; i<5; i++) {
             particles.push({
                 x: x, y: y,
                 vx: (Math.random() - 0.5) * 10,
@@ -1007,7 +1332,6 @@ function initSlasherGame() {
         if (!slasherGameRunning) return;
         activeCtx.clearRect(0, 0, newCanvas.width, newCanvas.height);
 
-        // Slash trail
         activeCtx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
         activeCtx.lineWidth = 3;
         activeCtx.beginPath();
@@ -1020,16 +1344,13 @@ function initSlasherGame() {
         activeCtx.stroke();
         trail = trail.filter(p => p.life > 0);
 
-        // Spawn fruits/bomb
         if (frame % 50 === 0) {
+            // FIXED: FRUIT AND BOMB EMOJIS AS REQUESTED
             const types = [
-                { emoji: '🍉', color: 'red' },
-                { emoji: '🍓', color: 'crimson' },
-                { emoji: '🍎', color: 'darkred' },
-                { emoji: '🍍', color: 'goldenrod' },
-                { emoji: '🍌', color: 'gold' },
-                { emoji: '🍇', color: 'purple' },
-                { emoji: '💣', color: 'black' } // bomb
+                {emoji: '🍓', color: 'red'}, 
+                {emoji: '🍉', color: 'green'}, 
+                {emoji: '🍊', color: 'orange'}, 
+                {emoji: '💣', color: 'black'}
             ];
             const obj = types[Math.floor(Math.random() * types.length)];
             fruits.push({
@@ -1043,7 +1364,6 @@ function initSlasherGame() {
             });
         }
 
-        // Move fruits
         for (let i = fruits.length - 1; i >= 0; i--) {
             let f = fruits[i];
             f.x += f.vx;
@@ -1051,12 +1371,11 @@ function initSlasherGame() {
             f.vy += gravity;
 
             activeCtx.font = '40px Arial';
-            activeCtx.fillText(f.type, f.x - 20, f.y + 15);
+            activeCtx.fillText(f.type, f.x - 15, f.y + 15);
 
             if (f.y > newCanvas.height + 50) fruits.splice(i, 1);
         }
 
-        // Particles
         for (let i = particles.length - 1; i >= 0; i--) {
             let p = particles[i];
             p.x += p.vx;
@@ -1066,20 +1385,17 @@ function initSlasherGame() {
             activeCtx.beginPath();
             activeCtx.arc(p.x, p.y, 3, 0, Math.PI * 2);
             activeCtx.fill();
-            if (p.life <= 0) particles.splice(i, 1);
+            if(p.life <= 0) particles.splice(i, 1);
         }
 
         frame++;
         slasherLoopId = requestAnimationFrame(loop);
     }
-
     loop();
 }
 
 function endSlasherGame() {
     slasherGameRunning = false;
-    if (slasherLoopId) cancelAnimationFrame(slasherLoopId);
-
     if (slasherScore > gameHighScores.slasher) {
         gameHighScores.slasher = slasherScore;
         saveHighScores();
@@ -1090,253 +1406,14 @@ function endSlasherGame() {
     document.getElementById('slasherStartOverlay').style.display = 'flex';
 }
 
-// ===== GAME COMMON =====
-function quitGame(goHome = true) {
-    catchGameRunning = false;
-    if (catchLoopId) cancelAnimationFrame(catchLoopId);
-    slasherGameRunning = false;
-    if (slasherLoopId) cancelAnimationFrame(slasherLoopId);
-
-    if (goHome) {
-        navigateToApp('gameHubScreen');
-    }
-}
-
-function saveHighScores() {
-    localStorage.setItem('hetuApp_highscores', JSON.stringify(gameHighScores));
-    updateHighScoreDisplays();
-}
-
-function updateHighScoreDisplays() {
-    const memEl = document.getElementById('memHighScore');
-    const catchEl = document.getElementById('catchHighScore');
-    const slashEl = document.getElementById('slashHighScore');
-
-    if (memEl) memEl.textContent = gameHighScores.memory || 0;
-    if (catchEl) catchEl.textContent = gameHighScores.catch || 0;
-    if (slashEl) slashEl.textContent = gameHighScores.slasher || 0;
-}
-
-// ===== USER AUTHENTICATION =====
-function login(userName) {
-    if (userName === 'Chikoo' || userName === 'Prath') {
-        currentUser = userName;
-        localStorage.setItem(SCRIPT_USER_KEY, currentUser);
-        updateUserDisplay();
-        document.getElementById('loginContainer').style.display = 'none';
-        document.getElementById('appContainer').style.display = 'block';
-        document.body.style.alignItems = 'flex-start';
-        navigateToApp('homeScreen');
-        createFloatingEmojis();
-
-        // Butterflies flying on login 🦋
-        setTimeout(() => {
-            const header = document.querySelector('.main-header h1');
-            if (header) releaseButterflies(header);
-        }, 1000);
-    } else {
-        showCustomPopup('Error', 'Invalid user selection.');
-    }
-}
-
-function logout() {
-    currentUser = '';
-    localStorage.removeItem(SCRIPT_USER_KEY);
-    updateUserDisplay();
-    document.getElementById('appContainer').style.display = 'none';
-    document.getElementById('loginContainer').style.display = 'flex';
-    document.body.style.alignItems = 'center';
-    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    document.getElementById('floatingBg').innerHTML = '';
-}
-
-function updateUserDisplay() {
-    const display = document.getElementById('loggedInUserDisplay');
-    if (display) {
-        display.textContent = currentUser ? `User: ${currentUser}` : 'User: Not logged in';
-    }
-    document.querySelectorAll('.dynamicUserName').forEach(el => {
-        el.textContent = currentUser || 'User';
-    });
-}
-
-function checkLoginStatus() {
-    const storedUser = localStorage.getItem(SCRIPT_USER_KEY);
-    if (storedUser) {
-        currentUser = storedUser;
-        updateUserDisplay();
-        document.getElementById('loginContainer').style.display = 'none';
-        document.getElementById('appContainer').style.display = 'block';
-        document.body.style.alignItems = 'flex-start';
-        navigateToApp('homeScreen');
-    }
-    const storedScores = localStorage.getItem('hetuApp_highscores');
-    if (storedScores) {
-        gameHighScores = JSON.parse(storedScores);
-    }
-    updateHighScoreDisplays();
-}
-
-// ===== THEME MANAGEMENT =====
-function toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
-}
-
-function loadTheme() {
-    const savedTheme = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', savedTheme);
-}
-
-// ===== FLOATING EMOJI BACKGROUND (hearts + bunny + butterflies + flowers) =====
-function createFloatingEmojis() {
-    const container = document.getElementById('floatingBg');
-    if (!container) return;
-    container.innerHTML = '';
-
-    const emojis = [
-        '💖', '💗', '💓', '💞', '💘', '💝', // hearts
-        '🐰',                             // bunny
-        '🦋', '🦋',                       // butterflies
-        '🌸', '🌷', '🌺', '🌹',           // flowers
-        '✨', '⭐'                        // sparkles
-    ];
-
-    for (let i = 0; i < 18; i++) {
-        const emoji = document.createElement('div');
-        emoji.className = 'floating-emoji';
-        emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-        emoji.style.left = Math.random() * 100 + '%';
-        emoji.style.top = Math.random() * 100 + '%';
-        emoji.style.animationDelay = Math.random() * 6 + 's';
-        emoji.style.animationDuration = (4 + Math.random() * 4) + 's';
-        container.appendChild(emoji);
-    }
-}
-
-// ===== BUTTERFLY RELEASE EFFECT (🦋) =====
-function releaseButterflies(element) {
-    if (!element) return;
-
-    const rect = element.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-
-    for (let i = 0; i < 8; i++) {
-        const butterfly = document.createElement('div');
-        butterfly.className = 'butterfly';
-        butterfly.textContent = '🦋';
-
-        const tx = (Math.random() - 0.5) * 250 + 'px';
-        butterfly.style.setProperty('--tx', tx);
-
-        butterfly.style.left = centerX + 'px';
-        butterfly.style.top = centerY + 'px';
-
-        butterfly.style.animation = `butterflyFly 2.3s ease-out forwards ${Math.random() * 0.6}s`;
-
-        document.body.appendChild(butterfly);
-
-        setTimeout(() => {
-            butterfly.remove();
-        }, 3000);
-    }
-}
-
-// ===== CUSTOM POPUP SYSTEM =====
-function showCustomPopup(title, message, inputPlaceholder = null, callback = null) {
-    document.querySelectorAll('.custom-popup-overlay').forEach(p => p.remove());
-
-    const overlay = document.createElement('div');
-    overlay.className = 'custom-popup-overlay';
-
-    const popup = document.createElement('div');
-    popup.className = 'custom-popup';
-
-    const titleEl = document.createElement('h3');
-    titleEl.textContent = title;
-
-    const messageEl = document.createElement('p');
-    messageEl.style.whiteSpace = "pre-line";
-    messageEl.textContent = message;
-
-    popup.appendChild(titleEl);
-    popup.appendChild(messageEl);
-
-    let input = null;
-    if (inputPlaceholder) {
-        input = document.createElement('textarea');
-        input.rows = 3;
-        input.placeholder = inputPlaceholder;
-        input.style.cssText = 'width: 100%; padding: 10px; margin: 10px 0; border: 1px solid var(--border-color); border-radius: 8px;';
-        popup.appendChild(input);
-    }
-
-    const buttonContainer = document.createElement('div');
-    buttonContainer.style.display = 'flex';
-    buttonContainer.style.gap = '10px';
-    buttonContainer.style.justifyContent = 'center';
-    buttonContainer.style.marginTop = '15px';
-
-    const cancelBtn = document.createElement('button');
-    cancelBtn.textContent = 'Cancel';
-    cancelBtn.style.background = '#ccc';
-    cancelBtn.onclick = () => {
-        overlay.remove();
-        if (callback) callback(null);
-    };
-
-    const confirmBtn = document.createElement('button');
-    confirmBtn.textContent = inputPlaceholder ? 'Submit' : 'OK';
-    confirmBtn.onclick = () => {
-        overlay.remove();
-        if (callback) callback(input ? input.value : true);
-    };
-
-    buttonContainer.appendChild(cancelBtn);
-    buttonContainer.appendChild(confirmBtn);
-    popup.appendChild(buttonContainer);
-    overlay.appendChild(popup);
-    document.body.appendChild(overlay);
-
-    if (input) input.focus();
-}
-
-// ===== NAVIGATION =====
-function navigateToApp(screenId) {
-    if (!currentUser && screenId !== 'loginScreen') {
-        showCustomPopup('Session Expired', 'Please log in again.');
-        logout();
-        return;
-    }
-
-    quitGame(false);
-
-    document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
-    const target = document.getElementById(screenId);
-    if (target) target.classList.add('active');
-
-    if (screenId === 'diaryScreen') {
-        fetchDiaryEntries().then(() => renderCalendar(calendarCurrentDate));
-    }
-    if (screenId === 'periodTrackerScreen') {
-        loadPeriodTracker();
-    }
-    if (screenId === 'timelineScreen') {
-        renderTimeline();
-    }
-}
-
-// ===== MISS YOU POPUP =====
+// ===== ENHANCED MISS YOU POPUP =====
 function showMissYouPopup() {
     const bunnyFace = document.querySelector('.bunny-button .bunny-face');
-    if (bunnyFace) bunnyFace.classList.add('spinning');
-
+    bunnyFace.classList.add('spinning');
+    
     setTimeout(() => {
-        if (bunnyFace) bunnyFace.classList.remove('spinning');
-
+        bunnyFace.classList.remove('spinning');
+        
         const hour = new Date().getHours();
         let message = "";
 
@@ -1347,7 +1424,7 @@ function showMissYouPopup() {
         } else {
             const msgs = [
                 "You're my favorite notification 📱",
-                "I love you my Chikoo! 🥰",
+                "I love you my chikoo! 🥰",
                 "Sending virtual huggies 🤗 to my darling!",
                 "Sending virtual kissy 😘 to my darling!",
                 "Thinking of you, always! ✨",
@@ -1356,10 +1433,10 @@ function showMissYouPopup() {
             message = msgs[Math.floor(Math.random() * msgs.length)];
         }
 
-        if (currentUser === 'Prath' && (message.includes('kissy') || message.includes('huggies'))) {
-            message += "\n(From Chikoo)";
+        if (currentUser === 'Prath' && message.includes('kissy') || message.includes('huggies')) {
+             message += "\n(From Chikoo)";
         }
-
+        
         document.getElementById('missYouMessage').textContent = message;
         document.getElementById('missYouPopup').style.display = 'block';
         document.getElementById('overlay').style.display = 'block';
@@ -1375,43 +1452,35 @@ function closeMissYouPopup() {
 document.addEventListener('DOMContentLoaded', () => {
     loadTheme();
     checkLoginStatus();
-
+    
+    // Create floating emojis if not logged in initially
     if (!currentUser) createFloatingEmojis();
-
+    
     const prevBtn = document.getElementById('prevMonthBtn');
     const nextBtn = document.getElementById('nextMonthBtn');
-
+    
     if (prevBtn) {
         prevBtn.onclick = () => {
             calendarCurrentDate.setMonth(calendarCurrentDate.getMonth() - 1);
-            renderCalendar(calendarCurrentDate);
+            fetchDiaryEntries().then(() => renderCalendar(calendarCurrentDate));
         };
     }
+    
     if (nextBtn) {
         nextBtn.onclick = () => {
             calendarCurrentDate.setMonth(calendarCurrentDate.getMonth() + 1);
-            renderCalendar(calendarCurrentDate);
+            fetchDiaryEntries().then(() => renderCalendar(calendarCurrentDate));
         };
     }
-
-    const periodPrev = document.getElementById('periodPrevMonthBtn');
-    const periodNext = document.getElementById('periodNextMonthBtn');
-
-    if (periodPrev) {
-        periodPrev.onclick = () => {
-            periodCalendarDate.setMonth(periodCalendarDate.getMonth() - 1);
-            renderPeriodCalendar();
-        };
-    }
-    if (periodNext) {
-        periodNext.onclick = () => {
-            periodCalendarDate.setMonth(periodCalendarDate.getMonth() + 1);
-            renderPeriodCalendar();
-        };
-    }
-
-    const themeToggle = document.getElementById('themeToggle');
-    if (themeToggle) {
-        themeToggle.onclick = toggleTheme;
-    }
+    
+    document.getElementById('themeToggle').onclick = toggleTheme;
 });
+
+let lastTouchEnd = 0;
+document.addEventListener('touchend', function (event) {
+    const now = (new Date()).getTime();
+    if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+    }
+    lastTouchEnd = now;
+}, false);
