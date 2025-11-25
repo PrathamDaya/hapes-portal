@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hapes Portal - Icon Edition</title>
+    <title>Hapes Portal - Remastered</title>
     <style>
         /* ===== VARIABLES & THEME ===== */
         :root {
             --bg-primary: linear-gradient(135deg, #fceaff 0%, #fff0f5 100%);
-            --bg-secondary: rgba(255, 255, 255, 0.95);
+            --bg-secondary: rgba(255, 255, 255, 0.9);
             --text-primary: #5c3b4c;
             --accent-color: #d94a6b;
             --accent-gradient: linear-gradient(45deg, #ff80a0, #d94a6b);
@@ -25,40 +25,10 @@
             display: flex;
             justify-content: center;
             padding: 20px;
-            overflow-x: hidden; /* Prevent scroll from floating emojis */
-            position: relative;
-        }
-
-        /* ===== FLOATING EMOJI BACKGROUND ===== */
-        .floating-bg {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            overflow: hidden;
-        }
-
-        .floating-emoji {
-            position: absolute;
-            font-size: 2em;
-            opacity: 0.15;
-            animation: float 10s linear infinite;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.2; }
-            90% { opacity: 0.2; }
-            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
         }
 
         /* ===== LAYOUT & CONTAINERS ===== */
-        #appContainer { 
-            max-width: 800px; 
-            width: 100%; 
-            position: relative; 
-            z-index: 1; /* Above floating bg */
-        }
+        #appContainer { max-width: 800px; width: 100%; }
         
         .screen { display: none; animation: fadeIn 0.4s ease; }
         .screen.active { display: block; }
@@ -89,14 +59,11 @@
             border-radius: 25px;
             cursor: pointer;
             font-weight: bold;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s;
         }
-        button:hover { 
-            transform: translateY(-2px); 
-            box-shadow: 0 4px 10px rgba(217, 74, 107, 0.3);
-        }
+        button:hover { transform: scale(1.05); }
 
-        /* ===== DIARY STYLES ===== */
+        /* ===== DIARY SPECIFIC STYLES ===== */
         .diary-entry-list-item {
             background: #fff;
             border: 1px solid var(--border-color);
@@ -114,25 +81,29 @@
             color: #888;
         }
 
+        .entry-content { font-size: 1.1em; margin-bottom: 15px; line-height: 1.5; }
+
+        /* Reply Section Styling */
         .reply-section {
             background: #f8f9fa;
             padding: 10px;
             border-radius: 8px;
             margin-top: 10px;
             border-left: 3px solid var(--accent-color);
-            font-size: 0.95em;
         }
-
+        
+        .reply-btn { background: #6c757d; font-size: 0.8em; padding: 5px 15px; }
+        
         /* ===== GAME CANVAS STYLES ===== */
         .game-canvas-container {
             position: relative;
             width: 100%;
             height: 500px;
-            background: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.5);
             border-radius: 15px;
             overflow: hidden;
             border: 2px solid var(--accent-color);
-            touch-action: none;
+            touch-action: none; /* Prevent scrolling while playing */
         }
 
         canvas { width: 100%; height: 100%; display: block; }
@@ -155,17 +126,15 @@
 </head>
 <body>
 
-<div class="floating-bg" id="floatingBg"></div>
-
 <div id="appContainer">
     <section id="homeScreen" class="screen active">
         <div class="container" style="text-align: center;">
-            <h1 style="color: var(--accent-color);">Hapes Portal</h1>
+            <h1>Hapes Portal</h1>
             <p style="margin: 20px 0; color: #888;">Select an activity</p>
             <div style="display: grid; gap: 15px; grid-template-columns: 1fr 1fr;">
                 <button onclick="nav('diaryScreen')">📖 Diary Portal</button>
-                <button onclick="nav('slasherScreen')">🍉 Love Slasher</button>
-                <button onclick="nav('catchScreen')">💖 Catch Heart</button>
+                <button onclick="nav('slasherScreen')">🍉 Love Slasher (3D)</button>
+                <button onclick="nav('catchScreen')">💖 Catch Heart (3D)</button>
             </div>
         </div>
     </section>
@@ -176,7 +145,8 @@
                 <button onclick="nav('homeScreen')">🏠 Home</button>
                 <h2>Diary Entries</h2>
             </header>
-            <div id="diaryList"></div>
+            <div id="diaryList">
+                </div>
             <div style="margin-top:20px; text-align: center;">
                 <button onclick="addMockEntry()">+ Add Test Entry</button>
             </div>
@@ -192,8 +162,8 @@
             <div class="game-canvas-container" id="slasherContainer">
                 <canvas id="slasherCanvas"></canvas>
                 <div id="slasherOverlay" class="game-overlay">
-                    <h2>Love Slasher</h2>
-                    <p>Swipe the fruit icons!</p>
+                    <h2>Love Slasher 3D</h2>
+                    <p>Swipe to slice fruits. Avoid the Bomb!</p>
                     <br>
                     <button onclick="initSlasher()">Start Game</button>
                 </div>
@@ -210,8 +180,8 @@
             <div class="game-canvas-container" id="catchContainer">
                 <canvas id="catchCanvas"></canvas>
                 <div id="catchOverlay" class="game-overlay">
-                    <h2>Catch The Heart</h2>
-                    <p>Catch the shiny heart icons!</p>
+                    <h2>Catch The Heart 3D</h2>
+                    <p>Move basket to catch shiny hearts!</p>
                     <br>
                     <button onclick="initCatchGame()">Start Game</button>
                 </div>
@@ -221,22 +191,6 @@
 </div>
 
 <script>
-    // ===== INIT: FLOATING EMOJIS =====
-    document.addEventListener('DOMContentLoaded', () => {
-        const bg = document.getElementById('floatingBg');
-        const emojis = ['💖', '🌸', '✨', '🦋', '💌', '🐰', '🐼'];
-        
-        for (let i = 0; i < 20; i++) {
-            const el = document.createElement('div');
-            el.className = 'floating-emoji';
-            el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-            el.style.left = Math.random() * 100 + '%';
-            el.style.animationDuration = (8 + Math.random() * 10) + 's';
-            el.style.animationDelay = Math.random() * 5 + 's';
-            bg.appendChild(el);
-        }
-    });
-
     // ===== NAVIGATION & UTILS =====
     let currentGameLoop = null;
 
@@ -251,7 +205,8 @@
         currentGameLoop = null;
     }
 
-    // ===== DIARY COMPONENT =====
+    // ===== DIARY COMPONENT (Fixed Logic) =====
+    // Mock Data for demonstration - in production this comes from Google Script
     let diaryData = JSON.parse(localStorage.getItem('hapesDiary')) || [
         { id: 1, date: '2025-07-20', author: 'Chikoo', text: 'I really missed you today. The weather was rainy and it reminded me of our first date.', replies: [] }
     ];
@@ -298,7 +253,7 @@
                 <div class="entry-content">${entry.text}</div>
                 ${repliesHtml}
                 <div style="text-align: right; margin-top: 10px;">
-                    <button style="font-size: 0.8em; padding: 5px 15px; background: #6c757d;" onclick="openReply(${entry.id})">💬 Reply</button>
+                    <button class="reply-btn" onclick="openReply(${entry.id})">💬 Reply</button>
                 </div>
             `;
             list.appendChild(el);
@@ -318,53 +273,112 @@
         }
     }
 
-    // ===== CANVAS GRAPHICS: EMOJI ICONS =====
-    function drawIconBubble(ctx, x, y, radius, color, emoji) {
+    // ===== 3D GRAPHICS UTILS (Canvas 2D) =====
+    // Draws a shiny 3D sphere/fruit
+    function draw3DFruit(ctx, x, y, radius, type) {
         ctx.save();
         
-        // 1. Draw Background Bubble
-        ctx.shadowColor = "rgba(0,0,0,0.2)";
-        ctx.shadowBlur = 10;
-        ctx.shadowOffsetY = 5;
+        // Base Gradient (Shadow to Highlight)
+        let grad = ctx.createRadialGradient(x - radius/3, y - radius/3, radius/10, x, y, radius);
         
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.arc(x, y, radius, 0, Math.PI * 2);
-        ctx.fill();
+        if (type === 'watermelon') {
+            grad.addColorStop(0, '#ff9999');
+            grad.addColorStop(1, '#cc0000');
+            ctx.fillStyle = grad;
+            ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fill();
+            
+            // Seeds
+            ctx.fillStyle = 'rgba(0,0,0,0.8)';
+            for(let i=0; i<3; i++) {
+                ctx.beginPath();
+                ctx.ellipse(x + (i*10)-10, y+5, 3, 6, 0.5, 0, Math.PI*2);
+                ctx.fill();
+            }
+            // Rind
+            ctx.strokeStyle = '#2d6a4f';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+        } 
+        else if (type === 'orange') {
+            grad.addColorStop(0, '#ffd6a5');
+            grad.addColorStop(1, '#e85d04');
+            ctx.fillStyle = grad;
+            ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fill();
+            
+            // Dimples
+            ctx.fillStyle = 'rgba(200, 100, 0, 0.3)';
+            for(let i=0; i<5; i++) ctx.fillRect(x + Math.random()*20-10, y + Math.random()*20-10, 2, 2);
+        }
+        else if (type === 'bomb') {
+            grad.addColorStop(0, '#4a4e69');
+            grad.addColorStop(1, '#22223b');
+            ctx.fillStyle = grad;
+            ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fill();
+            
+            // Fuse
+            ctx.strokeStyle = '#d4a373';
+            ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.moveTo(x, y-radius); ctx.quadraticCurveTo(x+10, y-radius-10, x+15, y-radius-15); ctx.stroke();
+            // Spark
+            ctx.fillStyle = '#ffba08';
+            ctx.beginPath(); ctx.arc(x+15, y-radius-15, 4, 0, Math.PI*2); ctx.fill();
+        }
 
-        // 2. Draw Glossy Highlight (Top Left)
-        ctx.shadowColor = "transparent";
-        ctx.fillStyle = "rgba(255,255,255,0.3)";
+        // Highlight reflection (Glassy look)
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
         ctx.beginPath();
-        ctx.arc(x - radius*0.3, y - radius*0.3, radius*0.4, 0, Math.PI * 2);
+        ctx.ellipse(x - radius/3, y - radius/3, radius/3, radius/5, -0.8, 0, Math.PI*2);
         ctx.fill();
-
-        // 3. Draw Emoji centered
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.font = `${radius * 1.2}px Arial`; // Scale emoji to fit bubble
-        ctx.fillText(emoji, x, y + (radius * 0.1)); // Slight offset for vertical centering
         
         ctx.restore();
     }
 
-    // ===== GAME 1: LOVE SLASHER (ICON EDITION) =====
+    // Draws a shiny 3D Heart
+    function draw3DHeart(ctx, x, y, size, color) {
+        ctx.save();
+        ctx.translate(x, y);
+        
+        // Shadow
+        ctx.shadowColor = "rgba(0,0,0,0.3)";
+        ctx.shadowBlur = 10;
+        
+        // Gradient for 3D effect
+        let grad = ctx.createRadialGradient(-size/4, -size/4, 2, 0, 0, size);
+        grad.addColorStop(0, '#ffccd5'); // Highlight
+        grad.addColorStop(1, color);     // Base
+        
+        ctx.fillStyle = grad;
+        
+        // Heart Shape
+        ctx.beginPath();
+        ctx.moveTo(0, size * 0.3);
+        ctx.bezierCurveTo(size / 2, -size / 2, size, 0, 0, size);
+        ctx.bezierCurveTo(-size, 0, -size / 2, -size / 2, 0, size * 0.3);
+        ctx.fill();
+        
+        ctx.restore();
+    }
+
+    // ===== GAME 1: LOVE SLASHER (3D) =====
     function initSlasher() {
         document.getElementById('slasherOverlay').style.display = 'none';
         const canvas = document.getElementById('slasherCanvas');
         const parent = document.getElementById('slasherContainer');
+        
+        // Fix Visibility: Set dynamic resolution
         canvas.width = parent.clientWidth;
         canvas.height = parent.clientHeight;
         const ctx = canvas.getContext('2d');
         
         let score = 0;
-        let objects = [];
+        let objects = []; // Fruits/Bombs
         let particles = [];
         let trail = [];
         let frame = 0;
         
         document.getElementById('slashScore').textContent = '0';
 
+        // Mouse/Touch Tracking
         function track(e) {
             e.preventDefault();
             const rect = canvas.getBoundingClientRect();
@@ -379,23 +393,17 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             frame++;
 
-            if (frame % 45 === 0) {
-                // Define Fruits with Background Colors
-                const types = [
-                    { type: 'watermelon', color: '#ffadad', emoji: '🍉' },
-                    { type: 'orange', color: '#ffd6a5', emoji: '🍊' },
-                    { type: 'kiwi', color: '#caffbf', emoji: '🥝' },
-                    { type: 'bomb', color: '#4a4e69', emoji: '💣' }
-                ];
-                const item = types[Math.floor(Math.random() * types.length)];
-                
+            // Spawn Logic
+            if (frame % 40 === 0) {
+                const types = ['watermelon', 'orange', 'watermelon', 'bomb'];
+                const type = types[Math.floor(Math.random() * types.length)];
                 objects.push({
                     x: Math.random() * (canvas.width - 60) + 30,
                     y: canvas.height + 50,
                     vx: (Math.random() - 0.5) * 5,
-                    vy: -(Math.random() * 6 + 10),
-                    radius: 35,
-                    ...item
+                    vy: -(Math.random() * 6 + 10), // Throw up
+                    radius: 30,
+                    type: type
                 });
             }
 
@@ -409,6 +417,7 @@
                 ctx.lineTo(trail[i+1].x, trail[i+1].y);
             }
             ctx.stroke();
+            // Decay trail
             trail.forEach(t => t.life--);
             trail = trail.filter(t => t.life > 0);
 
@@ -417,12 +426,11 @@
                 let obj = objects[i];
                 obj.x += obj.vx;
                 obj.y += obj.vy;
-                obj.vy += 0.25;
+                obj.vy += 0.25; // Gravity
 
-                // Draw Object as Icon
-                drawIconBubble(ctx, obj.x, obj.y, obj.radius, obj.color, obj.emoji);
+                draw3DFruit(ctx, obj.x, obj.y, obj.radius, obj.type);
 
-                // Collision Detection
+                // Check collision with trail
                 let hit = false;
                 for(let t of trail) {
                     let dx = t.x - obj.x;
@@ -435,24 +443,25 @@
                 if (hit) {
                     if (obj.type === 'bomb') {
                         stopGames();
-                        alert("BOOM! You hit a bomb icon!");
+                        alert("BOOM! Game Over.");
                         document.getElementById('slasherOverlay').style.display = 'flex';
                         return;
                     } else {
                         score++;
                         document.getElementById('slashScore').textContent = score;
-                        // Explosion particles
-                        for(let p=0; p<8; p++) {
+                        // Add splash particles
+                        for(let p=0; p<10; p++) {
                             particles.push({
                                 x: obj.x, y: obj.y,
-                                vx: (Math.random()-0.5)*12, vy: (Math.random()-0.5)*12,
-                                life: 20, color: obj.color
+                                vx: (Math.random()-0.5)*10, vy: (Math.random()-0.5)*10,
+                                life: 20, color: obj.type === 'watermelon' ? 'red' : 'orange'
                             });
                         }
                         objects.splice(i, 1);
                         continue;
                     }
                 }
+
                 if (obj.y > canvas.height + 60) objects.splice(i, 1);
             }
 
@@ -461,7 +470,7 @@
                 let p = particles[i];
                 p.x += p.vx; p.y += p.vy; p.life--;
                 ctx.fillStyle = p.color;
-                ctx.beginPath(); ctx.arc(p.x, p.y, 4, 0, Math.PI*2); ctx.fill();
+                ctx.fillRect(p.x, p.y, 4, 4);
                 if(p.life <= 0) particles.splice(i, 1);
             }
 
@@ -470,22 +479,24 @@
         loop();
     }
 
-    // ===== GAME 2: CATCH THE HEART (ICON EDITION) =====
+    // ===== GAME 2: CATCH THE HEART (3D) =====
     function initCatchGame() {
         document.getElementById('catchOverlay').style.display = 'none';
         const canvas = document.getElementById('catchCanvas');
         const parent = document.getElementById('catchContainer');
+        
         canvas.width = parent.clientWidth;
         canvas.height = parent.clientHeight;
         const ctx = canvas.getContext('2d');
 
         let score = 0;
         let hearts = [];
-        let basket = { x: canvas.width/2, w: 70, h: 40 };
+        let basket = { x: canvas.width/2, w: 60, h: 40 };
         let frame = 0;
 
         document.getElementById('catchScore').textContent = '0';
 
+        // Move Basket
         function moveBasket(e) {
             e.preventDefault();
             const rect = canvas.getBoundingClientRect();
@@ -499,27 +510,20 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             frame++;
 
-            // Draw Basket (Rounded Box)
+            // Draw Basket (Simple 3D box)
             ctx.fillStyle = '#8d99ae';
-            ctx.beginPath();
-            ctx.roundRect(basket.x, canvas.height - 50, basket.w, basket.h, 10);
-            ctx.fill();
-            // Basket label
-            ctx.fillStyle = 'white';
-            ctx.font = '20px Arial';
-            ctx.fillText('🧺', basket.x + basket.w/2, canvas.height - 25);
+            ctx.fillRect(basket.x, canvas.height - 50, basket.w, basket.h);
+            ctx.fillStyle = '#2b2d42'; // Inner shadow
+            ctx.fillRect(basket.x+5, canvas.height - 50, basket.w-10, 5);
 
             // Spawn Hearts
-            if (frame % 35 === 0) {
-                const isBad = Math.random() > 0.8;
+            if (frame % 30 === 0) {
                 hearts.push({
                     x: Math.random() * (canvas.width - 30),
                     y: -30,
-                    radius: 20 + Math.random() * 5,
+                    size: 15 + Math.random() * 10,
                     speed: 2 + Math.random() * 3,
-                    type: isBad ? 'bad' : 'good',
-                    color: isBad ? '#343a40' : '#ffc8dd', // Dark Gray vs Soft Pink
-                    emoji: isBad ? '💔' : '💖'
+                    color: Math.random() > 0.8 ? '#333' : '#d90429' // Black is bad
                 });
             }
 
@@ -527,15 +531,14 @@
                 let h = hearts[i];
                 h.y += h.speed;
 
-                // Draw Heart as Icon Bubble
-                drawIconBubble(ctx, h.x, h.y, h.radius, h.color, h.emoji);
+                draw3DHeart(ctx, h.x, h.y, h.size, h.color);
 
                 // Catch Logic
                 if (h.y > canvas.height - 50 && h.y < canvas.height && 
                     h.x > basket.x - 20 && h.x < basket.x + basket.w + 20) {
                     
-                    if(h.type === 'bad') {
-                        score -= 5; // Penalty
+                    if(h.color === '#333') { // Caught bad heart
+                        score -= 5;
                     } else {
                         score++;
                     }
@@ -546,6 +549,7 @@
                     hearts.splice(i, 1);
                 }
             }
+
             currentGameLoop = requestAnimationFrame(loop);
         }
         loop();
