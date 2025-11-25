@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>For my Hetu 💖</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="floating-bg" id="floatingBg"></div>
@@ -34,22 +34,23 @@
             </header>
             <main class="options-grid">
                 <div class="option-box main-option" onclick="navigateToApp('feelingsPortalScreen')">
-                    💖 Hetu's Feelings Portal 💖
+                    💖 Hetu's Feelings Portal
                 </div>
                 <div class="option-box main-option" onclick="navigateToApp('diaryScreen')">
-                    📅 Hetu's Diary 📅
+                    📅 Hetu's Diary
                 </div>
                 <div class="option-box main-option" onclick="navigateToApp('gameHubScreen')">
-                    🎮 Love Arcade 🎮
+                    🎮 Love Arcade
                 </div>
                 <div class="option-box main-option" onclick="navigateToApp('periodTrackerScreen')">
-                    🌸 Period Tracker 🌸
+                    🌸 Period Tracker
                 </div>
                 <div class="option-box main-option" onclick="navigateToApp('timelineScreen')">
-                    ⏳ Our Journey ⏳
+                    ⏳ Our Journey
                 </div>
                 <div class="option-box bunny-button" onclick="showMissYouPopup()">
                     <span class="bunny-face">🐰</span>
+                    <span style="font-size: 0.5em; display: block; margin-top: 5px;">Tap me!</span>
                 </div>
             </main>
             <footer class="main-footer">
@@ -61,22 +62,25 @@
             <div class="container">
                 <header>
                     <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
-                    <h1>Hi <span class="dynamicUserName">User</span>, how can I help you?</h1>
+                    <h1>Feelings Portal 💖</h1>
                 </header>
                 <main>
                     <section id="feelingsPage1" class="page active">
-                        <div class="option-box grievance" onclick="navigateToFeelingsPage('feelingsPage2', 'Grievance')">Grievance</div>
-                        <div class="option-box appreciate" onclick="navigateToFeelingsPage('feelingsPage2', 'Appreciate')">Appreciate</div>
-                        <div class="option-box sad" onclick="navigateToFeelingsPage('feelingsPage2', 'Sad')">Sad</div>
-                        <div class="option-box happy" onclick="navigateToFeelingsPage('feelingsPage2', 'Happy')">Happy</div>
-                        <button class="view-all-btn" onclick="fetchAndDisplayFeelingsEntries()">View All Entries</button>
+                        <p class="instruction-text">How are you feeling today?</p>
+                        <div class="mood-grid">
+                            <div class="option-box grievance" onclick="navigateToFeelingsPage('feelingsPage2', 'Grievance')">😤 Grievance</div>
+                            <div class="option-box appreciate" onclick="navigateToFeelingsPage('feelingsPage2', 'Appreciate')">🥰 Appreciate</div>
+                            <div class="option-box sad" onclick="navigateToFeelingsPage('feelingsPage2', 'Sad')">😢 Sad</div>
+                            <div class="option-box happy" onclick="navigateToFeelingsPage('feelingsPage2', 'Happy')">🥳 Happy</div>
+                        </div>
+                        <button class="view-all-btn" onclick="fetchAndDisplayFeelingsEntries()">View Past Entries</button>
                     </section>
 
                     <section id="feelingsPage2" class="page">
-                        <h2></h2>
+                        <h2 id="feelingsHeader">Tell me more...</h2>
                         <div class="notebook">
                             <textarea id="feelingsMessage" placeholder="Write your thoughts here..."></textarea>
-                            <button id="submitFeelingsBtn" onclick="submitFeelingsEntry()">Submit Entry</button>
+                            <button id="submitFeelingsBtn" onclick="submitFeelingsEntry()">Submit Entry 💌</button>
                         </div>
                         <button class="back-btn" onclick="navigateToFeelingsPage('feelingsPage1')">Back</button>
                     </section>
@@ -87,7 +91,7 @@
                                 <span id="feelings-mail-icon">📧</span>
                                 <div id="feelings-message-box"></div>
                             </div>
-                            <p id="feelings-thank-you-message">Thank you for sharing! Your thoughts have been recorded.</p>
+                            <p>Thank you for sharing! Your thoughts have been recorded.</p>
                             <button class="main-home-btn" onclick="navigateToApp('homeScreen')">🏠 Main Home</button>
                             <button class="back-to-feelings-btn" onclick="navigateToFeelingsPage('feelingsPage1')">New Entry</button>
                         </div>
@@ -98,7 +102,7 @@
                         <div id="feelingsEntriesList" class="entries-list-container">
                             <p>Loading entries...</p>
                         </div>
-                        <button onclick="navigateToFeelingsPage('feelingsPage1')">Back to Feelings Portal</button>
+                        <button class="back-btn" onclick="navigateToFeelingsPage('feelingsPage1')">Back</button>
                     </section>
                 </main>
             </div>
@@ -113,9 +117,9 @@
                 <main>
                     <section id="diaryCalendarPage" class="page active">
                         <div class="calendar-header">
-                            <button id="prevMonthBtn">←</button>
+                            <button id="prevMonthBtn">◀</button>
                             <h2 id="currentMonthYear"></h2>
-                            <button id="nextMonthBtn">→</button>
+                            <button id="nextMonthBtn">▶</button>
                         </div>
                         <div id="calendarGrid" class="calendar-grid"></div>
                         <div class="diary-actions">
@@ -127,11 +131,11 @@
                         <h2 id="diaryEntryTitle"></h2>
                         <p class="date-display">Date: <span id="diaryDateDisplay"></span></p>
                         <div class="notebook">
-                            <textarea id="diaryThoughts" placeholder="Write your diary entry here..."></textarea>
+                            <textarea id="diaryThoughts" placeholder="Dear Diary..."></textarea>
                             <input type="hidden" id="selectedDate">
-                            <button onclick="submitDiaryEntry()">Save Entry</button>
+                            <button onclick="submitDiaryEntry()">Save Entry 💾</button>
                         </div>
-                        <button class="back-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Calendar</button>
+                        <button class="back-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back</button>
                     </section>
 
                     <section id="diaryConfirmationPage" class="page">
@@ -149,7 +153,7 @@
                             <p id="diaryEntryAttribution" class="entry-attribution"></p>
                         </div>
                         <div id="diaryViewPageReplySection" class="reply-section-container"></div>
-                        <button class="back-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Calendar</button>
+                        <button class="back-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back</button>
                     </section>
 
                     <section id="allDiaryEntriesPage" class="page">
@@ -157,17 +161,17 @@
                         <div id="allDiaryEntriesList" class="entries-list-container">
                             <p>Loading entries...</p>
                         </div>
-                        <button onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Calendar</button>
+                        <button class="back-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back</button>
                     </section>
                 </main>
             </div>
         </section>
 
         <section id="timelineScreen" class="screen">
-            <div class="container" style="max-width: 100%;">
+            <div class="container timeline-wrapper">
                 <header>
                     <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
-                    <h1>Memory Lane 💖</h1>
+                    <h1>Our Memory Lane 💖</h1>
                     <button class="add-memory-btn" onclick="openAddMemoryModal()">➕ Add Memory</button>
                 </header>
                 <main>
@@ -185,18 +189,18 @@
                 </header>
                 <main class="options-grid">
                     <div class="option-box main-option" onclick="navigateToApp('dareGameScreen')">
-                        😈 Couple's Dare Game 😈
+                        😈 Couple's Dare Game
                     </div>
                     <div class="option-box main-option" onclick="startMemoryGame()">
-                        🧠 Memory Match 🧠
+                        🧠 Memory Match
                         <div class="high-score-display">Best: <span id="memHighScore">0</span></div>
                     </div>
                     <div class="option-box main-option" onclick="startCatchGame()">
-                        💖 Catch the Heart 💖
+                        🧺 Catch the Heart
                         <div class="high-score-display">Best: <span id="catchHighScore">0</span></div>
                     </div>
                     <div class="option-box main-option" onclick="startSlasherGame()">
-                        🍉 Love Slasher 🍉
+                        🍉 Love Slasher
                         <div class="high-score-display">Best: <span id="slashHighScore">0</span></div>
                     </div>
                 </main>
@@ -206,8 +210,8 @@
         <section id="dareGameScreen" class="screen">
             <div class="container">
                 <header>
-                    <button class="back-to-home-btn" onclick="navigateToApp('gameHubScreen')">🕹️ Games</button>
-                    <h1>Couple's Dare Game 😈</h1>
+                    <button class="back-to-home-btn" onclick="navigateToApp('gameHubScreen')">🕹️ Back</button>
+                    <h1>Couple's Dare 😈</h1>
                 </header>
                 <main>
                     <div class="dare-display-area">
@@ -235,7 +239,7 @@
         </section>
 
         <section id="catchGameScreen" class="screen">
-            <div class="container">
+            <div class="container full-height-mobile">
                 <header>
                     <button class="back-to-home-btn" onclick="quitGame()">🕹️ Quit</button>
                     <h1>Catch The Heart</h1>
@@ -245,9 +249,9 @@
                     <div id="catchGameCanvasContainer" class="game-canvas-container">
                         <canvas id="catchGameCanvas"></canvas>
                         <div id="catchStartOverlay" class="game-overlay">
-                            <p>Tap/Drag basket to catch hearts!</p>
-                            <p>Avoid the broken hearts 💔</p>
-                            <button onclick="initCatchGame()">Start</button>
+                            <p>Drag the basket 🧺 to catch hearts 💖!</p>
+                            <p>Avoid broken hearts 💔</p>
+                            <button onclick="initCatchGame()">Start Game</button>
                         </div>
                     </div>
                 </main>
@@ -255,7 +259,7 @@
         </section>
 
         <section id="slasherGameScreen" class="screen">
-            <div class="container">
+            <div class="container full-height-mobile">
                 <header>
                     <button class="back-to-home-btn" onclick="quitGame()">🕹️ Quit</button>
                     <h1>Love Slasher</h1>
@@ -265,9 +269,9 @@
                     <div id="slasherCanvasContainer" class="game-canvas-container">
                         <canvas id="slasherCanvas"></canvas>
                         <div id="slasherStartOverlay" class="game-overlay">
-                            <p>Swipe/Mouse over fruits to slash!</p>
+                            <p>Swipe to slash fruits! 🍓🍊</p>
                             <p>Don't touch the Bomb 💣</p>
-                            <button onclick="initSlasherGame()">Start</button>
+                            <button onclick="initSlasherGame()">Start Game</button>
                         </div>
                     </div>
                 </main>
@@ -282,10 +286,12 @@
                 </header>
                 <main>
                     <div class="period-tracker-panel">
-                        <h3>Track Your Cycle</h3>
+                        <h3>Log Entry</h3>
                         <div class="period-input-group">
+                            <label>Start Date:</label>
                             <input type="date" id="periodStartDate">
-                            <input type="date" id="periodEndDate" placeholder="End Date (optional)">
+                            <label>End Date:</label>
+                            <input type="date" id="periodEndDate">
                         </div>
                         <div class="mood-selector">
                             <button onclick="selectMood('😊')" class="mood-btn">😊</button>
@@ -294,22 +300,18 @@
                             <button onclick="selectMood('🥰')" class="mood-btn">🥰</button>
                             <button onclick="selectMood('😴')" class="mood-btn">😴</button>
                         </div>
-                        <button onclick="addPeriodEntry()">Add Period Entry</button>
-                        <div class="period-status" id="periodStatus">
-                            No period data recorded yet.
-                        </div>
+                        <button onclick="addPeriodEntry()">Save Entry</button>
+                        <div class="period-status" id="periodStatus">No data yet.</div>
                         <div class="next-period-info" id="nextPeriodInfo"></div>
                     </div>
                     <div class="period-tracker-panel">
-                        <h3>Period Calendar</h3>
                         <div class="calendar-header">
-                            <button onclick="changePeriodMonth(-1)">←</button>
+                            <button onclick="changePeriodMonth(-1)">◀</button>
                             <h2 id="periodMonthYear"></h2>
-                            <button onclick="changePeriodMonth(1)">→</button>
+                            <button onclick="changePeriodMonth(1)">▶</button>
                         </div>
                         <div id="periodCalendarGrid" class="calendar-grid"></div>
                     </div>
-                    <button onclick="navigateToApp('homeScreen')">Back to Home</button>
                 </main>
             </div>
         </section>
@@ -322,23 +324,48 @@
     
     <div id="memoryModal" class="memory-modal" onclick="closeMemoryModal()">
         <div class="memory-modal-content" onclick="event.stopPropagation()">
-            <h2 id="modalTitle">Title</h2>
-            <img id="modalImg" src="" alt="Memory">
-            <p id="modalDesc">Description</p>
-            <button onclick="closeMemoryModal()">Close</button>
+            <h2 id="modalTitle"></h2>
+            <div class="modal-img-wrapper">
+                <img id="modalImg" src="" alt="Memory">
+            </div>
+            <p id="modalDesc"></p>
+            <button class="close-modal-btn" onclick="closeMemoryModal()">Close</button>
         </div>
     </div>
 
     <div id="addMemoryModal" class="memory-modal">
         <div class="memory-modal-content input-mode">
             <h2>Add New Memory 📝</h2>
-            <input type="text" id="newMemTitle" placeholder="Title (e.g. First Date)">
-            <input type="date" id="newMemDate">
-            <input type="number" id="newMemImgNum" placeholder="Image Number (e.g. 6 for 6.jpg)">
-            <textarea id="newMemDesc" placeholder="Description (The story behind the pic...)"></textarea>
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" id="newMemTitle" placeholder="e.g. First Date">
+            </div>
+            <div class="form-group">
+                <label>Date</label>
+                <input type="date" id="newMemDate">
+            </div>
+            <div class="form-group">
+                <label>Image Type</label>
+                <select id="newMemImgType" onchange="toggleImgInput()">
+                    <option value="url">Image URL</option>
+                    <option value="asset">Asset Number (If uploaded)</option>
+                </select>
+            </div>
+            <div class="form-group" id="imgUrlGroup">
+                <label>Image URL</label>
+                <input type="text" id="newMemImgUrl" placeholder="Paste link here...">
+            </div>
+            <div class="form-group" id="imgAssetGroup" style="display:none;">
+                <label>Asset Number</label>
+                <input type="number" id="newMemImgNum" placeholder="e.g. 5">
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="newMemDesc" placeholder="The story behind this..."></textarea>
+            </div>
             <div class="modal-actions">
-                <button onclick="saveNewMemory()">Save Memory 💾</button>
-                <button onclick="closeAddMemoryModal()" style="background: #ccc;">Cancel</button>
+                <button class="save-btn" onclick="saveNewMemory()">Save 💾</button>
+                <button class="cancel-btn" onclick="closeAddMemoryModal()">Cancel</button>
             </div>
         </div>
     </div>
