@@ -346,5 +346,105 @@
     <div id="overlay"></div>
 
     <script src="script.js"></script>
+    <!-- Emoji fix patch: add this just before </body> -->
+    <script>
+      (function () {
+        const replacements = {
+          'ðŸ’•': '💖',
+          'ðŸ’–': '💕',
+          'ðŸ’—': '💗',
+          'ðŸ’“': '💓',
+          'ðŸ’': '💝',
+          'ðŸ’˜': '💘',
+          'ðŸ’ž': '💞',
+          'ðŸŒ¸': '🌸',
+          'ðŸŒº': '🌺',
+          'ðŸŒ¹': '🌹',
+          'âœ¨': '✨',
+          'ðŸŒŸ': '🌟',
+          'ðŸ’«': '💫',
+          'ðŸŒˆ': '🌈',
+          'ðŸ¦‹': '🦋',
+
+          'ðŸ“': '📔',
+          'ðŸ’Œ': '🤗',
+          'ðŸ†': '🏆',
+          'ðŸ’¥': '💥',
+          'ðŸ’”': '💔',
+
+          'ðŸ“±': '📱',
+          'ðŸ¥°': '🥰',
+          'ðŸ¤—': '🤗',
+          'ðŸ˜˜': '😘',
+          'ðŸ˜‰': '😉',
+
+          'ðŸ—‘ï¸': '🧺',
+
+          'ðŸ“': '🍓',
+          'ðŸ‰': '🍉',
+          'ðŸ‘': '🍑',
+          'ðŸ’£': '💣',
+
+          'ðŸ¼': '🐼',
+          'ðŸ°': '🐰',
+          'ðŸ’‹': '💋'
+        };
+
+        function fixText(str) {
+          for (const bad in replacements) {
+            if (!Object.prototype.hasOwnProperty.call(replacements, bad)) continue;
+            str = str.split(bad).join(replacements[bad]);
+          }
+          return str;
+        }
+
+        // 1) Override floating background emojis with real ones
+        window.createFloatingEmojis = function () {
+          const container = document.getElementById('floatingBg');
+          if (!container) return;
+          container.innerHTML = '';
+
+          const emojis = ['💖', '💕', '💗', '💓', '💝', '💘', '💞', '🌸', '🌺', '🌹', '✨', '🌟', '💫', '🌈', '🦋'];
+
+          for (let i = 0; i < 15; i++) {
+            const emoji = document.createElement('div');
+            emoji.className = 'floating-emoji';
+            emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            emoji.style.left = Math.random() * 100 + '%';
+            emoji.style.top = Math.random() * 100 + '%';
+            emoji.style.animationDelay = Math.random() * 6 + 's';
+            emoji.style.animationDuration = (4 + Math.random() * 4) + 's';
+            container.appendChild(emoji);
+          }
+        };
+
+        // 2) Wrap custom popup so any broken emoji inside messages are fixed
+        const originalPopup = window.showCustomPopup;
+        if (originalPopup) {
+          window.showCustomPopup = function (title, message, inputPlaceholder, callback) {
+            if (typeof title === 'string') title = fixText(title);
+            if (typeof message === 'string') message = fixText(message);
+            return originalPopup(title, message, inputPlaceholder, callback);
+          };
+        }
+
+        // 3) Fix any mojibake already in the DOM (e.g. button labels like "Reply ðŸ’Œ")
+        function walk(node) {
+          if (node.nodeType === Node.TEXT_NODE) {
+            const fixed = fixText(node.nodeValue);
+            if (fixed !== node.nodeValue) node.nodeValue = fixed;
+          } else {
+            node.childNodes.forEach(walk);
+          }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+          walk(document.body);
+        });
+      })();
+    </script>
+  </body>
+</html>
+
 </body>
 </html>
