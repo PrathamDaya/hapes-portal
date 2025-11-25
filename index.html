@@ -3,348 +3,557 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>For my Hetu 💖</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+    <title>Hapes Portal - Remastered</title>
+    <style>
+        /* ===== VARIABLES & THEME ===== */
+        :root {
+            --bg-primary: linear-gradient(135deg, #fceaff 0%, #fff0f5 100%);
+            --bg-secondary: rgba(255, 255, 255, 0.9);
+            --text-primary: #5c3b4c;
+            --accent-color: #d94a6b;
+            --accent-gradient: linear-gradient(45deg, #ff80a0, #d94a6b);
+            --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            --border-color: #ffe0f0;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* ===== LAYOUT & CONTAINERS ===== */
+        #appContainer { max-width: 800px; width: 100%; }
+        
+        .screen { display: none; animation: fadeIn 0.4s ease; }
+        .screen.active { display: block; }
+        
+        .container {
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        button {
+            background: var(--accent-gradient);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        button:hover { transform: scale(1.05); }
+
+        /* ===== DIARY SPECIFIC STYLES ===== */
+        .diary-entry-list-item {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        
+        .entry-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            color: #888;
+        }
+
+        .entry-content { font-size: 1.1em; margin-bottom: 15px; line-height: 1.5; }
+
+        /* Reply Section Styling */
+        .reply-section {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            border-left: 3px solid var(--accent-color);
+        }
+        
+        .reply-btn { background: #6c757d; font-size: 0.8em; padding: 5px 15px; }
+        
+        /* ===== GAME CANVAS STYLES ===== */
+        .game-canvas-container {
+            position: relative;
+            width: 100%;
+            height: 500px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid var(--accent-color);
+            touch-action: none; /* Prevent scrolling while playing */
+        }
+
+        canvas { width: 100%; height: 100%; display: block; }
+
+        .game-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .score-board { font-size: 1.5em; font-weight: bold; color: var(--accent-color); }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
 <body>
-    <div class="floating-bg" id="floatingBg"></div>
 
-    <button class="theme-toggle" id="themeToggle">🌓</button>
-
-    <div id="loginContainer">
-        <div class="login-box">
-            <h1>Welcome! Who are you?</h1>
-            <div class="login-options">
-                <button class="chikoo-btn" onclick="login('Chikoo')">I am Chikoo 🐰</button>
-                <button class="prath-btn" onclick="login('Prath')">I am Prath 🐼</button>
+<div id="appContainer">
+    <section id="homeScreen" class="screen active">
+        <div class="container" style="text-align: center;">
+            <h1>Hapes Portal</h1>
+            <p style="margin: 20px 0; color: #888;">Select an activity</p>
+            <div style="display: grid; gap: 15px; grid-template-columns: 1fr 1fr;">
+                <button onclick="nav('diaryScreen')">📖 Diary Portal</button>
+                <button onclick="nav('slasherScreen')">🍉 Love Slasher (3D)</button>
+                <button onclick="nav('catchScreen')">💖 Catch Heart (3D)</button>
             </div>
         </div>
-    </div>
+    </section>
 
-    <div id="appContainer">
-        <div class="app-header-info">
-            <span id="loggedInUserDisplay">User: Not logged in</span>
-            <button class="logout-btn" onclick="logout()">Logout</button>
-        </div>
-
-        <section id="homeScreen" class="screen active">
-            <header class="main-header">
-                <h1>For my Hetu 💖</h1>
+    <section id="diaryScreen" class="screen">
+        <div class="container">
+            <header>
+                <button onclick="nav('homeScreen')">🏠 Home</button>
+                <h2>Diary Entries</h2>
             </header>
-            <main class="options-grid">
-                <div class="option-box main-option" onclick="navigateToApp('feelingsPortalScreen')">
-                    💖 Hetu's Feelings Portal 💖
+            <div id="diaryList">
                 </div>
-                <div class="option-box main-option" onclick="navigateToApp('diaryScreen')">
-                    📅 Hetu's Diary 📅
-                </div>
-                <div class="option-box main-option" onclick="navigateToApp('gameHubScreen')">
-                    🎮 Love Arcade 🎮
-                </div>
-                <div class="option-box main-option" onclick="navigateToApp('periodTrackerScreen')">
-                    🌸 Period Tracker 🌸
-                </div>
-                <div class="option-box main-option" onclick="navigateToApp('timelineScreen')">
-                    ⏳ Our Journey ⏳
-                </div>
-                <div class="option-box bunny-button" onclick="showMissYouPopup()">
-                    <span class="bunny-face">🐰</span>
-                </div>
-            </main>
-            <footer class="main-footer">
-                <p>&copy; 2025 For Hetu with Love 💝</p>
-            </footer>
-        </section>
-
-        <section id="feelingsPortalScreen" class="screen">
-            <div class="container">
-                <header>
-                    <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
-                    <h1>Hi <span class="dynamicUserName">User</span>, how can I help you?</h1>
-                </header>
-                <main>
-                    <section id="feelingsPage1" class="page active">
-                        <div class="option-box grievance" onclick="navigateToFeelingsPage('feelingsPage2', 'Grievance')">Grievance</div>
-                        <div class="option-box appreciate" onclick="navigateToFeelingsPage('feelingsPage2', 'Appreciate')">Appreciate</div>
-                        <div class="option-box sad" onclick="navigateToFeelingsPage('feelingsPage2', 'Sad')">Sad</div>
-                        <div class="option-box happy" onclick="navigateToFeelingsPage('feelingsPage2', 'Happy')">Happy</div>
-                        <button class="view-all-btn" onclick="fetchAndDisplayFeelingsEntries()">View All Entries</button>
-                    </section>
-
-                    <section id="feelingsPage2" class="page">
-                        <h2></h2>
-                        <div class="notebook">
-                            <textarea id="feelingsMessage" placeholder="Write your thoughts here..."></textarea>
-                            <button id="submitFeelingsBtn" onclick="submitFeelingsEntry()">Submit Entry</button>
-                        </div>
-                        <button class="back-btn" onclick="navigateToFeelingsPage('feelingsPage1')">Back</button>
-                    </section>
-
-                    <section id="feelingsPage3" class="page">
-                        <div class="confirmation-box">
-                            <div id="feelings-animation-container">
-                                <span id="feelings-mail-icon">📧</span>
-                                <div id="feelings-message-box"></div>
-                            </div>
-                            <p id="feelings-thank-you-message">Thank you for sharing! Your thoughts have been recorded.</p>
-                            <button class="main-home-btn" onclick="navigateToApp('homeScreen')">🏠 Main Home</button>
-                            <button class="back-to-feelings-btn" onclick="navigateToFeelingsPage('feelingsPage1')">New Entry</button>
-                        </div>
-                    </section>
-
-                    <section id="feelingsViewEntriesPage" class="page">
-                        <h2>Feelings Entries</h2>
-                        <div id="feelingsEntriesList" class="entries-list-container">
-                            <p>Loading entries...</p>
-                        </div>
-                        <button onclick="navigateToFeelingsPage('feelingsPage1')">Back to Feelings Portal</button>
-                    </section>
-                </main>
-            </div>
-        </section>
-
-        <section id="diaryScreen" class="screen">
-            <div class="container">
-                <header>
-                    <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
-                    <h1><span class="dynamicUserName">User</span>'s Diary</h1>
-                </header>
-                <main>
-                    <section id="diaryCalendarPage" class="page active">
-                        <div class="calendar-header">
-                            <button id="prevMonthBtn">←</button>
-                            <h2 id="currentMonthYear"></h2>
-                            <button id="nextMonthBtn">→</button>
-                        </div>
-                        <div id="calendarGrid" class="calendar-grid"></div>
-                        <div class="diary-actions">
-                            <button onclick="fetchAndDisplayAllDiaryEntries()">View All Entries</button>
-                        </div>
-                    </section>
-
-                    <section id="diaryEntryPage" class="page">
-                        <h2 id="diaryEntryTitle"></h2>
-                        <p class="date-display">Date: <span id="diaryDateDisplay"></span></p>
-                        <div class="notebook">
-                            <textarea id="diaryThoughts" placeholder="Write your diary entry here..."></textarea>
-                            <input type="hidden" id="selectedDate">
-                            <button onclick="submitDiaryEntry()">Save Entry</button>
-                        </div>
-                        <button class="back-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Calendar</button>
-                    </section>
-
-                    <section id="diaryConfirmationPage" class="page">
-                        <div class="confirmation-box">
-                            <p>Your diary entry has been saved! 📝</p>
-                            <button class="main-home-btn" onclick="navigateToApp('homeScreen')">🏠 Main Home</button>
-                            <button class="back-to-diary-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Diary</button>
-                        </div>
-                    </section>
-
-                    <section id="diaryViewPage" class="page">
-                        <h2 class="date-display">Date: <span id="viewDiaryDateDisplay"></span></h2>
-                        <div class="notebook view-only">
-                            <p id="viewDiaryThoughts"></p>
-                            <p id="diaryEntryAttribution" class="entry-attribution"></p>
-                        </div>
-                        <div id="diaryViewPageReplySection" class="reply-section-container"></div>
-                        <button class="back-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Calendar</button>
-                    </section>
-
-                    <section id="allDiaryEntriesPage" class="page">
-                        <h2>All Diary Entries</h2>
-                        <div id="allDiaryEntriesList" class="entries-list-container">
-                            <p>Loading entries...</p>
-                        </div>
-                        <button onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Calendar</button>
-                    </section>
-                </main>
-            </div>
-        </section>
-
-        <section id="timelineScreen" class="screen">
-            <div class="container" style="max-width: 100%;">
-                <header>
-                    <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
-                    <h1>Memory Lane 💖</h1>
-                    <button class="add-memory-btn" onclick="openAddMemoryModal()">➕ Add Memory</button>
-                </header>
-                <main>
-                    <div id="timelineContainer" class="timeline-container">
-                        </div>
-                </main>
-            </div>
-        </section>
-
-        <section id="gameHubScreen" class="screen">
-            <div class="container">
-                <header>
-                    <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
-                    <h1>Love Arcade 🕹️</h1>
-                </header>
-                <main class="options-grid">
-                    <div class="option-box main-option" onclick="navigateToApp('dareGameScreen')">
-                        😈 Couple's Dare Game 😈
-                    </div>
-                    <div class="option-box main-option" onclick="startMemoryGame()">
-                        🧠 Memory Match 🧠
-                        <div class="high-score-display">Best: <span id="memHighScore">0</span></div>
-                    </div>
-                    <div class="option-box main-option" onclick="startCatchGame()">
-                        💖 Catch the Heart 💖
-                        <div class="high-score-display">Best: <span id="catchHighScore">0</span></div>
-                    </div>
-                    <div class="option-box main-option" onclick="startSlasherGame()">
-                        🍉 Love Slasher 🍉
-                        <div class="high-score-display">Best: <span id="slashHighScore">0</span></div>
-                    </div>
-                </main>
-            </div>
-        </section>
-
-        <section id="dareGameScreen" class="screen">
-            <div class="container">
-                <header>
-                    <button class="back-to-home-btn" onclick="navigateToApp('gameHubScreen')">🕹️ Games</button>
-                    <h1>Couple's Dare Game 😈</h1>
-                </header>
-                <main>
-                    <div class="dare-display-area">
-                        <p id="dareText">Click the button below to get your first dare!</p>
-                    </div>
-                    <div class="dare-actions">
-                        <button id="nextDareBtn" onclick="generateDare()">Next Dare 🔥</button>
-                    </div>
-                </main>
-            </div>
-        </section>
-
-        <section id="memoryGameScreen" class="screen">
-            <div class="container">
-                <header>
-                    <button class="back-to-home-btn" onclick="quitGame()">🕹️ Quit</button>
-                    <h1>Memory Match</h1>
-                    <div class="score-board">Moves: <span id="memoryMoves">0</span></div>
-                </header>
-                <main>
-                    <div class="memory-grid" id="memoryGrid"></div>
-                    <button id="restartMemoryBtn" onclick="startMemoryGame()">Restart Game</button>
-                </main>
-            </div>
-        </section>
-
-        <section id="catchGameScreen" class="screen">
-            <div class="container">
-                <header>
-                    <button class="back-to-home-btn" onclick="quitGame()">🕹️ Quit</button>
-                    <h1>Catch The Heart</h1>
-                    <div class="score-board">Score: <span id="catchScore">0</span></div>
-                </header>
-                <main>
-                    <div id="catchGameCanvasContainer" class="game-canvas-container">
-                        <canvas id="catchGameCanvas"></canvas>
-                        <div id="catchStartOverlay" class="game-overlay">
-                            <p>Tap/Drag basket to catch hearts!</p>
-                            <p>Avoid the broken hearts 💔</p>
-                            <button onclick="initCatchGame()">Start</button>
-                        </div>
-                    </div>
-                </main>
-            </div>
-        </section>
-
-        <section id="slasherGameScreen" class="screen">
-            <div class="container">
-                <header>
-                    <button class="back-to-home-btn" onclick="quitGame()">🕹️ Quit</button>
-                    <h1>Love Slasher</h1>
-                    <div class="score-board">Score: <span id="slasherScore">0</span></div>
-                </header>
-                <main>
-                    <div id="slasherCanvasContainer" class="game-canvas-container">
-                        <canvas id="slasherCanvas"></canvas>
-                        <div id="slasherStartOverlay" class="game-overlay">
-                            <p>Swipe/Mouse over fruits to slash!</p>
-                            <p>Don't touch the Bomb 💣</p>
-                            <button onclick="initSlasherGame()">Start</button>
-                        </div>
-                    </div>
-                </main>
-            </div>
-        </section>
-
-        <section id="periodTrackerScreen" class="screen">
-            <div class="container">
-                <header>
-                    <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
-                    <h1>Period Tracker 🌸</h1>
-                </header>
-                <main>
-                    <div class="period-tracker-panel">
-                        <h3>Track Your Cycle</h3>
-                        <div class="period-input-group">
-                            <input type="date" id="periodStartDate">
-                            <input type="date" id="periodEndDate" placeholder="End Date (optional)">
-                        </div>
-                        <div class="mood-selector">
-                            <button onclick="selectMood('😊')" class="mood-btn">😊</button>
-                            <button onclick="selectMood('😢')" class="mood-btn">😢</button>
-                            <button onclick="selectMood('😡')" class="mood-btn">😡</button>
-                            <button onclick="selectMood('🥰')" class="mood-btn">🥰</button>
-                            <button onclick="selectMood('😴')" class="mood-btn">😴</button>
-                        </div>
-                        <button onclick="addPeriodEntry()">Add Period Entry</button>
-                        <div class="period-status" id="periodStatus">
-                            No period data recorded yet.
-                        </div>
-                        <div class="next-period-info" id="nextPeriodInfo"></div>
-                    </div>
-                    <div class="period-tracker-panel">
-                        <h3>Period Calendar</h3>
-                        <div class="calendar-header">
-                            <button onclick="changePeriodMonth(-1)">←</button>
-                            <h2 id="periodMonthYear"></h2>
-                            <button onclick="changePeriodMonth(1)">→</button>
-                        </div>
-                        <div id="periodCalendarGrid" class="calendar-grid"></div>
-                    </div>
-                    <button onclick="navigateToApp('homeScreen')">Back to Home</button>
-                </main>
-            </div>
-        </section>
-    </div>
-
-    <div id="missYouPopup">
-        <p id="missYouMessage"></p>
-        <button onclick="closeMissYouPopup()">Okay ❤️</button>
-    </div>
-    
-    <div id="memoryModal" class="memory-modal" onclick="closeMemoryModal()">
-        <div class="memory-modal-content" onclick="event.stopPropagation()">
-            <h2 id="modalTitle">Title</h2>
-            <img id="modalImg" src="" alt="Memory">
-            <p id="modalDesc">Description</p>
-            <button onclick="closeMemoryModal()">Close</button>
-        </div>
-    </div>
-
-    <div id="addMemoryModal" class="memory-modal">
-        <div class="memory-modal-content input-mode">
-            <h2>Add New Memory 📝</h2>
-            <input type="text" id="newMemTitle" placeholder="Title (e.g. First Date)">
-            <input type="date" id="newMemDate">
-            <input type="number" id="newMemImgNum" placeholder="Image Number (e.g. 6 for 6.jpg)">
-            <textarea id="newMemDesc" placeholder="Description (The story behind the pic...)"></textarea>
-            <div class="modal-actions">
-                <button onclick="saveNewMemory()">Save Memory 💾</button>
-                <button onclick="closeAddMemoryModal()" style="background: #ccc;">Cancel</button>
+            <div style="margin-top:20px; text-align: center;">
+                <button onclick="addMockEntry()">+ Add Test Entry</button>
             </div>
         </div>
-    </div>
+    </section>
 
-    <div id="overlay"></div>
+    <section id="slasherScreen" class="screen">
+        <div class="container">
+            <header>
+                <button onclick="stopGames(); nav('homeScreen')">❌ Exit</button>
+                <div class="score-board">Score: <span id="slashScore">0</span></div>
+            </header>
+            <div class="game-canvas-container" id="slasherContainer">
+                <canvas id="slasherCanvas"></canvas>
+                <div id="slasherOverlay" class="game-overlay">
+                    <h2>Love Slasher 3D</h2>
+                    <p>Swipe to slice fruits. Avoid the Bomb!</p>
+                    <br>
+                    <button onclick="initSlasher()">Start Game</button>
+                </div>
+            </div>
+        </div>
+    </section>
 
-    <script src="script.js"></script>
+    <section id="catchScreen" class="screen">
+        <div class="container">
+            <header>
+                <button onclick="stopGames(); nav('homeScreen')">❌ Exit</button>
+                <div class="score-board">Score: <span id="catchScore">0</span></div>
+            </header>
+            <div class="game-canvas-container" id="catchContainer">
+                <canvas id="catchCanvas"></canvas>
+                <div id="catchOverlay" class="game-overlay">
+                    <h2>Catch The Heart 3D</h2>
+                    <p>Move basket to catch shiny hearts!</p>
+                    <br>
+                    <button onclick="initCatchGame()">Start Game</button>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    // ===== NAVIGATION & UTILS =====
+    let currentGameLoop = null;
+
+    function nav(screenId) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(screenId).classList.add('active');
+        if(screenId === 'diaryScreen') renderDiary();
+    }
+
+    function stopGames() {
+        if (currentGameLoop) cancelAnimationFrame(currentGameLoop);
+        currentGameLoop = null;
+    }
+
+    // ===== DIARY COMPONENT (Fixed Logic) =====
+    // Mock Data for demonstration - in production this comes from Google Script
+    let diaryData = JSON.parse(localStorage.getItem('hapesDiary')) || [
+        { id: 1, date: '2025-07-20', author: 'Chikoo', text: 'I really missed you today. The weather was rainy and it reminded me of our first date.', replies: [] }
+    ];
+
+    function saveDiary() { localStorage.setItem('hapesDiary', JSON.stringify(diaryData)); }
+
+    function addMockEntry() {
+        diaryData.push({
+            id: Date.now(),
+            date: new Date().toISOString().split('T')[0],
+            author: 'Prath',
+            text: 'Just adding a test entry to check the portal rendering!',
+            replies: []
+        });
+        saveDiary();
+        renderDiary();
+    }
+
+    function renderDiary() {
+        const list = document.getElementById('diaryList');
+        list.innerHTML = '';
+
+        if (diaryData.length === 0) {
+            list.innerHTML = '<p style="text-align:center">No entries yet.</p>';
+            return;
+        }
+
+        diaryData.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(entry => {
+            const el = document.createElement('div');
+            el.className = 'diary-entry-list-item';
+            
+            let repliesHtml = '';
+            if(entry.replies && entry.replies.length > 0) {
+                repliesHtml = entry.replies.map(r => 
+                    `<div class="reply-section"><strong>Response:</strong> ${r.text}</div>`
+                ).join('');
+            }
+
+            el.innerHTML = `
+                <div class="entry-header">
+                    <span>📅 ${entry.date}</span>
+                    <span>✍️ ${entry.author}</span>
+                </div>
+                <div class="entry-content">${entry.text}</div>
+                ${repliesHtml}
+                <div style="text-align: right; margin-top: 10px;">
+                    <button class="reply-btn" onclick="openReply(${entry.id})">💬 Reply</button>
+                </div>
+            `;
+            list.appendChild(el);
+        });
+    }
+
+    function openReply(id) {
+        const text = prompt("Enter your reply message:");
+        if (text) {
+            const entry = diaryData.find(e => e.id === id);
+            if (entry) {
+                if (!entry.replies) entry.replies = [];
+                entry.replies.push({ text: text, date: new Date().toISOString() });
+                saveDiary();
+                renderDiary();
+            }
+        }
+    }
+
+    // ===== 3D GRAPHICS UTILS (Canvas 2D) =====
+    // Draws a shiny 3D sphere/fruit
+    function draw3DFruit(ctx, x, y, radius, type) {
+        ctx.save();
+        
+        // Base Gradient (Shadow to Highlight)
+        let grad = ctx.createRadialGradient(x - radius/3, y - radius/3, radius/10, x, y, radius);
+        
+        if (type === 'watermelon') {
+            grad.addColorStop(0, '#ff9999');
+            grad.addColorStop(1, '#cc0000');
+            ctx.fillStyle = grad;
+            ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fill();
+            
+            // Seeds
+            ctx.fillStyle = 'rgba(0,0,0,0.8)';
+            for(let i=0; i<3; i++) {
+                ctx.beginPath();
+                ctx.ellipse(x + (i*10)-10, y+5, 3, 6, 0.5, 0, Math.PI*2);
+                ctx.fill();
+            }
+            // Rind
+            ctx.strokeStyle = '#2d6a4f';
+            ctx.lineWidth = 4;
+            ctx.stroke();
+        } 
+        else if (type === 'orange') {
+            grad.addColorStop(0, '#ffd6a5');
+            grad.addColorStop(1, '#e85d04');
+            ctx.fillStyle = grad;
+            ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fill();
+            
+            // Dimples
+            ctx.fillStyle = 'rgba(200, 100, 0, 0.3)';
+            for(let i=0; i<5; i++) ctx.fillRect(x + Math.random()*20-10, y + Math.random()*20-10, 2, 2);
+        }
+        else if (type === 'bomb') {
+            grad.addColorStop(0, '#4a4e69');
+            grad.addColorStop(1, '#22223b');
+            ctx.fillStyle = grad;
+            ctx.beginPath(); ctx.arc(x, y, radius, 0, Math.PI * 2); ctx.fill();
+            
+            // Fuse
+            ctx.strokeStyle = '#d4a373';
+            ctx.lineWidth = 3;
+            ctx.beginPath(); ctx.moveTo(x, y-radius); ctx.quadraticCurveTo(x+10, y-radius-10, x+15, y-radius-15); ctx.stroke();
+            // Spark
+            ctx.fillStyle = '#ffba08';
+            ctx.beginPath(); ctx.arc(x+15, y-radius-15, 4, 0, Math.PI*2); ctx.fill();
+        }
+
+        // Highlight reflection (Glassy look)
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+        ctx.beginPath();
+        ctx.ellipse(x - radius/3, y - radius/3, radius/3, radius/5, -0.8, 0, Math.PI*2);
+        ctx.fill();
+        
+        ctx.restore();
+    }
+
+    // Draws a shiny 3D Heart
+    function draw3DHeart(ctx, x, y, size, color) {
+        ctx.save();
+        ctx.translate(x, y);
+        
+        // Shadow
+        ctx.shadowColor = "rgba(0,0,0,0.3)";
+        ctx.shadowBlur = 10;
+        
+        // Gradient for 3D effect
+        let grad = ctx.createRadialGradient(-size/4, -size/4, 2, 0, 0, size);
+        grad.addColorStop(0, '#ffccd5'); // Highlight
+        grad.addColorStop(1, color);     // Base
+        
+        ctx.fillStyle = grad;
+        
+        // Heart Shape
+        ctx.beginPath();
+        ctx.moveTo(0, size * 0.3);
+        ctx.bezierCurveTo(size / 2, -size / 2, size, 0, 0, size);
+        ctx.bezierCurveTo(-size, 0, -size / 2, -size / 2, 0, size * 0.3);
+        ctx.fill();
+        
+        ctx.restore();
+    }
+
+    // ===== GAME 1: LOVE SLASHER (3D) =====
+    function initSlasher() {
+        document.getElementById('slasherOverlay').style.display = 'none';
+        const canvas = document.getElementById('slasherCanvas');
+        const parent = document.getElementById('slasherContainer');
+        
+        // Fix Visibility: Set dynamic resolution
+        canvas.width = parent.clientWidth;
+        canvas.height = parent.clientHeight;
+        const ctx = canvas.getContext('2d');
+        
+        let score = 0;
+        let objects = []; // Fruits/Bombs
+        let particles = [];
+        let trail = [];
+        let frame = 0;
+        
+        document.getElementById('slashScore').textContent = '0';
+
+        // Mouse/Touch Tracking
+        function track(e) {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+            trail.push({ x: clientX - rect.left, y: clientY - rect.top, life: 8 });
+        }
+        canvas.addEventListener('mousemove', track);
+        canvas.addEventListener('touchmove', track, {passive: false});
+
+        function loop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            frame++;
+
+            // Spawn Logic
+            if (frame % 40 === 0) {
+                const types = ['watermelon', 'orange', 'watermelon', 'bomb'];
+                const type = types[Math.floor(Math.random() * types.length)];
+                objects.push({
+                    x: Math.random() * (canvas.width - 60) + 30,
+                    y: canvas.height + 50,
+                    vx: (Math.random() - 0.5) * 5,
+                    vy: -(Math.random() * 6 + 10), // Throw up
+                    radius: 30,
+                    type: type
+                });
+            }
+
+            // Draw Trail
+            ctx.strokeStyle = 'white';
+            ctx.lineWidth = 5;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            for(let i=0; i<trail.length-1; i++) {
+                ctx.moveTo(trail[i].x, trail[i].y);
+                ctx.lineTo(trail[i+1].x, trail[i+1].y);
+            }
+            ctx.stroke();
+            // Decay trail
+            trail.forEach(t => t.life--);
+            trail = trail.filter(t => t.life > 0);
+
+            // Update Objects
+            for (let i = objects.length - 1; i >= 0; i--) {
+                let obj = objects[i];
+                obj.x += obj.vx;
+                obj.y += obj.vy;
+                obj.vy += 0.25; // Gravity
+
+                draw3DFruit(ctx, obj.x, obj.y, obj.radius, obj.type);
+
+                // Check collision with trail
+                let hit = false;
+                for(let t of trail) {
+                    let dx = t.x - obj.x;
+                    let dy = t.y - obj.y;
+                    if (Math.sqrt(dx*dx + dy*dy) < obj.radius) {
+                        hit = true; break;
+                    }
+                }
+
+                if (hit) {
+                    if (obj.type === 'bomb') {
+                        stopGames();
+                        alert("BOOM! Game Over.");
+                        document.getElementById('slasherOverlay').style.display = 'flex';
+                        return;
+                    } else {
+                        score++;
+                        document.getElementById('slashScore').textContent = score;
+                        // Add splash particles
+                        for(let p=0; p<10; p++) {
+                            particles.push({
+                                x: obj.x, y: obj.y,
+                                vx: (Math.random()-0.5)*10, vy: (Math.random()-0.5)*10,
+                                life: 20, color: obj.type === 'watermelon' ? 'red' : 'orange'
+                            });
+                        }
+                        objects.splice(i, 1);
+                        continue;
+                    }
+                }
+
+                if (obj.y > canvas.height + 60) objects.splice(i, 1);
+            }
+
+            // Particles
+            for(let i=particles.length-1; i>=0; i--) {
+                let p = particles[i];
+                p.x += p.vx; p.y += p.vy; p.life--;
+                ctx.fillStyle = p.color;
+                ctx.fillRect(p.x, p.y, 4, 4);
+                if(p.life <= 0) particles.splice(i, 1);
+            }
+
+            currentGameLoop = requestAnimationFrame(loop);
+        }
+        loop();
+    }
+
+    // ===== GAME 2: CATCH THE HEART (3D) =====
+    function initCatchGame() {
+        document.getElementById('catchOverlay').style.display = 'none';
+        const canvas = document.getElementById('catchCanvas');
+        const parent = document.getElementById('catchContainer');
+        
+        canvas.width = parent.clientWidth;
+        canvas.height = parent.clientHeight;
+        const ctx = canvas.getContext('2d');
+
+        let score = 0;
+        let hearts = [];
+        let basket = { x: canvas.width/2, w: 60, h: 40 };
+        let frame = 0;
+
+        document.getElementById('catchScore').textContent = '0';
+
+        // Move Basket
+        function moveBasket(e) {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            let clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            basket.x = clientX - rect.left - basket.w/2;
+        }
+        canvas.addEventListener('mousemove', moveBasket);
+        canvas.addEventListener('touchmove', moveBasket, {passive: false});
+
+        function loop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            frame++;
+
+            // Draw Basket (Simple 3D box)
+            ctx.fillStyle = '#8d99ae';
+            ctx.fillRect(basket.x, canvas.height - 50, basket.w, basket.h);
+            ctx.fillStyle = '#2b2d42'; // Inner shadow
+            ctx.fillRect(basket.x+5, canvas.height - 50, basket.w-10, 5);
+
+            // Spawn Hearts
+            if (frame % 30 === 0) {
+                hearts.push({
+                    x: Math.random() * (canvas.width - 30),
+                    y: -30,
+                    size: 15 + Math.random() * 10,
+                    speed: 2 + Math.random() * 3,
+                    color: Math.random() > 0.8 ? '#333' : '#d90429' // Black is bad
+                });
+            }
+
+            for(let i=hearts.length-1; i>=0; i--) {
+                let h = hearts[i];
+                h.y += h.speed;
+
+                draw3DHeart(ctx, h.x, h.y, h.size, h.color);
+
+                // Catch Logic
+                if (h.y > canvas.height - 50 && h.y < canvas.height && 
+                    h.x > basket.x - 20 && h.x < basket.x + basket.w + 20) {
+                    
+                    if(h.color === '#333') { // Caught bad heart
+                        score -= 5;
+                    } else {
+                        score++;
+                    }
+                    document.getElementById('catchScore').textContent = score;
+                    hearts.splice(i, 1);
+                }
+                else if (h.y > canvas.height) {
+                    hearts.splice(i, 1);
+                }
+            }
+
+            currentGameLoop = requestAnimationFrame(loop);
+        }
+        loop();
+    }
+</script>
 </body>
 </html>
