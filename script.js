@@ -13,13 +13,13 @@ let usedDares = [];
 
 // ===== DYNAMIC TIMELINE LOGIC =====
 
-// 1. Initialize Data (Load from LocalStorage OR use Defaults)
+// 1. Initialize Data
 let timelineData = JSON.parse(localStorage.getItem('hetuTimelineData')) || [
     { date: "2023-01-01", title: "Where it began", img: "assets/Timeline/1.jpg", desc: "The start of us." },
     { date: "2023-02-14", title: "Valentine's", img: "assets/Timeline/2.jpg", desc: "Our first V-day." }
 ];
 
-// 2. Render Function (Displays the data)
+// 2. Render Function
 function renderTimeline() {
     const container = document.getElementById('timelineContainer');
     container.innerHTML = ''; 
@@ -31,7 +31,6 @@ function renderTimeline() {
         const card = document.createElement('div');
         card.className = 'polaroid-card';
         
-        // Random tilt
         const rotation = Math.random() * 6 - 3;
         card.style.setProperty('--rotation', `${rotation}deg`);
 
@@ -40,13 +39,15 @@ function renderTimeline() {
         
         const img = document.createElement('img');
         img.src = item.img;
-        img.onerror = function() { this.src = 'assets/Timeline/1.jpg'; }; // Fallback
+        img.onerror = function() { 
+            // SVG Fallback
+            this.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22200%22%20height%3D%22200%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23ddd%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20dominant-baseline%3D%22middle%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2224%22%20fill%3D%22%23aaa%22%3EPhoto%3C%2Ftext%3E%3C%2Fsvg%3E'; 
+        }; 
         
         imgContainer.appendChild(img);
         
         const dateEl = document.createElement('div');
         dateEl.className = 'timeline-date';
-        // Format Date nicely
         const dateObj = new Date(item.date);
         dateEl.textContent = isNaN(dateObj) ? item.date : dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         
@@ -83,23 +84,18 @@ function saveNewMemory() {
         return;
     }
 
-    // Create new entry object
     const newEntry = {
         title: title,
         date: date,
-        img: `assets/Timeline/${imgNum}.jpg`, // Maps number to path
+        img: `assets/Timeline/${imgNum}.jpg`,
         desc: desc
     };
 
-    // Add to array and Save to Storage
     timelineData.push(newEntry);
     localStorage.setItem('hetuTimelineData', JSON.stringify(timelineData));
-
-    // Refresh View
     renderTimeline();
     closeAddMemoryModal();
     
-    // Clear inputs
     document.getElementById('newMemTitle').value = '';
     document.getElementById('newMemDesc').value = '';
     document.getElementById('newMemImgNum').value = '';
@@ -107,11 +103,9 @@ function saveNewMemory() {
     showCustomPopup("Saved!", "Memory added to timeline.");
 }
 
-// Existing View Modal Functions (Keep these)
 function openMemoryModal(item) {
-    // Ensure we are opening the VIEW modal, not the ADD modal
     const modal = document.getElementById('memoryModal'); 
-    if(!modal) return; // Safety check
+    if(!modal) return;
     
     document.getElementById('modalTitle').textContent = item.title;
     document.getElementById('modalImg').src = item.img;
@@ -119,16 +113,18 @@ function openMemoryModal(item) {
     modal.style.display = 'flex';
 }
 
+function closeMemoryModal() {
+    document.getElementById('memoryModal').style.display = 'none';
+}
+
 // ===== GAME STATE VARIABLES =====
 const usePhotoAssets = true; 
 
-// Memory Game Vars
 let memMoves = 0;
 let memLock = false;
 let memHasFlippedCard = false;
 let memFirstCard, memSecondCard;
 
-// Canvas Game Vars
 let catchGameRunning = false;
 let catchScore = 0;
 let catchLoopId;
@@ -137,9 +133,8 @@ let slasherGameRunning = false;
 let slasherScore = 0;
 let slasherLoopId;
 
-// High Scores
 let gameHighScores = {
-    memory: 100, // Lower is better for memory (moves)
+    memory: 100,
     catch: 0,
     slasher: 0
 };
@@ -210,13 +205,15 @@ function login(userName) {
         document.getElementById('appContainer').style.display = 'block';
         document.body.style.alignItems = 'flex-start';
         navigateToApp('homeScreen');
-        createFloatingEmojis();
         
-        // Butterfly release on login welcome
+        // 1. RE-INITIALIZE BACKGROUND WITH YOUR REQUESTED EMOJIS
+        createFloatingEmojis(); 
+        
+        // 2. BUTTERFLIES ON LOGIN
         setTimeout(() => {
             const header = document.querySelector('.main-header h1');
             if(header) releaseButterflies(header);
-        }, 1000);
+        }, 500);
         
     } else {
         showCustomPopup('Error', 'Invalid user selection.');
@@ -254,7 +251,6 @@ function checkLoginStatus() {
         document.body.style.alignItems = 'flex-start';
         navigateToApp('homeScreen');
     }
-    // Load high scores
     const storedScores = localStorage.getItem('hetuApp_highscores');
     if(storedScores) {
         gameHighScores = JSON.parse(storedScores);
@@ -275,24 +271,27 @@ function loadTheme() {
     document.documentElement.setAttribute('data-theme', savedTheme);
 }
 
-// ===== FLOATING EMOJI BACKGROUND =====
+// ===== FLOATING EMOJI BACKGROUND (FIXED) =====
 function createFloatingEmojis() {
     const container = document.getElementById('floatingBg');
-    const emojis = ['ðŸ’•', 'ðŸ’–', 'ðŸ’—', 'ðŸ’“', 'ðŸ’', 'ðŸ’˜', 'ðŸ’ž', 'ðŸŒ¸', 'ðŸŒº', 'ðŸŒ¹', 'âœ¨', 'ðŸŒŸ', 'ðŸ’«', 'ðŸŒˆ', 'ðŸ¦‹'];
+    container.innerHTML = ''; // Clear previous to avoid duplicates
+
+    // FIXED: Added Bunny, Butterfly, Flowers, Heart as requested
+    const emojis = ['💖', '💕', '💗', '🐰', '🦋', '🌸', '🌼', '✨', '🌹', '🐇'];
     
-    for (let i = 0; i < 15; i++) {
+    for (let i = 0; i < 20; i++) { // Increased count slightly
         const emoji = document.createElement('div');
         emoji.className = 'floating-emoji';
         emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
         emoji.style.left = Math.random() * 100 + '%';
         emoji.style.top = Math.random() * 100 + '%';
         emoji.style.animationDelay = Math.random() * 6 + 's';
-        emoji.style.animationDuration = (4 + Math.random() * 4) + 's';
+        emoji.style.animationDuration = (8 + Math.random() * 6) + 's'; // Slower float
         container.appendChild(emoji);
     }
 }
 
-// ===== BUTTERFLY RELEASE EFFECT =====
+// ===== BUTTERFLY RELEASE EFFECT (FIXED) =====
 function releaseButterflies(element) {
     if (!element) return;
     
@@ -300,24 +299,20 @@ function releaseButterflies(element) {
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
     
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 8; i++) {
         const butterfly = document.createElement('div');
         butterfly.className = 'butterfly';
-        butterfly.textContent = 'ðŸ¦‹';
+        butterfly.textContent = '🦋'; // FIXED MOJIBAKE
         
-        // Random horizontal spread direction
         const tx = (Math.random() - 0.5) * 200 + 'px'; 
         butterfly.style.setProperty('--tx', tx);
         
         butterfly.style.left = centerX + 'px';
         butterfly.style.top = centerY + 'px';
-        
-        // Stagger animation slightly
         butterfly.style.animation = `butterflyFly 2s ease-out forwards ${Math.random() * 0.5}s`;
         
         document.body.appendChild(butterfly);
         
-        // Cleanup after animation
         setTimeout(() => {
             butterfly.remove();
         }, 3000);
@@ -338,7 +333,7 @@ function showCustomPopup(title, message, inputPlaceholder = null, callback = nul
     titleEl.textContent = title;
     
     const messageEl = document.createElement('p');
-    messageEl.style.whiteSpace = "pre-line"; // Allows line breaks
+    messageEl.style.whiteSpace = "pre-line"; 
     messageEl.textContent = message;
     
     popup.appendChild(titleEl);
@@ -391,7 +386,6 @@ function navigateToApp(screenId) {
         return;
     }
     
-    // Stop any running games explicitly
     quitGame(false);
 
     document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
@@ -429,63 +423,6 @@ function quitGame(navigate = true) {
     if (navigate) navigateToApp('gameHubScreen');
 }
 
-// ===== TIMELINE FUNCTIONALITY =====
-function renderTimeline() {
-    const container = document.getElementById('timelineContainer');
-    container.innerHTML = ''; // Clear existing
-
-    timelineData.forEach((item, index) => {
-        const card = document.createElement('div');
-        card.className = 'polaroid-card';
-        
-        // Random rotation between -3 and 3 degrees
-        const rotation = Math.random() * 6 - 3;
-        card.style.setProperty('--rotation', `${rotation}deg`);
-
-        // Create image logic
-        const imgContainer = document.createElement('div');
-        imgContainer.className = 'polaroid-img-container';
-        
-        const img = document.createElement('img');
-        img.src = item.img;
-        img.alt = item.title;
-        img.onerror = function() { 
-            this.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22200%22%20height%3D%22200%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23ddd%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20dominant-baseline%3D%22middle%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2224%22%20fill%3D%22%23aaa%22%3EPhoto%3C%2Ftext%3E%3C%2Fsvg%3E'; 
-        };
-        
-        imgContainer.appendChild(img);
-        
-        const dateEl = document.createElement('div');
-        dateEl.className = 'timeline-date';
-        dateEl.textContent = item.date;
-        
-        const titleEl = document.createElement('div');
-        titleEl.className = 'timeline-title';
-        titleEl.textContent = item.title;
-
-        card.appendChild(imgContainer);
-        card.appendChild(dateEl);
-        card.appendChild(titleEl);
-        
-        // Click to expand
-        card.onclick = () => openMemoryModal(item);
-
-        container.appendChild(card);
-    });
-}
-
-function openMemoryModal(item) {
-    const modal = document.getElementById('memoryModal');
-    document.getElementById('modalTitle').textContent = item.title;
-    document.getElementById('modalImg').src = item.img;
-    document.getElementById('modalDesc').textContent = item.desc || "No description available.";
-    modal.style.display = 'flex';
-}
-
-function closeMemoryModal() {
-    document.getElementById('memoryModal').style.display = 'none';
-}
-
 // ===== FEELINGS PORTAL =====
 function navigateToFeelingsPage(pageId, emotion = '') {
     document.querySelectorAll('#feelingsPortalScreen .page').forEach(page => page.classList.remove('active'));
@@ -509,7 +446,6 @@ function submitFeelingsEntry() {
         return;
     }
 
-    // Trigger Butterfly Effect
     const submitBtn = document.getElementById('submitFeelingsBtn');
     releaseButterflies(submitBtn);
 
@@ -528,7 +464,7 @@ function submitFeelingsEntry() {
             if (data.status === 'success') {
                 document.getElementById('feelingsMessage').value = '';
                 navigateToFeelingsPage('feelingsPage3');
-                showCustomPopup('Success', 'Your feelings have been recorded! ðŸ’Œ');
+                showCustomPopup('Success', 'Your feelings have been recorded! 💌');
             } else {
                 throw new Error(data.message);
             }
@@ -586,7 +522,8 @@ async function fetchAndDisplayFeelingsEntries() {
                     `;
                 } else {
                     const replyBtn = document.createElement('button');
-                    replyBtn.textContent = 'Reply ðŸ’Œ';
+                    // FIXED: REPLACED WITH POSTBOX EMOJI
+                    replyBtn.textContent = 'Reply 📮'; 
                     replyBtn.className = 'reply-btn small-reply-btn';
                     replyBtn.onclick = () => showCustomPopup(
                         `Reply to ${entry.submittedBy}`,
@@ -619,7 +556,6 @@ function navigateToDiaryPage(pageId) {
 
 async function fetchDiaryEntries() {
     if (!currentUser) return;
-    
     try {
         const response = await fetch(`${scriptURL}?action=getDiaryEntries`, { method: 'GET', mode: 'cors' });
         const data = await response.json();
@@ -646,7 +582,6 @@ function renderCalendar(date) {
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-    // Day headers
     ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
         const dayHeader = document.createElement('div');
         dayHeader.className = 'calendar-day-header';
@@ -654,14 +589,12 @@ function renderCalendar(date) {
         grid.appendChild(dayHeader);
     });
 
-    // Empty cells
     for (let i = 0; i < firstDay; i++) {
         const empty = document.createElement('div');
         empty.className = 'calendar-day empty';
         grid.appendChild(empty);
     }
 
-    // Days
     const today = new Date();
     for (let day = 1; day <= daysInMonth; day++) {
         const dayCell = document.createElement('div');
@@ -720,7 +653,8 @@ function viewDiaryEntry(dateString) {
         `;
     } else {
         const replyBtn = document.createElement('button');
-        replyBtn.textContent = 'Reply ðŸ’Œ';
+        // FIXED: REPLACED WITH POSTBOX EMOJI
+        replyBtn.textContent = 'Reply 📮';
         replyBtn.className = 'reply-btn';
         replyBtn.onclick = () => showCustomPopup(
             `Reply to Diary Entry`,
@@ -747,7 +681,6 @@ function submitDiaryEntry() {
         return;
     }
 
-    // Trigger Butterfly Effect
     const submitBtn = document.querySelector('#diaryEntryPage button[onclick="submitDiaryEntry()"]');
     releaseButterflies(submitBtn);
 
@@ -767,7 +700,7 @@ function submitDiaryEntry() {
                 return fetchDiaryEntries().then(() => {
                     renderCalendar(calendarCurrentDate);
                     navigateToDiaryPage('diaryConfirmationPage');
-                    showCustomPopup('Success', 'Diary entry saved! ðŸ“');
+                    showCustomPopup('Success', 'Diary entry saved! 📝');
                 });
             } else {
                 throw new Error(data.message);
@@ -818,7 +751,8 @@ async function fetchAndDisplayAllDiaryEntries() {
                     `;
                 } else {
                     const replyBtn = document.createElement('button');
-                    replyBtn.textContent = 'Reply ðŸ’Œ';
+                    // FIXED: REPLACED WITH POSTBOX EMOJI
+                    replyBtn.textContent = 'Reply 📮';
                     replyBtn.className = 'reply-btn small-reply-btn';
                     replyBtn.onclick = () => showCustomPopup(
                         'Reply to Entry',
@@ -866,7 +800,7 @@ async function submitReply(entryType, entryIdentifier, replyMessage, buttonEleme
         const data = await response.json();
         
         if (data.status === 'success') {
-            showCustomPopup('Success', 'Reply sent successfully! ðŸ’Œ');
+            showCustomPopup('Success', 'Reply sent successfully! 📮');
             
             if (entryType === 'feeling') {
                 fetchAndDisplayFeelingsEntries();
@@ -884,7 +818,7 @@ async function submitReply(entryType, entryIdentifier, replyMessage, buttonEleme
         showCustomPopup('Error', 'Failed to send reply: ' + error.message);
         if (buttonElement) {
             buttonElement.disabled = false;
-            buttonElement.textContent = 'Reply ðŸ’Œ';
+            buttonElement.textContent = 'Reply 📮';
         }
     }
 }
@@ -895,7 +829,7 @@ function generateDare() {
     
     if (usedDares.length === coupleDares.length) {
         usedDares = [];
-        showCustomPopup('All Dares Complete!', 'You\'ve gone through all the dares! Resetting for more fun. ðŸ˜‰');
+        showCustomPopup('All Dares Complete!', 'You\'ve gone through all the dares! Resetting for more fun. 😉');
     }
 
     const availableDares = coupleDares.filter(dare => !usedDares.includes(dare));
@@ -921,7 +855,6 @@ function addPeriodEntry() {
         return;
     }
 
-    // Load existing data
     periodData = JSON.parse(localStorage.getItem('periodData') || '[]');
     
     periodData.push({
@@ -934,18 +867,16 @@ function addPeriodEntry() {
     
     localStorage.setItem('periodData', JSON.stringify(periodData));
     
-    // Clear inputs
     document.getElementById('periodStartDate').value = '';
     document.getElementById('periodEndDate').value = '';
     document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('active'));
     selectedMood = null;
     
     loadPeriodTracker();
-    showCustomPopup('Success', 'Period entry recorded! ðŸŒ¸');
+    showCustomPopup('Success', 'Period entry recorded! 🌸');
 }
 
 function loadPeriodTracker() {
-    // Load data from localStorage
     periodData = JSON.parse(localStorage.getItem('periodData') || '[]');
     
     const statusEl = document.getElementById('periodStatus');
@@ -958,7 +889,6 @@ function loadPeriodTracker() {
         return;
     }
 
-    // Sort by start date
     const sortedData = periodData.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
     const lastPeriod = sortedData[0];
     const lastStart = new Date(lastPeriod.startDate);
@@ -972,18 +902,16 @@ function loadPeriodTracker() {
     const daysSinceLast = Math.floor((today - lastStart) / (1000 * 60 * 60 * 24));
     const daysUntilNext = Math.floor((nextPeriodDate - today) / (1000 * 60 * 60 * 24));
     
-    // Update status
     if (daysSinceLast <= (lastEnd - lastStart) / (1000 * 60 * 60 * 24)) {
-        statusEl.innerHTML = `ðŸŒ¸ Currently on period (Day ${daysSinceLast + 1})<br>Mood: ${lastPeriod.mood || 'Not recorded'}`;
+        statusEl.innerHTML = `🌸 Currently on period (Day ${daysSinceLast + 1})<br>Mood: ${lastPeriod.mood || 'Not recorded'}`;
     } else if (daysUntilNext <= 7 && daysUntilNext > 0) {
-        statusEl.innerHTML = `âš ï¸ Period expected in ${daysUntilNext} days`;
+        statusEl.innerHTML = `⚠️ Period expected in ${daysUntilNext} days`;
     } else if (daysUntilNext <= 0) {
-        statusEl.textContent = 'âš ï¸ Period might be late';
+        statusEl.textContent = '⚠️ Period might be late';
     } else {
-        statusEl.textContent = `âœ… Period tracked. Next expected in ~${daysUntilNext} days`;
+        statusEl.textContent = `✅ Period tracked. Next expected in ~${daysUntilNext} days`;
     }
     
-    // Next period info
     nextInfoEl.innerHTML = `
         <strong>Next Period:</strong> ${nextPeriodDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}<br>
         <strong>Average Cycle:</strong> ${cycleLength} days<br>
@@ -1026,7 +954,6 @@ function renderPeriodCalendar() {
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-    // Day headers
     ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
         const dayHeader = document.createElement('div');
         dayHeader.className = 'calendar-day-header';
@@ -1034,14 +961,12 @@ function renderPeriodCalendar() {
         grid.appendChild(dayHeader);
     });
 
-    // Empty cells
     for (let i = 0; i < firstDay; i++) {
         const empty = document.createElement('div');
         empty.className = 'calendar-day empty';
         grid.appendChild(empty);
     }
 
-    // Days
     const today = new Date();
     for (let day = 1; day <= daysInMonth; day++) {
         const dayCell = document.createElement('div');
@@ -1050,7 +975,6 @@ function renderPeriodCalendar() {
         
         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         
-        // Check if this is a period day
         const periodEntry = periodData.find(entry => {
             const start = new Date(entry.startDate);
             const end = new Date(entry.endDate);
@@ -1060,10 +984,10 @@ function renderPeriodCalendar() {
         
         if (periodEntry) {
             dayCell.classList.add('period-day');
-            dayCell.innerHTML += '<span class="period-marker">ðŸŒ¸</span>';
+            // FIXED MOJIBAKE FLOWER
+            dayCell.innerHTML += '<span class="period-marker">🌸</span>';
         }
         
-        // Predict next periods
         if (periodData.length > 0) {
             const lastPeriod = periodData.sort((a, b) => new Date(b.startDate) - new Date(a.startDate))[0];
             const lastStart = new Date(lastPeriod.startDate);
@@ -1084,7 +1008,7 @@ function renderPeriodCalendar() {
     }
 }
 
-// ===== GAME ARCADE LOGIC (UNCHANGED) =====
+// ===== GAME ARCADE LOGIC =====
 function updateHighScoreDisplays() {
     document.getElementById('memHighScore').textContent = gameHighScores.memory === 100 ? '-' : gameHighScores.memory + " moves";
     document.getElementById('catchHighScore').textContent = gameHighScores.catch;
@@ -1106,9 +1030,10 @@ function startMemoryGame() {
     memLock = false;
     memHasFlippedCard = false;
 
+    // FIXED EMOJIS HERE
     const items = usePhotoAssets 
         ? ['assets/mem1.jpg', 'assets/mem2.jpg', 'assets/mem3.jpg', 'assets/mem4.jpg', 'assets/mem5.jpg', 'assets/mem6.jpg'] 
-        : ['ðŸ¼', 'ðŸ°', 'ðŸ’–', 'ðŸ“', 'ðŸ’‹', 'ðŸŒ¹'];
+        : ['🧸', '🐰', '💖', '🍓', '💋', '🌹']; 
 
     const deck = [...items, ...items].sort(() => 0.5 - Math.random());
 
@@ -1122,7 +1047,7 @@ function startMemoryGame() {
         if (usePhotoAssets) {
             const img = document.createElement('img');
             img.src = item;
-            img.onerror = function() { this.style.display='none'; frontFace.textContent='ðŸ“¸'; };
+            img.onerror = function() { this.style.display='none'; frontFace.textContent='📷'; };
             frontFace.appendChild(img);
         } else {
             frontFace.textContent = item;
@@ -1173,7 +1098,7 @@ function disableCards() {
             if (memMoves < gameHighScores.memory) {
                 gameHighScores.memory = memMoves;
                 saveHighScores();
-                showCustomPopup("New High Score!", `You won in ${memMoves} moves! ðŸŽ‰`);
+                showCustomPopup("New High Score!", `You won in ${memMoves} moves! 🎉`);
             } else {
                 showCustomPopup("You Won!", `Finished in ${memMoves} moves.`);
             }
@@ -1263,14 +1188,16 @@ function initCatchGame() {
         activeCtx.fillRect(basket.x, basket.y, basket.width, basket.height);
         activeCtx.fillStyle = 'white';
         activeCtx.font = '20px Arial';
-        activeCtx.fillText('ðŸ—‘ï¸', basket.x + 10, basket.y + 22);
+        // FIXED: BASKET EMOJI
+        activeCtx.fillText('🧺', basket.x + 10, basket.y + 22);
 
         if (frame % 40 === 0) {
             const isBad = Math.random() < 0.3;
             items.push({
                 x: Math.random() * (newCanvas.width - 30),
                 y: -30,
-                type: isBad ? 'ðŸ’”' : 'ðŸ’–',
+                // FIXED: FALLING HEARTS AND BROKEN HEARTS
+                type: isBad ? '💔' : '💖',
                 speed: 2 + Math.random() * 3
             });
         }
@@ -1284,7 +1211,7 @@ function initCatchGame() {
             if (item.y > basket.y && item.y < basket.y + basket.height &&
                 item.x + 30 > basket.x && item.x < basket.x + basket.width) {
                 
-                if (item.type === 'ðŸ’”') {
+                if (item.type === '💔') {
                     endCatchGame();
                     return;
                 } else {
@@ -1308,7 +1235,7 @@ function endCatchGame() {
     if (catchScore > gameHighScores.catch) {
         gameHighScores.catch = catchScore;
         saveHighScores();
-        showCustomPopup('Game Over', `New High Score: ${catchScore}! ðŸ†`);
+        showCustomPopup('Game Over', `New High Score: ${catchScore}! 🏆`);
     } else {
         showCustomPopup('Game Over', `Score: ${catchScore}`);
     }
@@ -1374,7 +1301,7 @@ function initSlasherGame() {
             let f = fruits[i];
             const dist = Math.sqrt((x - f.x) ** 2 + (y - f.y) ** 2);
             if (dist < f.size) {
-                if (f.type === 'ðŸ’£') {
+                if (f.type === '💣') {
                     endSlasherGame();
                     return;
                 }
@@ -1418,11 +1345,12 @@ function initSlasherGame() {
         trail = trail.filter(p => p.life > 0);
 
         if (frame % 50 === 0) {
+            // FIXED: FRUIT AND BOMB EMOJIS AS REQUESTED
             const types = [
-                {emoji: 'ðŸ“', color: 'red'}, 
-                {emoji: 'ðŸ‰', color: 'green'}, 
-                {emoji: 'ðŸ‘', color: 'orange'}, 
-                {emoji: 'ðŸ’£', color: 'black'}
+                {emoji: '🍓', color: 'red'}, 
+                {emoji: '🍉', color: 'green'}, 
+                {emoji: '🍊', color: 'orange'}, 
+                {emoji: '💣', color: 'black'}
             ];
             const obj = types[Math.floor(Math.random() * types.length)];
             fruits.push({
@@ -1471,9 +1399,9 @@ function endSlasherGame() {
     if (slasherScore > gameHighScores.slasher) {
         gameHighScores.slasher = slasherScore;
         saveHighScores();
-        showCustomPopup('BOOM! ðŸ’¥', `New High Score: ${slasherScore}! ðŸ†`);
+        showCustomPopup('BOOM! 💥', `New High Score: ${slasherScore}! 🏆`);
     } else {
-        showCustomPopup('BOOM! ðŸ’¥', `Game Over. Score: ${slasherScore}`);
+        showCustomPopup('BOOM! 💥', `Game Over. Score: ${slasherScore}`);
     }
     document.getElementById('slasherStartOverlay').style.display = 'flex';
 }
@@ -1490,18 +1418,17 @@ function showMissYouPopup() {
         let message = "";
 
         if (hour >= 5 && hour < 12) {
-            message = "Good morning, sunshine! â˜€ï¸";
+            message = "Good morning, sunshine! ☀️";
         } else if (hour >= 22 || hour < 5) {
-            message = "Sweet dreams, my love ðŸŒ™";
+            message = "Sweet dreams, my love 🌙";
         } else {
-            // Random messages
             const msgs = [
-                "You're my favorite notification ðŸ“±",
-                "I love you my chikoo! ðŸ¥°",
-                "Sending virtual huggies ðŸ¤— to my darling!",
-                "Sending virtual kissy ðŸ˜˜ to my darling!",
-                "Thinking of you, always! âœ¨",
-                "You're the best! ðŸ’–"
+                "You're my favorite notification 📱",
+                "I love you my chikoo! 🥰",
+                "Sending virtual huggies 🤗 to my darling!",
+                "Sending virtual kissy 😘 to my darling!",
+                "Thinking of you, always! ✨",
+                "You're the best! 💖"
             ];
             message = msgs[Math.floor(Math.random() * msgs.length)];
         }
@@ -1526,6 +1453,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadTheme();
     checkLoginStatus();
     
+    // Create floating emojis if not logged in initially
     if (!currentUser) createFloatingEmojis();
     
     const prevBtn = document.getElementById('prevMonthBtn');
