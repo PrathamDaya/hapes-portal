@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For my Hetu 💖</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="floating-bg" id="floatingBg"></div>
+
+    <button class="theme-toggle" id="themeToggle">🌓</button>
+
+    <div id="loginContainer">
+        <div class="login-box">
+            <h1>Welcome! Who are you?</h1>
+            <div class="login-options">
+                <button class="chikoo-btn" onclick="login('Chikoo')">I am Chikoo 🐰</button>
+                <button class="prath-btn" onclick="login('Prath')">I am Prath 🐼</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="appContainer">
+        <div class="app-header-info">
+            <span id="loggedInUserDisplay">User: Not logged in</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+
+        <section id="homeScreen" class="screen active">
+            <header class="main-header">
+                <h1>For my Hetu 💖</h1>
+            </header>
+            <main class="options-grid">
+                <div class="option-box main-option" onclick="navigateToApp('feelingsPortalScreen')">
+                    💖 Hetu's Feelings Portal 💖
+                </div>
+                <div class="option-box main-option" onclick="navigateToApp('diaryScreen')">
+                    📅 Hetu's Diary 📅
+                </div>
+                <div class="option-box main-option" onclick="navigateToApp('gameHubScreen')">
+                    🎮 Love Arcade 🎮
+                </div>
+                <div class="option-box main-option" onclick="navigateToApp('periodTrackerScreen')">
+                    🌸 Period Tracker 🌸
+                </div>
+                <div class="option-box main-option" onclick="navigateToApp('timelineScreen')">
+                    ⏳ Our Journey ⏳
+                </div>
+                <div class="option-box bunny-button" onclick="showMissYouPopup()">
+                    <span class="bunny-face">🐰</span>
+                </div>
+            </main>
+            <footer class="main-footer">
+                <p>&copy; 2025 For Hetu with Love 💝</p>
+            </footer>
+        </section>
+
+        <section id="feelingsPortalScreen" class="screen">
+            <div class="container">
+                <header>
+                    <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
+                    <h1>Hi <span class="dynamicUserName">User</span>, how can I help you?</h1>
+                </header>
+                <main>
+                    <section id="feelingsPage1" class="page active">
+                        <div class="option-box grievance" onclick="navigateToFeelingsPage('feelingsPage2', 'Grievance')">Grievance</div>
+                        <div class="option-box appreciate" onclick="navigateToFeelingsPage('feelingsPage2', 'Appreciate')">Appreciate</div>
+                        <div class="option-box sad" onclick="navigateToFeelingsPage('feelingsPage2', 'Sad')">Sad</div>
+                        <div class="option-box happy" onclick="navigateToFeelingsPage('feelingsPage2', 'Happy')">Happy</div>
+                        <button class="view-all-btn" onclick="fetchAndDisplayFeelingsEntries()">View All Entries</button>
+                    </section>
+
+                    <section id="feelingsPage2" class="page">
+                        <h2></h2>
+                        <div class="notebook">
+                            <textarea id="feelingsMessage" placeholder="Write your thoughts here..."></textarea>
+                            <button id="submitFeelingsBtn" onclick="submitFeelingsEntry()">Submit Entry</button>
+                        </div>
+                        <button class="back-btn" onclick="navigateToFeelingsPage('feelingsPage1')">Back</button>
+                    </section>
+
+                    <section id="feelingsPage3" class="page">
+                        <div class="confirmation-box">
+                            <div id="feelings-animation-container">
+                                <span id="feelings-mail-icon">📧</span>
+                                <div id="feelings-message-box"></div>
+                            </div>
+                            <p id="feelings-thank-you-message">Thank you for sharing! Your thoughts have been recorded.</p>
+                            <button class="main-home-btn" onclick="navigateToApp('homeScreen')">🏠 Main Home</button>
+                            <button class="back-to-feelings-btn" onclick="navigateToFeelingsPage('feelingsPage1')">New Entry</button>
+                        </div>
+                    </section>
+
+                    <section id="feelingsViewEntriesPage" class="page">
+                        <h2>Feelings Entries</h2>
+                        <div id="feelingsEntriesList" class="entries-list-container">
+                            <p>Loading entries...</p>
+                        </div>
+                        <button onclick="navigateToFeelingsPage('feelingsPage1')">Back to Feelings Portal</button>
+                    </section>
+                </main>
+            </div>
+        </section>
+
+        <section id="diaryScreen" class="screen">
+            <div class="container">
+                <header>
+                    <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
+                    <h1><span class="dynamicUserName">User</span>'s Diary</h1>
+                </header>
+                <main>
+                    <section id="diaryCalendarPage" class="page active">
+                        <div class="calendar-header">
+                            <button id="prevMonthBtn">←</button>
+                            <h2 id="currentMonthYear"></h2>
+                            <button id="nextMonthBtn">→</button>
+                        </div>
+                        <div id="calendarGrid" class="calendar-grid"></div>
+                        <div class="diary-actions">
+                            <button onclick="fetchAndDisplayAllDiaryEntries()">View All Entries</button>
+                        </div>
+                    </section>
+
+                    <section id="diaryEntryPage" class="page">
+                        <h2 id="diaryEntryTitle"></h2>
+                        <p class="date-display">Date: <span id="diaryDateDisplay"></span></p>
+                        <div class="notebook">
+                            <textarea id="diaryThoughts" placeholder="Write your diary entry here..."></textarea>
+                            <input type="hidden" id="selectedDate">
+                            <button onclick="submitDiaryEntry()">Save Entry</button>
+                        </div>
+                        <button class="back-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Calendar</button>
+                    </section>
+
+                    <section id="diaryConfirmationPage" class="page">
+                        <div class="confirmation-box">
+                            <p>Your diary entry has been saved! 📝</p>
+                            <button class="main-home-btn" onclick="navigateToApp('homeScreen')">🏠 Main Home</button>
+                            <button class="back-to-diary-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Diary</button>
+                        </div>
+                    </section>
+
+                    <section id="diaryViewPage" class="page">
+                        <h2 class="date-display">Date: <span id="viewDiaryDateDisplay"></span></h2>
+                        <div class="notebook view-only">
+                            <p id="viewDiaryThoughts"></p>
+                            <p id="diaryEntryAttribution" class="entry-attribution"></p>
+                        </div>
+                        <div id="diaryViewPageReplySection" class="reply-section-container"></div>
+                        <button class="back-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Calendar</button>
+                    </section>
+
+                    <section id="allDiaryEntriesPage" class="page">
+                        <h2>All Diary Entries</h2>
+                        <div id="allDiaryEntriesList" class="entries-list-container">
+                            <p>Loading entries...</p>
+                        </div>
+                        <button onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Calendar</button>
+                    </section>
+                </main>
+            </div>
+        </section>
+
+        <section id="timelineScreen" class="screen">
+            <div class="container" style="max-width: 100%;">
+                <header>
+                    <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
+                    <h1>Memory Lane 💖</h1>
+                    <button class="add-memory-btn" onclick="openAddMemoryModal()">➕ Add Memory</button>
+                </header>
+                <main>
+                    <div id="timelineContainer" class="timeline-container">
+                        </div>
+                </main>
+            </div>
+        </section>
+
+        <section id="gameHubScreen" class="screen">
+            <div class="container">
+                <header>
+                    <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
+                    <h1>Love Arcade 🕹️</h1>
+                </header>
+                <main class="options-grid">
+                    <div class="option-box main-option" onclick="navigateToApp('dareGameScreen')">
+                        😈 Couple's Dare Game 😈
+                    </div>
+                    <div class="option-box main-option" onclick="startMemoryGame()">
+                        🧠 Memory Match 🧠
+                        <div class="high-score-display">Best: <span id="memHighScore">0</span></div>
+                    </div>
+                    <div class="option-box main-option" onclick="startCatchGame()">
+                        💖 Catch the Heart 💖
+                        <div class="high-score-display">Best: <span id="catchHighScore">0</span></div>
+                    </div>
+                    <div class="option-box main-option" onclick="startSlasherGame()">
+                        🍉 Love Slasher 🍉
+                        <div class="high-score-display">Best: <span id="slashHighScore">0</span></div>
+                    </div>
+                </main>
+            </div>
+        </section>
+
+        <section id="dareGameScreen" class="screen">
+            <div class="container">
+                <header>
+                    <button class="back-to-home-btn" onclick="navigateToApp('gameHubScreen')">🕹️ Games</button>
+                    <h1>Couple's Dare Game 😈</h1>
+                </header>
+                <main>
+                    <div class="dare-display-area">
+                        <p id="dareText">Click the button below to get your first dare!</p>
+                    </div>
+                    <div class="dare-actions">
+                        <button id="nextDareBtn" onclick="generateDare()">Next Dare 🔥</button>
+                    </div>
+                </main>
+            </div>
+        </section>
+
+        <section id="memoryGameScreen" class="screen">
+            <div class="container">
+                <header>
+                    <button class="back-to-home-btn" onclick="quitGame()">🕹️ Quit</button>
+                    <h1>Memory Match</h1>
+                    <div class="score-board">Moves: <span id="memoryMoves">0</span></div>
+                </header>
+                <main>
+                    <div class="memory-grid" id="memoryGrid"></div>
+                    <button id="restartMemoryBtn" onclick="startMemoryGame()">Restart Game</button>
+                </main>
+            </div>
+        </section>
+
+        <section id="catchGameScreen" class="screen">
+            <div class="container">
+                <header>
+                    <button class="back-to-home-btn" onclick="quitGame()">🕹️ Quit</button>
+                    <h1>Catch The Heart</h1>
+                    <div class="score-board">Score: <span id="catchScore">0</span></div>
+                </header>
+                <main>
+                    <div id="catchGameCanvasContainer" class="game-canvas-container">
+                        <canvas id="catchGameCanvas"></canvas>
+                        <div id="catchStartOverlay" class="game-overlay">
+                            <p>Tap/Drag basket to catch hearts!</p>
+                            <p>Avoid the broken hearts 💔</p>
+                            <button onclick="initCatchGame()">Start</button>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </section>
+
+        <section id="slasherGameScreen" class="screen">
+            <div class="container">
+                <header>
+                    <button class="back-to-home-btn" onclick="quitGame()">🕹️ Quit</button>
+                    <h1>Love Slasher</h1>
+                    <div class="score-board">Score: <span id="slasherScore">0</span></div>
+                </header>
+                <main>
+                    <div id="slasherCanvasContainer" class="game-canvas-container">
+                        <canvas id="slasherCanvas"></canvas>
+                        <div id="slasherStartOverlay" class="game-overlay">
+                            <p>Swipe/Mouse over fruits to slash!</p>
+                            <p>Don't touch the Bomb 💣</p>
+                            <button onclick="initSlasherGame()">Start</button>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </section>
+
+        <section id="periodTrackerScreen" class="screen">
+            <div class="container">
+                <header>
+                    <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
+                    <h1>Period Tracker 🌸</h1>
+                </header>
+                <main>
+                    <div class="period-tracker-panel">
+                        <h3>Track Your Cycle</h3>
+                        <div class="period-input-group">
+                            <input type="date" id="periodStartDate">
+                            <input type="date" id="periodEndDate" placeholder="End Date (optional)">
+                        </div>
+                        <div class="mood-selector">
+                            <button onclick="selectMood('😊')" class="mood-btn">😊</button>
+                            <button onclick="selectMood('😢')" class="mood-btn">😢</button>
+                            <button onclick="selectMood('😡')" class="mood-btn">😡</button>
+                            <button onclick="selectMood('🥰')" class="mood-btn">🥰</button>
+                            <button onclick="selectMood('😴')" class="mood-btn">😴</button>
+                        </div>
+                        <button onclick="addPeriodEntry()">Add Period Entry</button>
+                        <div class="period-status" id="periodStatus">
+                            No period data recorded yet.
+                        </div>
+                        <div class="next-period-info" id="nextPeriodInfo"></div>
+                    </div>
+                    <div class="period-tracker-panel">
+                        <h3>Period Calendar</h3>
+                        <div class="calendar-header">
+                            <button onclick="changePeriodMonth(-1)">←</button>
+                            <h2 id="periodMonthYear"></h2>
+                            <button onclick="changePeriodMonth(1)">→</button>
+                        </div>
+                        <div id="periodCalendarGrid" class="calendar-grid"></div>
+                    </div>
+                    <button onclick="navigateToApp('homeScreen')">Back to Home</button>
+                </main>
+            </div>
+        </section>
+    </div>
+
+    <div id="missYouPopup">
+        <p id="missYouMessage"></p>
+        <button onclick="closeMissYouPopup()">Okay ❤️</button>
+    </div>
+    
+    <div id="memoryModal" class="memory-modal" onclick="closeMemoryModal()">
+        <div class="memory-modal-content" onclick="event.stopPropagation()">
+            <h2 id="modalTitle">Title</h2>
+            <img id="modalImg" src="" alt="Memory">
+            <p id="modalDesc">Description</p>
+            <button onclick="closeMemoryModal()">Close</button>
+        </div>
+    </div>
+
+    <div id="addMemoryModal" class="memory-modal">
+        <div class="memory-modal-content input-mode">
+            <h2>Add New Memory 📝</h2>
+            <input type="text" id="newMemTitle" placeholder="Title (e.g. First Date)">
+            <input type="date" id="newMemDate">
+            <input type="number" id="newMemImgNum" placeholder="Image Number (e.g. 6 for 6.jpg)">
+            <textarea id="newMemDesc" placeholder="Description (The story behind the pic...)"></textarea>
+            <div class="modal-actions">
+                <button onclick="saveNewMemory()">Save Memory 💾</button>
+                <button onclick="closeAddMemoryModal()" style="background: #ccc;">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="overlay"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
