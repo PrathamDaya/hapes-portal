@@ -6,6 +6,7 @@
     <title>For my Hetu 💖</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
     <div class="floating-bg" id="floatingBg"></div>
@@ -71,7 +72,6 @@
                         <div class="option-box happy" onclick="navigateToFeelingsPage('feelingsPage2', 'Happy')">Happy</div>
                         <button class="view-all-btn" onclick="fetchAndDisplayFeelingsEntries()">View All Entries</button>
                     </section>
-
                     <section id="feelingsPage2" class="page">
                         <h2></h2>
                         <div class="notebook">
@@ -80,7 +80,6 @@
                         </div>
                         <button class="back-btn" onclick="navigateToFeelingsPage('feelingsPage1')">Back</button>
                     </section>
-
                     <section id="feelingsPage3" class="page">
                         <div class="confirmation-box">
                             <div id="feelings-animation-container">
@@ -92,7 +91,6 @@
                             <button class="back-to-feelings-btn" onclick="navigateToFeelingsPage('feelingsPage1')">New Entry</button>
                         </div>
                     </section>
-
                     <section id="feelingsViewEntriesPage" class="page">
                         <h2>Feelings Entries</h2>
                         <div id="feelingsEntriesList" class="entries-list-container">
@@ -122,7 +120,6 @@
                             <button onclick="fetchAndDisplayAllDiaryEntries()">View All Entries</button>
                         </div>
                     </section>
-
                     <section id="diaryEntryPage" class="page">
                         <h2 id="diaryEntryTitle"></h2>
                         <p class="date-display">Date: <span id="diaryDateDisplay"></span></p>
@@ -133,7 +130,6 @@
                         </div>
                         <button class="back-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Calendar</button>
                     </section>
-
                     <section id="diaryConfirmationPage" class="page">
                         <div class="confirmation-box">
                             <p>Your diary entry has been saved! 📝</p>
@@ -141,7 +137,6 @@
                             <button class="back-to-diary-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Diary</button>
                         </div>
                     </section>
-
                     <section id="diaryViewPage" class="page">
                         <h2 class="date-display">Date: <span id="viewDiaryDateDisplay"></span></h2>
                         <div class="notebook view-only">
@@ -151,7 +146,6 @@
                         <div id="diaryViewPageReplySection" class="reply-section-container"></div>
                         <button class="back-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Calendar</button>
                     </section>
-
                     <section id="allDiaryEntriesPage" class="page">
                         <h2>All Diary Entries</h2>
                         <div id="allDiaryEntriesList" class="entries-list-container">
@@ -171,8 +165,7 @@
                     <button class="add-memory-btn" onclick="openAddMemoryModal()">➕ Add Memory</button>
                 </header>
                 <main>
-                    <div id="timelineContainer" class="timeline-container">
-                        </div>
+                    <div id="timelineContainer" class="timeline-container"></div>
                 </main>
             </div>
         </section>
@@ -184,6 +177,10 @@
                     <h1>Love Arcade 🕹️</h1>
                 </header>
                 <main class="options-grid">
+                    <div class="option-box main-option" onclick="startCookingGame()">
+                         🍔 Bistro Hetu 3D 🍕
+                        <div class="high-score-display">Cash: <span id="cookingCashDisplay">0</span></div>
+                    </div>
                     <div class="option-box main-option" onclick="navigateToApp('dareGameScreen')">
                         😈 Couple's Dare Game 😈
                     </div>
@@ -201,6 +198,26 @@
                     </div>
                 </main>
             </div>
+        </section>
+
+        <section id="cookingGameScreen" class="screen">
+             <div id="cookingGameContainer">
+                 <div id="cookingUI">
+                     <div class="top-bar">
+                         <button class="quit-btn" onclick="quitGame()">Quit</button>
+                         <div class="stats-box">💰 Cash: <span id="gameCash">0</span></div>
+                         <div class="stats-box">🏆 Score: <span id="gameScore">0</span></div>
+                     </div>
+                     <div id="ordersPanel">
+                         </div>
+                     <div id="cookingShopPanel">
+                         <button id="unlockPizzaBtn" onclick="buyUpgrade('pizza')">Unlock Pizza ($100)</button>
+                     </div>
+                     <div id="controlsHelp">
+                         Tap stations to Cook/Assemble. Tap Customer to Serve.
+                     </div>
+                 </div>
+             </div>
         </section>
 
         <section id="dareGameScreen" class="screen">
