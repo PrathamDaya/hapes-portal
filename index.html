@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>For my Hetu 💖</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="floating-bg" id="floatingBg"></div>
@@ -13,8 +13,8 @@
     <button class="theme-toggle" id="themeToggle">🌓</button>
 
     <div id="loginContainer">
-        <div class="login-box">
-            <h1>Welcome! Who are you?</h1>
+        <div class="login-box glass-panel">
+            <h1>Who are you?</h1>
             <div class="login-options">
                 <button class="chikoo-btn" onclick="login('Chikoo')">I am Chikoo 🐰</button>
                 <button class="prath-btn" onclick="login('Prath')">I am Prath 🐼</button>
@@ -23,8 +23,8 @@
     </div>
 
     <div id="appContainer">
-        <div class="app-header-info">
-            <span id="loggedInUserDisplay">User: Not logged in</span>
+        <div class="app-header-info glass-panel-sm">
+            <span id="loggedInUserDisplay">User: ...</span>
             <button class="logout-btn" onclick="logout()">Logout</button>
         </div>
 
@@ -34,23 +34,22 @@
             </header>
             <main class="options-grid">
                 <div class="option-box main-option" onclick="navigateToApp('feelingsPortalScreen')">
-                    💖 Hetu's Feelings Portal
+                    <span>💖</span> Feelings Portal
                 </div>
                 <div class="option-box main-option" onclick="navigateToApp('diaryScreen')">
-                    📅 Hetu's Diary
+                    <span>📅</span> Diary
                 </div>
                 <div class="option-box main-option" onclick="navigateToApp('gameHubScreen')">
-                    🎮 Love Arcade
+                    <span>🎮</span> Love Arcade
                 </div>
                 <div class="option-box main-option" onclick="navigateToApp('periodTrackerScreen')">
-                    🌸 Period Tracker
+                    <span>🌸</span> Period Tracker
                 </div>
                 <div class="option-box main-option" onclick="navigateToApp('timelineScreen')">
-                    ⏳ Our Journey
+                    <span>⏳</span> Our Journey
                 </div>
                 <div class="option-box bunny-button" onclick="showMissYouPopup()">
                     <span class="bunny-face">🐰</span>
-                    <span style="font-size: 0.5em; display: block; margin-top: 5px;">Tap me!</span>
                 </div>
             </main>
             <footer class="main-footer">
@@ -59,252 +58,238 @@
         </section>
 
         <section id="feelingsPortalScreen" class="screen">
-            <div class="container">
+            <div class="container glass-panel">
                 <header>
-                    <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
-                    <h1>Feelings Portal 💖</h1>
+                    <button class="nav-btn back-btn" onclick="navigateToApp('homeScreen')">🏠</button>
+                    <h1>Feelings Portal</h1>
                 </header>
                 <main>
                     <section id="feelingsPage1" class="page active">
-                        <p class="instruction-text">How are you feeling today?</p>
                         <div class="mood-grid">
-                            <div class="option-box grievance" onclick="navigateToFeelingsPage('feelingsPage2', 'Grievance')">😤 Grievance</div>
-                            <div class="option-box appreciate" onclick="navigateToFeelingsPage('feelingsPage2', 'Appreciate')">🥰 Appreciate</div>
-                            <div class="option-box sad" onclick="navigateToFeelingsPage('feelingsPage2', 'Sad')">😢 Sad</div>
-                            <div class="option-box happy" onclick="navigateToFeelingsPage('feelingsPage2', 'Happy')">🥳 Happy</div>
+                            <div class="mood-card grievance" onclick="navigateToFeelingsPage('feelingsPage2', 'Grievance')">😤 Grievance</div>
+                            <div class="mood-card appreciate" onclick="navigateToFeelingsPage('feelingsPage2', 'Appreciate')">🥰 Appreciate</div>
+                            <div class="mood-card sad" onclick="navigateToFeelingsPage('feelingsPage2', 'Sad')">😢 Sad</div>
+                            <div class="mood-card happy" onclick="navigateToFeelingsPage('feelingsPage2', 'Happy')">😃 Happy</div>
                         </div>
-                        <button class="view-all-btn" onclick="fetchAndDisplayFeelingsEntries()">View Past Entries</button>
+                        <button class="action-btn outline" onclick="fetchAndDisplayFeelingsEntries()">View Past Entries</button>
                     </section>
 
                     <section id="feelingsPage2" class="page">
                         <h2 id="feelingsHeader">Tell me more...</h2>
                         <div class="notebook">
-                            <textarea id="feelingsMessage" placeholder="Write your thoughts here..."></textarea>
-                            <button id="submitFeelingsBtn" onclick="submitFeelingsEntry()">Submit Entry 💌</button>
+                            <textarea id="feelingsMessage" placeholder="Pour your heart out..."></textarea>
+                            <button class="action-btn" id="submitFeelingsBtn" onclick="submitFeelingsEntry()">Submit Entry</button>
                         </div>
-                        <button class="back-btn" onclick="navigateToFeelingsPage('feelingsPage1')">Back</button>
+                        <button class="nav-btn" onclick="navigateToFeelingsPage('feelingsPage1')">Back</button>
                     </section>
 
                     <section id="feelingsPage3" class="page">
-                        <div class="confirmation-box">
-                            <div id="feelings-animation-container">
-                                <span id="feelings-mail-icon">📧</span>
-                                <div id="feelings-message-box"></div>
-                            </div>
-                            <p>Thank you for sharing! Your thoughts have been recorded.</p>
-                            <button class="main-home-btn" onclick="navigateToApp('homeScreen')">🏠 Main Home</button>
-                            <button class="back-to-feelings-btn" onclick="navigateToFeelingsPage('feelingsPage1')">New Entry</button>
+                        <div class="success-message">
+                            <div class="icon-bounce">💌</div>
+                            <p>Sent with love!</p>
+                            <button class="action-btn" onclick="navigateToApp('homeScreen')">Home</button>
                         </div>
                     </section>
 
                     <section id="feelingsViewEntriesPage" class="page">
-                        <h2>Feelings Entries</h2>
-                        <div id="feelingsEntriesList" class="entries-list-container">
-                            <p>Loading entries...</p>
-                        </div>
-                        <button class="back-btn" onclick="navigateToFeelingsPage('feelingsPage1')">Back</button>
+                        <h2>Past Feelings</h2>
+                        <div id="feelingsEntriesList" class="entries-list-container"></div>
+                        <button class="nav-btn" onclick="navigateToFeelingsPage('feelingsPage1')">Back</button>
                     </section>
                 </main>
             </div>
         </section>
 
         <section id="diaryScreen" class="screen">
-            <div class="container">
+            <div class="container glass-panel">
                 <header>
-                    <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
-                    <h1><span class="dynamicUserName">User</span>'s Diary</h1>
+                    <button class="nav-btn back-btn" onclick="navigateToApp('homeScreen')">🏠</button>
+                    <h1>Diary</h1>
                 </header>
                 <main>
                     <section id="diaryCalendarPage" class="page active">
                         <div class="calendar-header">
-                            <button id="prevMonthBtn">◀</button>
+                            <button onclick="changeMonth(-1)">◀</button>
                             <h2 id="currentMonthYear"></h2>
-                            <button id="nextMonthBtn">▶</button>
+                            <button onclick="changeMonth(1)">▶</button>
                         </div>
                         <div id="calendarGrid" class="calendar-grid"></div>
-                        <div class="diary-actions">
-                            <button onclick="fetchAndDisplayAllDiaryEntries()">View All Entries</button>
-                        </div>
+                        <button class="action-btn outline" onclick="fetchAndDisplayAllDiaryEntries()">View All</button>
                     </section>
 
                     <section id="diaryEntryPage" class="page">
-                        <h2 id="diaryEntryTitle"></h2>
-                        <p class="date-display">Date: <span id="diaryDateDisplay"></span></p>
+                        <h2 id="diaryEntryTitle">New Entry</h2>
                         <div class="notebook">
                             <textarea id="diaryThoughts" placeholder="Dear Diary..."></textarea>
                             <input type="hidden" id="selectedDate">
-                            <button onclick="submitDiaryEntry()">Save Entry 💾</button>
+                            <button class="action-btn" onclick="submitDiaryEntry()">Save</button>
                         </div>
-                        <button class="back-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back</button>
+                        <button class="nav-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Cancel</button>
                     </section>
 
                     <section id="diaryConfirmationPage" class="page">
-                        <div class="confirmation-box">
-                            <p>Your diary entry has been saved! 📝</p>
-                            <button class="main-home-btn" onclick="navigateToApp('homeScreen')">🏠 Main Home</button>
-                            <button class="back-to-diary-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Diary</button>
+                         <div class="success-message">
+                            <div class="icon-bounce">📝</div>
+                            <p>Diary Updated!</p>
+                            <button class="action-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Calendar</button>
                         </div>
                     </section>
 
                     <section id="diaryViewPage" class="page">
-                        <h2 class="date-display">Date: <span id="viewDiaryDateDisplay"></span></h2>
+                        <h2 id="viewDiaryDateDisplay"></h2>
                         <div class="notebook view-only">
                             <p id="viewDiaryThoughts"></p>
-                            <p id="diaryEntryAttribution" class="entry-attribution"></p>
+                            <p id="diaryEntryAttribution" class="meta-text"></p>
                         </div>
-                        <div id="diaryViewPageReplySection" class="reply-section-container"></div>
-                        <button class="back-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back</button>
+                        <div id="diaryViewPageReplySection"></div>
+                        <button class="nav-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back</button>
                     </section>
 
                     <section id="allDiaryEntriesPage" class="page">
-                        <h2>All Diary Entries</h2>
-                        <div id="allDiaryEntriesList" class="entries-list-container">
-                            <p>Loading entries...</p>
-                        </div>
-                        <button class="back-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back</button>
+                        <h2>All Entries</h2>
+                        <div id="allDiaryEntriesList" class="entries-list-container"></div>
+                        <button class="nav-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back</button>
                     </section>
                 </main>
             </div>
         </section>
 
         <section id="timelineScreen" class="screen">
-            <div class="container timeline-wrapper">
+            <div class="container glass-panel full-width-mobile">
                 <header>
-                    <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
-                    <h1>Our Memory Lane 💖</h1>
-                    <button class="add-memory-btn" onclick="openAddMemoryModal()">➕ Add Memory</button>
+                    <button class="nav-btn back-btn" onclick="navigateToApp('homeScreen')">🏠</button>
+                    <h1>Our Journey</h1>
+                    <button class="add-btn" onclick="openAddMemoryModal()">+</button>
                 </header>
                 <main>
-                    <div id="timelineContainer" class="timeline-container">
-                        </div>
+                    <div id="timelineContainer" class="timeline-scroll-area"></div>
                 </main>
             </div>
         </section>
 
         <section id="gameHubScreen" class="screen">
-            <div class="container">
+            <div class="container glass-panel">
                 <header>
-                    <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
-                    <h1>Love Arcade 🕹️</h1>
+                    <button class="nav-btn back-btn" onclick="navigateToApp('homeScreen')">🏠</button>
+                    <h1>Arcade</h1>
                 </header>
-                <main class="options-grid">
-                    <div class="option-box main-option" onclick="navigateToApp('dareGameScreen')">
-                        😈 Couple's Dare Game
+                <main class="game-menu">
+                    <div class="game-card" onclick="navigateToApp('dareGameScreen')">
+                        <div class="icon">😈</div>
+                        <div class="info">
+                            <h3>Couples Dare</h3>
+                            <p>Spicy challenges</p>
+                        </div>
                     </div>
-                    <div class="option-box main-option" onclick="startMemoryGame()">
-                        🧠 Memory Match
-                        <div class="high-score-display">Best: <span id="memHighScore">0</span></div>
+                    <div class="game-card" onclick="startMemoryGame()">
+                        <div class="icon">🧠</div>
+                        <div class="info">
+                            <h3>Memory Match</h3>
+                            <p>Best: <span id="memHighScore">0</span></p>
+                        </div>
                     </div>
-                    <div class="option-box main-option" onclick="startCatchGame()">
-                        🧺 Catch the Heart
-                        <div class="high-score-display">Best: <span id="catchHighScore">0</span></div>
+                    <div class="game-card" onclick="startCatchGame()">
+                        <div class="icon">🧺</div>
+                        <div class="info">
+                            <h3>Catch Heart</h3>
+                            <p>Best: <span id="catchHighScore">0</span></p>
+                        </div>
                     </div>
-                    <div class="option-box main-option" onclick="startSlasherGame()">
-                        🍉 Love Slasher
-                        <div class="high-score-display">Best: <span id="slashHighScore">0</span></div>
+                    <div class="game-card" onclick="startSlasherGame()">
+                        <div class="icon">🍉</div>
+                        <div class="info">
+                            <h3>Love Slasher</h3>
+                            <p>Best: <span id="slashHighScore">0</span></p>
+                        </div>
                     </div>
                 </main>
             </div>
         </section>
 
         <section id="dareGameScreen" class="screen">
-            <div class="container">
+            <div class="container glass-panel">
                 <header>
-                    <button class="back-to-home-btn" onclick="navigateToApp('gameHubScreen')">🕹️ Back</button>
-                    <h1>Couple's Dare 😈</h1>
+                    <button class="nav-btn back-btn" onclick="navigateToApp('gameHubScreen')">🎮</button>
+                    <h1>Dare Game</h1>
                 </header>
                 <main>
-                    <div class="dare-display-area">
-                        <p id="dareText">Click the button below to get your first dare!</p>
+                    <div class="dare-card">
+                        <p id="dareText">Ready for a challenge?</p>
                     </div>
-                    <div class="dare-actions">
-                        <button id="nextDareBtn" onclick="generateDare()">Next Dare 🔥</button>
-                    </div>
+                    <button class="action-btn pulsate" onclick="generateDare()">Spin the Wheel 🔥</button>
                 </main>
             </div>
         </section>
 
         <section id="memoryGameScreen" class="screen">
-            <div class="container">
-                <header>
-                    <button class="back-to-home-btn" onclick="quitGame()">🕹️ Quit</button>
-                    <h1>Memory Match</h1>
-                    <div class="score-board">Moves: <span id="memoryMoves">0</span></div>
+            <div class="container glass-panel no-padding">
+                <header class="game-header">
+                    <button class="nav-btn" onclick="quitGame()">Quit</button>
+                    <span>Moves: <span id="memoryMoves">0</span></span>
                 </header>
                 <main>
                     <div class="memory-grid" id="memoryGrid"></div>
-                    <button id="restartMemoryBtn" onclick="startMemoryGame()">Restart Game</button>
                 </main>
             </div>
         </section>
 
         <section id="catchGameScreen" class="screen">
-            <div class="container full-height-mobile">
-                <header>
-                    <button class="back-to-home-btn" onclick="quitGame()">🕹️ Quit</button>
-                    <h1>Catch The Heart</h1>
-                    <div class="score-board">Score: <span id="catchScore">0</span></div>
-                </header>
-                <main>
-                    <div id="catchGameCanvasContainer" class="game-canvas-container">
-                        <canvas id="catchGameCanvas"></canvas>
-                        <div id="catchStartOverlay" class="game-overlay">
-                            <p>Drag the basket 🧺 to catch hearts 💖!</p>
-                            <p>Avoid broken hearts 💔</p>
-                            <button onclick="initCatchGame()">Start Game</button>
-                        </div>
+            <div class="full-screen-game">
+                <div class="game-hud">
+                    <button class="nav-btn glass-btn" onclick="quitGame()">❌</button>
+                    <span class="score-pill">Score: <span id="catchScore">0</span></span>
+                </div>
+                <div id="catchGameCanvasContainer" class="game-canvas-wrapper">
+                    <canvas id="catchGameCanvas"></canvas>
+                    <div id="catchStartOverlay" class="game-overlay active">
+                        <h2>Catch The Heart</h2>
+                        <p>Drag the basket to catch hearts!</p>
+                        <button class="play-btn" onclick="initCatchGame()">PLAY</button>
                     </div>
-                </main>
+                </div>
             </div>
         </section>
 
         <section id="slasherGameScreen" class="screen">
-            <div class="container full-height-mobile">
-                <header>
-                    <button class="back-to-home-btn" onclick="quitGame()">🕹️ Quit</button>
-                    <h1>Love Slasher</h1>
-                    <div class="score-board">Score: <span id="slasherScore">0</span></div>
-                </header>
-                <main>
-                    <div id="slasherCanvasContainer" class="game-canvas-container">
-                        <canvas id="slasherCanvas"></canvas>
-                        <div id="slasherStartOverlay" class="game-overlay">
-                            <p>Swipe to slash fruits! 🍓🍊</p>
-                            <p>Don't touch the Bomb 💣</p>
-                            <button onclick="initSlasherGame()">Start Game</button>
-                        </div>
+            <div class="full-screen-game">
+                <div class="game-hud">
+                    <button class="nav-btn glass-btn" onclick="quitGame()">❌</button>
+                    <span class="score-pill">Score: <span id="slasherScore">0</span></span>
+                </div>
+                <div id="slasherCanvasContainer" class="game-canvas-wrapper">
+                    <canvas id="slasherCanvas"></canvas>
+                    <div id="slasherStartOverlay" class="game-overlay active">
+                        <h2>Love Slasher</h2>
+                        <p>Swipe fruits! Avoid bombs 💣</p>
+                        <button class="play-btn" onclick="initSlasherGame()">PLAY</button>
                     </div>
-                </main>
+                </div>
             </div>
         </section>
 
         <section id="periodTrackerScreen" class="screen">
-            <div class="container">
+            <div class="container glass-panel">
                 <header>
-                    <button class="back-to-home-btn" onclick="navigateToApp('homeScreen')">🏠 Home</button>
-                    <h1>Period Tracker 🌸</h1>
+                    <button class="nav-btn back-btn" onclick="navigateToApp('homeScreen')">🏠</button>
+                    <h1>Cycle Tracker</h1>
                 </header>
                 <main>
-                    <div class="period-tracker-panel">
-                        <h3>Log Entry</h3>
-                        <div class="period-input-group">
-                            <label>Start Date:</label>
-                            <input type="date" id="periodStartDate">
-                            <label>End Date:</label>
-                            <input type="date" id="periodEndDate">
+                    <div class="tracker-card">
+                        <div id="periodStatus" class="status-box">Loading...</div>
+                        <div class="input-row">
+                            <input type="date" id="periodStartDate" class="date-input">
+                            <input type="date" id="periodEndDate" class="date-input">
                         </div>
-                        <div class="mood-selector">
+                        <div class="mood-selector-row">
                             <button onclick="selectMood('😊')" class="mood-btn">😊</button>
                             <button onclick="selectMood('😢')" class="mood-btn">😢</button>
                             <button onclick="selectMood('😡')" class="mood-btn">😡</button>
                             <button onclick="selectMood('🥰')" class="mood-btn">🥰</button>
-                            <button onclick="selectMood('😴')" class="mood-btn">😴</button>
                         </div>
-                        <button onclick="addPeriodEntry()">Save Entry</button>
-                        <div class="period-status" id="periodStatus">No data yet.</div>
-                        <div class="next-period-info" id="nextPeriodInfo"></div>
+                        <button class="action-btn" onclick="addPeriodEntry()">Log Entry</button>
                     </div>
-                    <div class="period-tracker-panel">
+                    
+                    <div class="calendar-wrapper">
                         <div class="calendar-header">
                             <button onclick="changePeriodMonth(-1)">◀</button>
                             <h2 id="periodMonthYear"></h2>
@@ -317,60 +302,36 @@
         </section>
     </div>
 
-    <div id="missYouPopup">
-        <p id="missYouMessage"></p>
-        <button onclick="closeMissYouPopup()">Okay ❤️</button>
+    <div id="missYouPopup" class="popup-modal">
+        <div class="popup-content bounce-in">
+            <div class="bunny-large">🐰</div>
+            <p id="missYouMessage"></p>
+            <button class="action-btn" onclick="closeMissYouPopup()">Okay ❤️</button>
+        </div>
     </div>
     
-    <div id="memoryModal" class="memory-modal" onclick="closeMemoryModal()">
-        <div class="memory-modal-content" onclick="event.stopPropagation()">
+    <div id="memoryModal" class="popup-modal" onclick="closeMemoryModal()">
+        <div class="popup-content memory-view" onclick="event.stopPropagation()">
+            <img id="modalImg" src="" alt="Memory">
             <h2 id="modalTitle"></h2>
-            <div class="modal-img-wrapper">
-                <img id="modalImg" src="" alt="Memory">
-            </div>
             <p id="modalDesc"></p>
-            <button class="close-modal-btn" onclick="closeMemoryModal()">Close</button>
+            <button class="action-btn small" onclick="closeMemoryModal()">Close</button>
         </div>
     </div>
 
-    <div id="addMemoryModal" class="memory-modal">
-        <div class="memory-modal-content input-mode">
-            <h2>Add New Memory 📝</h2>
-            <div class="form-group">
-                <label>Title</label>
-                <input type="text" id="newMemTitle" placeholder="e.g. First Date">
-            </div>
-            <div class="form-group">
-                <label>Date</label>
-                <input type="date" id="newMemDate">
-            </div>
-            <div class="form-group">
-                <label>Image Type</label>
-                <select id="newMemImgType" onchange="toggleImgInput()">
-                    <option value="url">Image URL</option>
-                    <option value="asset">Asset Number (If uploaded)</option>
-                </select>
-            </div>
-            <div class="form-group" id="imgUrlGroup">
-                <label>Image URL</label>
-                <input type="text" id="newMemImgUrl" placeholder="Paste link here...">
-            </div>
-            <div class="form-group" id="imgAssetGroup" style="display:none;">
-                <label>Asset Number</label>
-                <input type="number" id="newMemImgNum" placeholder="e.g. 5">
-            </div>
-            <div class="form-group">
-                <label>Description</label>
-                <textarea id="newMemDesc" placeholder="The story behind this..."></textarea>
-            </div>
-            <div class="modal-actions">
-                <button class="save-btn" onclick="saveNewMemory()">Save 💾</button>
-                <button class="cancel-btn" onclick="closeAddMemoryModal()">Cancel</button>
+    <div id="addMemoryModal" class="popup-modal">
+        <div class="popup-content input-mode">
+            <h3>Add New Memory 📝</h3>
+            <input type="text" id="newMemTitle" placeholder="Title">
+            <input type="date" id="newMemDate">
+            <input type="text" id="newMemImgNum" placeholder="Image Name (e.g. 1 or https://...)">
+            <textarea id="newMemDesc" placeholder="Description..."></textarea>
+            <div class="modal-buttons">
+                <button class="action-btn" onclick="saveNewMemory()">Save</button>
+                <button class="action-btn secondary" onclick="closeAddMemoryModal()">Cancel</button>
             </div>
         </div>
     </div>
-
-    <div id="overlay"></div>
 
     <script src="script.js"></script>
 </body>
