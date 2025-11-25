@@ -187,7 +187,7 @@ body {
 #appContainer {
     display: none;
     width: 100%;
-    max-width: 900px; /* Increased slightly for timeline */
+    max-width: 900px;
 }
 
 .app-header-info {
