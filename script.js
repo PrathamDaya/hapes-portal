@@ -12,6 +12,200 @@ let periodData = [];
 let usedDares = [];
 
 // ===== DYNAMIC TIMELINE LOGIC =====
+
+// 1. Initialize Data (With Fallback to Defaults if Empty)
+let timelineData = JSON.parse(localStorage.getItem('hetuTimelineData'));
+
+// If data is null or empty, restore defaults to prevent "Invisible Presets"
+if (!timelineData || timelineData.length === 0) {
+    timelineData = [
+        { date: "2023-01-01", title: "Where it began", img: "assets/Timeline/1.jpg", desc: "The start of us." },
+        { date: "2023-02-14", title: "Valentine's", img: "assets/Timeline/2.jpg", desc: "Our first V-day." }
+    ];
+    localStorage.setItem('hetuTimelineData', JSON.stringify(timelineData));
+}
+
+// 2. Render Function
+function renderTimeline() {
+    const container = document.getElementById('timelineContainer');
+    container.innerHTML = ''; 
+
+    // Sort by Date (Newest First)
+    timelineData.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    // Note: We use the index argument in the loop to track specific items
+    timelineData.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'polaroid-card';
+        
+        const rotation = Math.random() * 6 - 3;
+        card.style.setProperty('--rotation', `${rotation}deg`);
+
+        const imgContainer = document.createElement('div');
+        imgContainer.className = 'polaroid-img-container';
+        
+        const img = document.createElement('img');
+        img.src = item.img;
+        img.onerror = function() { 
+            this.src = 'data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%22200%22%20height%3D%22200%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23ddd%22%2F%3E%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20dominant-baseline%3D%22middle%22%20text-anchor%3D%22middle%22%20font-family%3D%22sans-serif%22%20font-size%3D%2224%22%20fill%3D%22%23aaa%22%3EPhoto%3C%2Ftext%3E%3C%2Fsvg%3E'; 
+        }; 
+        
+        imgContainer.appendChild(img);
+        
+        const dateEl = document.createElement('div');
+        dateEl.className = 'timeline-date';
+        const dateObj = new Date(item.date);
+        dateEl.textContent = isNaN(dateObj) ? item.date : dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        
+        const titleEl = document.createElement('div');
+        titleEl.className = 'timeline-title';
+        titleEl.textContent = item.title;
+
+        card.appendChild(imgContainer);
+        card.appendChild(dateEl);
+        card.appendChild(titleEl);
+        
+        // Pass the item AND the index
+        card.onclick = () => openMemoryModal(item, index);
+        container.appendChild(card);
+    });
+}
+
+// 3. Add/Edit Memory Functions
+function openAddMemoryModal(isEdit = false) {
+    const title = document.getElementById('addModalTitle');
+    const indexInput = document.getElementById('editIndex');
+    
+    if (!isEdit) {
+        title.textContent = "Add New Memory 📝";
+        indexInput.value = "-1";
+        // Clear fields
+        document.getElementById('newMemTitle').value = '';
+        document.getElementById('newMemDate').value = '';
+        document.getElementById('newMemImgNum').value = '';
+        document.getElementById('newMemDesc').value = '';
+    } else {
+        title.textContent = "Edit Memory ✏️";
+    }
+    
+    document.getElementById('addMemoryModal').style.display = 'flex';
+}
+
+function closeAddMemoryModal() {
+    document.getElementById('addMemoryModal').style.display = 'none';
+}
+
+function prepareEditMemory(index) {
+    // Close the view modal
+    closeMemoryModal();
+    
+    const item = timelineData[index];
+    
+    // Extract number from "assets/Timeline/5.jpg"
+    let imgNum = "";
+    if (item.img && item.img.includes('Timeline/')) {
+        const match = item.img.match(/Timeline\/(\d+)\.jpg/);
+        if (match) imgNum = match[1];
+    }
+
+    document.getElementById('newMemTitle').value = item.title;
+    document.getElementById('newMemDate').value = item.date;
+    document.getElementById('newMemImgNum').value = imgNum;
+    document.getElementById('newMemDesc').value = item.desc;
+    document.getElementById('editIndex').value = index;
+
+    openAddMemoryModal(true);
+}
+
+function deleteMemory(index) {
+    if(confirm("Are you sure you want to delete this memory? 🗑️")) {
+        timelineData.splice(index, 1);
+        localStorage.setItem('hetuTimelineData', JSON.stringify(timelineData));
+        closeMemoryModal();
+        renderTimeline();
+        showCustomPopup("Deleted", "Memory removed.");
+    }
+}
+
+function saveNewMemory() {
+    // 1. Get the values
+    const title = document.getElementById('newMemTitle').value;
+    const date = document.getElementById('newMemDate').value;
+    const imgNum = document.getElementById('newMemImgNum').value;
+    const desc = document.getElementById('newMemDesc').value;
+    
+    // 2. Safety Check: Does the hidden editIndex input exist?
+    const editIndexInput = document.getElementById('editIndex');
+    if (!editIndexInput) {
+        alert("Error: HTML mismatch. Please reload the page.");
+        return;
+    }
+    const editIndex = parseInt(editIndexInput.value);
+
+    // 3. Validation
+    if (!title || !date || !imgNum) {
+        showCustomPopup("Error", "Please fill in Title, Date, and Image Number.");
+        return;
+    }
+
+    const entry = {
+        title: title,
+        date: date,
+        img: `assets/Timeline/${imgNum}.jpg`,
+        desc: desc
+    };
+
+    // 4. Save or Update
+    if (editIndex === -1 || isNaN(editIndex)) {
+        // Add New
+        timelineData.push(entry);
+        showCustomPopup("Saved!", "New memory added.");
+    } else {
+        // Update Existing
+        if (timelineData[editIndex]) {
+            timelineData[editIndex] = entry;
+            showCustomPopup("Updated!", "Memory edited successfully.");
+        } else {
+            // Fallback if index is invalid
+            timelineData.push(entry);
+        }
+    }
+
+    // 5. Save to LocalStorage and Refresh
+    localStorage.setItem('hetuTimelineData', JSON.stringify(timelineData));
+    renderTimeline();
+    closeAddMemoryModal();
+    
+    // 6. Clear the form
+    document.getElementById('newMemTitle').value = '';
+    document.getElementById('newMemDesc').value = '';
+    document.getElementById('newMemImgNum').value = '';
+    document.getElementById('newMemDate').value = '';
+}
+
+function openMemoryModal(item, index) {
+    const modal = document.getElementById('memoryModal'); 
+    if(!modal) return;
+    
+    document.getElementById('modalTitle').textContent = item.title;
+    document.getElementById('modalImg').src = item.img;
+    document.getElementById('modalDesc').textContent = item.desc || "No description.";
+    
+    // Inject Edit/Delete buttons dynamically based on index
+    const actionsDiv = document.getElementById('modalActions');
+    actionsDiv.innerHTML = `
+        <button class="edit-btn" onclick="prepareEditMemory(${index})" style="background: linear-gradient(45deg, #4facfe, #00f2fe); color: white; margin-right: 10px;">Edit ✏️</button>
+        <button class="delete-btn" onclick="deleteMemory(${index})" style="background: linear-gradient(45deg, #ff9966, #ff5e62); color: white;">Delete 🗑️</button>
+    `;
+
+    modal.style.display = 'flex';
+}
+
+function closeMemoryModal() {
+    document.getElementById('memoryModal').style.display = 'none';
+}
+
+
 // ===== GAME STATE VARIABLES =====
 const usePhotoAssets = true; 
 
