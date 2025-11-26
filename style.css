@@ -1289,3 +1289,20 @@ canvas {
     gap: 10px;
     justify-content: center;
 }
+/* Add to bottom of style.css */
+.edit-btn {
+    background: linear-gradient(45deg, #4facfe, #00f2fe);
+    color: white;
+    margin-right: 10px;
+}
+
+.delete-btn {
+    background: linear-gradient(45deg, #ff9966, #ff5e62);
+    color: white;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
