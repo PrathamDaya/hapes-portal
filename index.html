@@ -325,13 +325,20 @@
             <h2 id="modalTitle">Title</h2>
             <img id="modalImg" src="" alt="Memory">
             <p id="modalDesc">Description</p>
-            <button onclick="closeMemoryModal()">Close</button>
+            
+            <div id="modalActions" class="modal-actions" style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+                </div>
+
+            <button onclick="closeMemoryModal()" style="margin-top: 10px;">Close</button>
         </div>
     </div>
 
     <div id="addMemoryModal" class="memory-modal">
         <div class="memory-modal-content input-mode">
-            <h2>Add New Memory 📝</h2>
+            <h2 id="addModalTitle">Add New Memory 📝</h2>
+            
+            <input type="hidden" id="editIndex" value="-1">
+            
             <input type="text" id="newMemTitle" placeholder="Title (e.g. First Date)">
             <input type="date" id="newMemDate">
             <input type="number" id="newMemImgNum" placeholder="Image Number (e.g. 6 for 6.jpg)">
@@ -342,7 +349,6 @@
             </div>
         </div>
     </div>
-
     <div id="overlay"></div>
 
     <script src="script.js"></script>
