@@ -12,6 +12,8 @@
     --button-hover: #c03a5b;
     --chikoo-gradient: linear-gradient(45deg, #ffadc5, #ff80a0);
     --prath-gradient: linear-gradient(45deg, #7fd2ff, #5ab9ea);
+    --period-color: #ff6b9d;
+    --predicted-color: #ffb6c1;
 }
 
 [data-theme="dark"] {
@@ -27,6 +29,8 @@
     --button-hover: #ff5a85;
     --chikoo-gradient: linear-gradient(45deg, #ff85b3, #ff5a85);
     --prath-gradient: linear-gradient(45deg, #6ac5ff, #4a9de8);
+    --period-color: #ff4081;
+    --predicted-color: #ad1457;
 }
 
 /* ===== BASE STYLES ===== */
@@ -767,21 +771,24 @@ button:disabled {
     color: white;
 }
 
-/* ===== PERIOD TRACKER STYLES ===== */
+/* ===== PERIOD TRACKER STYLES (FIXED) ===== */
+/* Remove Emoji styles, use color codes */
 .period-day {
-    background: linear-gradient(45deg, #ff6b9d, #ff9e7d) !important;
-    color: white;
+    background-color: var(--period-color) !important;
+    color: white !important;
+    border: none;
 }
 
 .predicted-period {
-    background: linear-gradient(45deg, #ffb6c1, #ffd1dc) !important;
-    color: var(--text-primary);
-}
-
-.period-marker {
-    font-size: 0.5em;
-    position: absolute;
-    bottom: 2px;
+    background: repeating-linear-gradient(
+        45deg,
+        var(--bg-secondary),
+        var(--bg-secondary) 5px,
+        var(--predicted-color) 5px,
+        var(--predicted-color) 10px
+    ) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--period-color) !important;
 }
 
 .period-tracker-panel {
@@ -799,6 +806,12 @@ button:disabled {
     justify-content: center;
     flex-wrap: wrap;
     margin: 15px 0;
+    align-items: center;
+}
+
+.period-input-group label {
+    font-size: 0.9em;
+    color: var(--text-secondary);
 }
 
 .period-input-group input {
@@ -809,30 +822,65 @@ button:disabled {
     color: var(--text-primary);
 }
 
-.mood-selector {
+/* Text Mode Mood Selector */
+.mood-selector.text-mode {
     display: flex;
-    gap: 10px;
+    gap: 8px;
     justify-content: center;
-    margin: 10px 0;
+    margin: 15px 0;
     flex-wrap: wrap;
 }
 
-.mood-btn {
-    padding: 8px 12px;
-    font-size: 1.5em;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
+.mood-btn.text-btn {
+    padding: 10px 15px;
+    font-size: 0.9em;
+    border-radius: 15px;
+    width: auto;
+    height: auto;
+    border: 1px solid var(--border-color);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
     transition: all 0.3s ease;
 }
 
-.mood-btn:hover {
-    transform: scale(1.2);
+.mood-btn.text-btn:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent-color);
 }
 
-.mood-btn.active {
+.mood-btn.text-btn.active {
     background: var(--accent-gradient);
-    transform: scale(1.2);
+    color: white;
+    border-color: transparent;
+    transform: scale(1.05);
+}
+
+/* Legend */
+.calendar-legend {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 15px;
+    font-size: 0.9em;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.period-dot { background: var(--period-color); }
+.predicted-dot { 
+    background: repeating-linear-gradient(45deg, #fff, #fff 2px, var(--predicted-color) 2px, var(--predicted-color) 4px);
+    border: 1px solid var(--period-color);
 }
 
 .period-status, .next-period-info {
@@ -1289,7 +1337,7 @@ canvas {
     gap: 10px;
     justify-content: center;
 }
-/* Add to bottom of style.css */
+
 .edit-btn {
     background: linear-gradient(45deg, #4facfe, #00f2fe);
     color: white;
