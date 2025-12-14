@@ -391,7 +391,7 @@ function releaseButterflies(element) {
     for (let i = 0; i < 8; i++) {
         const butterfly = document.createElement('div');
         butterfly.className = 'butterfly';
-        butterfly.textContent = '🦋'; // FIXED MOJIBAKE
+        butterfly.textContent = '🦋'; 
         
         const tx = (Math.random() - 0.5) * 200 + 'px'; 
         butterfly.style.setProperty('--tx', tx);
@@ -928,7 +928,7 @@ function generateDare() {
     document.getElementById('dareText').textContent = randomDare;
 }
 
-// ===== PERIOD TRACKER =====
+// ===== PERIOD TRACKER (FIXED) =====
 function selectMood(mood) {
     document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('active'));
     event.target.classList.add('active');
@@ -938,10 +938,16 @@ function selectMood(mood) {
 function addPeriodEntry() {
     const startDate = document.getElementById('periodStartDate').value;
     const endDate = document.getElementById('periodEndDate').value || startDate;
+    const cycleLengthInput = document.getElementById('cycleLengthInput');
     
     if (!startDate) {
         showCustomPopup('Error', 'Please select at least a start date.');
         return;
+    }
+
+    // Save cycle length preference
+    if (cycleLengthInput) {
+        localStorage.setItem('periodCycleLength', cycleLengthInput.value);
     }
 
     periodData = JSON.parse(localStorage.getItem('periodData') || '[]');
@@ -956,16 +962,24 @@ function addPeriodEntry() {
     
     localStorage.setItem('periodData', JSON.stringify(periodData));
     
+    // Clear inputs
     document.getElementById('periodStartDate').value = '';
     document.getElementById('periodEndDate').value = '';
     document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('active'));
     selectedMood = null;
     
     loadPeriodTracker();
-    showCustomPopup('Success', 'Period entry recorded! 🌸');
+    showCustomPopup('Success', 'Period entry recorded!');
 }
 
 function loadPeriodTracker() {
+    // 1. Load Cycle Length Preference
+    const savedCycle = localStorage.getItem('periodCycleLength');
+    const cycleInput = document.getElementById('cycleLengthInput');
+    if (savedCycle && cycleInput) {
+        cycleInput.value = savedCycle;
+    }
+    
     periodData = JSON.parse(localStorage.getItem('periodData') || '[]');
     
     const statusEl = document.getElementById('periodStatus');
@@ -978,50 +992,37 @@ function loadPeriodTracker() {
         return;
     }
 
+    // Sort by Date (Newest first)
     const sortedData = periodData.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
     const lastPeriod = sortedData[0];
     const lastStart = new Date(lastPeriod.startDate);
-    const lastEnd = new Date(lastPeriod.endDate);
-    const cycleLength = calculateAverageCycleLength();
+    
+    // FIXED: Use user input for calculation
+    const cycleLength = parseInt(cycleInput.value) || 28;
     
     const nextPeriodDate = new Date(lastStart);
     nextPeriodDate.setDate(nextPeriodDate.getDate() + cycleLength);
     
     const today = new Date();
-    const daysSinceLast = Math.floor((today - lastStart) / (1000 * 60 * 60 * 24));
-    const daysUntilNext = Math.floor((nextPeriodDate - today) / (1000 * 60 * 60 * 24));
+    today.setHours(0,0,0,0);
+    const daysUntilNext = Math.ceil((nextPeriodDate - today) / (1000 * 60 * 60 * 24));
     
-    if (daysSinceLast <= (lastEnd - lastStart) / (1000 * 60 * 60 * 24)) {
-        statusEl.innerHTML = `🌸 Currently on period (Day ${daysSinceLast + 1})<br>Mood: ${lastPeriod.mood || 'Not recorded'}`;
-    } else if (daysUntilNext <= 7 && daysUntilNext > 0) {
+    // Determine status message
+    if (daysUntilNext <= 7 && daysUntilNext > 0) {
         statusEl.innerHTML = `⚠️ Period expected in ${daysUntilNext} days`;
     } else if (daysUntilNext <= 0) {
-        statusEl.textContent = '⚠️ Period might be late';
+        statusEl.textContent = '⚠️ Period might be late (or due today)';
     } else {
         statusEl.textContent = `✅ Period tracked. Next expected in ~${daysUntilNext} days`;
     }
     
     nextInfoEl.innerHTML = `
         <strong>Next Period:</strong> ${nextPeriodDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}<br>
-        <strong>Average Cycle:</strong> ${cycleLength} days<br>
-        <strong>Last Period:</strong> ${lastStart.toLocaleDateString()} - ${lastEnd.toLocaleDateString()}
+        <strong>Cycle Setting:</strong> ${cycleLength} days<br>
+        <strong>Last Period:</strong> ${lastStart.toLocaleDateString()}
     `;
     
     renderPeriodCalendar();
-}
-
-function calculateAverageCycleLength() {
-    if (periodData.length < 2) return 28;
-    
-    let totalDays = 0;
-    const sortedData = periodData.sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
-    
-    for (let i = 1; i < sortedData.length; i++) {
-        const daysBetween = (new Date(sortedData[i].startDate) - new Date(sortedData[i-1].startDate)) / (1000 * 60 * 60 * 24);
-        totalDays += daysBetween;
-    }
-    
-    return Math.round(totalDays / (sortedData.length - 1));
 }
 
 function changePeriodMonth(direction) {
@@ -1032,6 +1033,7 @@ function changePeriodMonth(direction) {
 function renderPeriodCalendar() {
     const grid = document.getElementById('periodCalendarGrid');
     const monthYear = document.getElementById('periodMonthYear');
+    const cycleInput = document.getElementById('cycleLengthInput');
     
     if (!grid || !monthYear) return;
     
@@ -1057,34 +1059,47 @@ function renderPeriodCalendar() {
     }
 
     const today = new Date();
+    today.setHours(0,0,0,0);
+
     for (let day = 1; day <= daysInMonth; day++) {
         const dayCell = document.createElement('div');
         dayCell.className = 'calendar-day';
         dayCell.textContent = day;
         
         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const currentDate = new Date(dateStr);
+        currentDate.setHours(0,0,0,0);
         
-        const periodEntry = periodData.find(entry => {
+        // 1. Check for Past Periods
+        const isPastPeriod = periodData.some(entry => {
             const start = new Date(entry.startDate);
             const end = new Date(entry.endDate);
-            const current = new Date(dateStr);
-            return current >= start && current <= end;
+            // Reset hours for accurate comparison
+            start.setHours(0,0,0,0);
+            end.setHours(0,0,0,0);
+            return currentDate >= start && currentDate <= end;
         });
         
-        if (periodEntry) {
+        if (isPastPeriod) {
             dayCell.classList.add('period-day');
-            // FIXED MOJIBAKE FLOWER
-            dayCell.innerHTML += '<span class="period-marker">🌸</span>';
         }
         
+        // 2. Prediction Logic (FIXED)
         if (periodData.length > 0) {
             const lastPeriod = periodData.sort((a, b) => new Date(b.startDate) - new Date(a.startDate))[0];
             const lastStart = new Date(lastPeriod.startDate);
-            const cycleLength = calculateAverageCycleLength();
-            const nextPeriodDate = new Date(lastStart);
-            nextPeriodDate.setDate(nextPeriodDate.getDate() + cycleLength);
+            const cycleLength = parseInt(cycleInput.value) || 28;
             
-            if (Math.abs(new Date(dateStr) - nextPeriodDate) < 3 * 24 * 60 * 60 * 1000) {
+            // Calculate NEXT start date strictly
+            const nextStart = new Date(lastStart);
+            nextStart.setDate(nextStart.getDate() + cycleLength);
+            nextStart.setHours(0,0,0,0);
+
+            // Predict a 5-day window starting from calculated date
+            const predictionEnd = new Date(nextStart);
+            predictionEnd.setDate(predictionEnd.getDate() + 4);
+
+            if (currentDate >= nextStart && currentDate <= predictionEnd) {
                 dayCell.classList.add('predicted-period');
             }
         }
@@ -1563,6 +1578,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     document.getElementById('themeToggle').onclick = toggleTheme;
+    
+    // Save Cycle Length on Change
+    const cycleInput = document.getElementById('cycleLengthInput');
+    if(cycleInput) {
+        cycleInput.addEventListener('change', () => {
+            localStorage.setItem('periodCycleLength', cycleInput.value);
+            loadPeriodTracker(); // Refresh prediction immediately
+        });
+    }
 });
 
 let lastTouchEnd = 0;
