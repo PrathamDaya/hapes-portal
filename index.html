@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>For my Hetu 💖</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Segoe+UI:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="floating-bg" id="floatingBg"></div>
@@ -283,23 +283,35 @@
                 <main>
                     <div class="period-tracker-panel">
                         <h3>Track Your Cycle</h3>
+                        
+                        <div class="setting-group" style="margin-bottom: 15px;">
+                            <label for="cycleLengthInput" style="font-weight: bold; color: var(--text-primary);">Avg. Cycle Length (Days): </label>
+                            <input type="number" id="cycleLengthInput" value="28" min="20" max="45" style="width: 60px; padding: 5px; border-radius: 5px; border: 1px solid var(--border-color);">
+                        </div>
+
                         <div class="period-input-group">
+                            <label>Start Date:</label>
                             <input type="date" id="periodStartDate">
+                            <label>End Date:</label>
                             <input type="date" id="periodEndDate" placeholder="End Date (optional)">
                         </div>
-                        <div class="mood-selector">
-                            <button onclick="selectMood('😊')" class="mood-btn">😊</button>
-                            <button onclick="selectMood('😢')" class="mood-btn">😢</button>
-                            <button onclick="selectMood('😡')" class="mood-btn">😡</button>
-                            <button onclick="selectMood('🥰')" class="mood-btn">🥰</button>
-                            <button onclick="selectMood('😴')" class="mood-btn">😴</button>
+                        
+                        <div class="mood-selector text-mode">
+                            <button onclick="selectMood('Happy')" class="mood-btn text-btn">Happy</button>
+                            <button onclick="selectMood('Sad')" class="mood-btn text-btn">Sad</button>
+                            <button onclick="selectMood('Cramps')" class="mood-btn text-btn">Cramps</button>
+                            <button onclick="selectMood('Energetic')" class="mood-btn text-btn">Energetic</button>
+                            <button onclick="selectMood('Tired')" class="mood-btn text-btn">Tired</button>
                         </div>
+
                         <button onclick="addPeriodEntry()">Add Period Entry</button>
+                        
                         <div class="period-status" id="periodStatus">
                             No period data recorded yet.
                         </div>
                         <div class="next-period-info" id="nextPeriodInfo"></div>
                     </div>
+
                     <div class="period-tracker-panel">
                         <h3>Period Calendar</h3>
                         <div class="calendar-header">
@@ -308,6 +320,10 @@
                             <button onclick="changePeriodMonth(1)">→</button>
                         </div>
                         <div id="periodCalendarGrid" class="calendar-grid"></div>
+                        <div class="calendar-legend">
+                            <span class="legend-item"><span class="dot period-dot"></span> Period</span>
+                            <span class="legend-item"><span class="dot predicted-dot"></span> Predicted</span>
+                        </div>
                     </div>
                     <button onclick="navigateToApp('homeScreen')">Back to Home</button>
                 </main>
@@ -325,10 +341,7 @@
             <h2 id="modalTitle">Title</h2>
             <img id="modalImg" src="" alt="Memory">
             <p id="modalDesc">Description</p>
-            
-            <div id="modalActions" class="modal-actions" style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
-                </div>
-
+            <div id="modalActions" class="modal-actions"></div>
             <button onclick="closeMemoryModal()" style="margin-top: 10px;">Close</button>
         </div>
     </div>
@@ -336,9 +349,7 @@
     <div id="addMemoryModal" class="memory-modal">
         <div class="memory-modal-content input-mode">
             <h2 id="addModalTitle">Add New Memory 📝</h2>
-            
             <input type="hidden" id="editIndex" value="-1">
-            
             <input type="text" id="newMemTitle" placeholder="Title (e.g. First Date)">
             <input type="date" id="newMemDate">
             <input type="number" id="newMemImgNum" placeholder="Image Number (e.g. 6 for 6.jpg)">
