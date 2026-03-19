@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -7,8 +8,9 @@
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <div class="ambient-bg">
         <div class="ambient-orb orb-1"></div>
@@ -18,29 +20,8 @@
     <div class="floating-bg" id="floatingBg"></div>
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
 
-    <!-- LOGIN -->
-    <div id="loginContainer">
-        <div class="login-box">
-            <div class="login-heart-pulse">💖</div>
-            <h1 class="display-font">Who's visiting?</h1>
-            <p class="login-subtitle">This space was made with love, just for you.</p>
-            <div class="login-options">
-                <button class="chikoo-btn" onclick="login('Chikoo')"><span class="btn-icon">🐰</span><span>I am Chikoo</span></button>
-                <button class="prath-btn"  onclick="login('Prath')"> <span class="btn-icon">🐼</span><span>I am Prath</span></button>
-            </div>
-        </div>
-    </div>
-
     <!-- APP -->
     <div id="appContainer">
-        <div class="app-topbar">
-            <div class="topbar-user">
-                <span class="user-avatar" id="userAvatarEmoji">🐰</span>
-                <span id="loggedInUserDisplay">Chikoo</span>
-            </div>
-            <button class="logout-btn" onclick="logout()">Sign Out</button>
-        </div>
-
         <!-- HOME -->
         <section id="homeScreen" class="screen active">
             <header class="main-header">
@@ -66,17 +47,41 @@
             </div>
 
             <div class="love-notes-panel" id="loveNotesPanel" style="display:none;">
-                <div class="love-notes-header"><span>💌 Love Notes</span><button class="add-note-btn" onclick="openLoveNoteCompose()">+ New Note</button></div>
+                <div class="love-notes-header"><span>💌 Love Notes</span><button class="add-note-btn"
+                        onclick="openLoveNoteCompose()">+ New Note</button></div>
                 <div id="loveNotesList" class="love-notes-list"></div>
             </div>
 
             <main class="options-grid">
-                <div class="option-card feelings-card"  onclick="navigateToApp('feelingsPortalScreen')"><div class="card-icon">💌</div><div class="card-label">Feelings Portal</div><div class="card-desc">Share what's on your heart</div></div>
-                <div class="option-card diary-card"     onclick="navigateToApp('diaryScreen')">        <div class="card-icon">📓</div><div class="card-label">Our Diary</div>       <div class="card-desc">Capture every little moment</div></div>
-                <div class="option-card games-card"     onclick="navigateToApp('gameHubScreen')">      <div class="card-icon">🎮</div><div class="card-label">Love Arcade</div>     <div class="card-desc">Play together, laugh together</div></div>
-                <div class="option-card period-card"    onclick="navigateToApp('periodTrackerScreen')"><div class="card-icon">🌸</div><div class="card-label">Cycle Tracker</div>   <div class="card-desc">Stay in sync with your body</div></div>
-                <div class="option-card timeline-card"  onclick="navigateToApp('timelineScreen')">     <div class="card-icon">⏳</div><div class="card-label">Our Journey</div>     <div class="card-desc">Every chapter of our story</div></div>
-                <div class="option-card bunny-card"     onclick="showMissYouPopup()">                  <span class="bunny-emoji" id="bunnyEmoji">🐰</span><div class="card-label">Miss You</div></div>
+                <div class="option-card feelings-card" onclick="navigateToApp('feelingsPortalScreen')">
+                    <div class="card-icon">💌</div>
+                    <div class="card-label">Feelings Portal</div>
+                    <div class="card-desc">Share what's on your heart</div>
+                </div>
+                <div class="option-card diary-card" onclick="navigateToApp('diaryScreen')">
+                    <div class="card-icon">📓</div>
+                    <div class="card-label">Our Diary</div>
+                    <div class="card-desc">Capture every little moment</div>
+                </div>
+                <div class="option-card games-card" onclick="navigateToApp('gameHubScreen')">
+                    <div class="card-icon">🎮</div>
+                    <div class="card-label">Love Arcade</div>
+                    <div class="card-desc">Play together, laugh together</div>
+                </div>
+                <div class="option-card period-card" onclick="navigateToApp('periodTrackerScreen')">
+                    <div class="card-icon">🌸</div>
+                    <div class="card-label">Cycle Tracker</div>
+                    <div class="card-desc">Stay in sync with your body</div>
+                </div>
+                <div class="option-card timeline-card" onclick="navigateToApp('timelineScreen')">
+                    <div class="card-icon">⏳</div>
+                    <div class="card-label">Our Journey</div>
+                    <div class="card-desc">Every chapter of our story</div>
+                </div>
+                <div class="option-card bunny-card" onclick="showMissYouPopup()"> <span class="bunny-emoji"
+                        id="bunnyEmoji">🐰</span>
+                    <div class="card-label">Miss You</div>
+                </div>
             </main>
             <footer class="main-footer">
                 <p class="sub-font">Made with 💝 for Hetu · <span id="footerDate"></span></p>
@@ -93,22 +98,33 @@
                 </header>
                 <main>
                     <section id="feelingsPage1" class="page active">
-                        <p class="page-subtitle sub-font">How are you feeling, <span class="dynamicUserName">love</span>?</p>
+                        <p class="page-subtitle sub-font">How are you feeling, <span
+                                class="dynamicUserName">love</span>?</p>
                         <div class="feelings-grid">
-                            <div class="feeling-card grievance-card"  onclick="navigateToFeelingsPage('feelingsPage2','Grievance')"> <span class="feeling-emoji">😤</span><span class="feeling-label">Grievance</span></div>
-                            <div class="feeling-card appreciate-card" onclick="navigateToFeelingsPage('feelingsPage2','Appreciate')"><span class="feeling-emoji">🥹</span><span class="feeling-label">Appreciate</span></div>
-                            <div class="feeling-card sad-card"        onclick="navigateToFeelingsPage('feelingsPage2','Sad')">       <span class="feeling-emoji">🥺</span><span class="feeling-label">Sad</span></div>
-                            <div class="feeling-card happy-card"      onclick="navigateToFeelingsPage('feelingsPage2','Happy')">     <span class="feeling-emoji">🥰</span><span class="feeling-label">Happy</span></div>
+                            <div class="feeling-card grievance-card"
+                                onclick="navigateToFeelingsPage('feelingsPage2','Grievance')"> <span
+                                    class="feeling-emoji">😤</span><span class="feeling-label">Grievance</span></div>
+                            <div class="feeling-card appreciate-card"
+                                onclick="navigateToFeelingsPage('feelingsPage2','Appreciate')"><span
+                                    class="feeling-emoji">🥹</span><span class="feeling-label">Appreciate</span></div>
+                            <div class="feeling-card sad-card" onclick="navigateToFeelingsPage('feelingsPage2','Sad')">
+                                <span class="feeling-emoji">🥺</span><span class="feeling-label">Sad</span></div>
+                            <div class="feeling-card happy-card"
+                                onclick="navigateToFeelingsPage('feelingsPage2','Happy')"> <span
+                                    class="feeling-emoji">🥰</span><span class="feeling-label">Happy</span></div>
                         </div>
-                        <div style="text-align:center;margin-top:20px;"><button class="secondary-btn" onclick="fetchAndDisplayFeelingsEntries()">📜 View All Entries</button></div>
+                        <div style="text-align:center;margin-top:20px;"><button class="secondary-btn"
+                                onclick="fetchAndDisplayFeelingsEntries()">📜 View All Entries</button></div>
                     </section>
                     <section id="feelingsPage2" class="page">
                         <h3 id="feelingsPage2Title" class="page-subtitle sub-font" style="margin-bottom:20px;"></h3>
                         <div class="notebook-card">
-                            <textarea id="feelingsMessage" placeholder="Pour your heart out here... I'm listening 💕" rows="6"></textarea>
+                            <textarea id="feelingsMessage" placeholder="Pour your heart out here... I'm listening 💕"
+                                rows="6"></textarea>
                             <button id="submitFeelingsBtn" onclick="submitFeelingsEntry()">Send it 💌</button>
                         </div>
-                        <div style="text-align:center;"><button class="secondary-btn" onclick="navigateToFeelingsPage('feelingsPage1')">← Change Feeling</button></div>
+                        <div style="text-align:center;"><button class="secondary-btn"
+                                onclick="navigateToFeelingsPage('feelingsPage1')">← Change Feeling</button></div>
                     </section>
                     <section id="feelingsPage3" class="page">
                         <div class="confirmation-card">
@@ -117,16 +133,20 @@
                             <p class="sub-font">Your feelings have been recorded and sent. 💕</p>
                             <div class="confirm-actions">
                                 <button onclick="navigateToApp('homeScreen')">🏠 Home</button>
-                                <button class="secondary-btn" onclick="navigateToFeelingsPage('feelingsPage1')">New Entry</button>
+                                <button class="secondary-btn" onclick="navigateToFeelingsPage('feelingsPage1')">New
+                                    Entry</button>
                             </div>
                         </div>
                     </section>
                     <section id="feelingsViewEntriesPage" class="page">
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
                             <h3 style="color:var(--accent);">All Entries</h3>
-                            <button class="secondary-btn" onclick="navigateToFeelingsPage('feelingsPage1')">← Back</button>
+                            <button class="secondary-btn" onclick="navigateToFeelingsPage('feelingsPage1')">←
+                                Back</button>
                         </div>
-                        <div id="feelingsEntriesList" class="entries-scroll-container"><p class="loading-text">Loading entries...</p></div>
+                        <div id="feelingsEntriesList" class="entries-scroll-container">
+                            <p class="loading-text">Loading entries...</p>
+                        </div>
                     </section>
                 </main>
             </div>
@@ -149,11 +169,13 @@
                             </div>
                             <div id="calendarGrid" class="calendar-grid"></div>
                         </div>
-                        <div style="text-align:center;margin-top:15px;"><button class="secondary-btn" onclick="fetchAndDisplayAllDiaryEntries()">📋 All Entries</button></div>
+                        <div style="text-align:center;margin-top:15px;"><button class="secondary-btn"
+                                onclick="fetchAndDisplayAllDiaryEntries()">📋 All Entries</button></div>
                     </section>
                     <section id="diaryEntryPage" class="page">
                         <div class="diary-entry-header">
-                            <h3 id="diaryEntryTitle" class="display-font" style="font-size:2em;color:var(--accent);"></h3>
+                            <h3 id="diaryEntryTitle" class="display-font" style="font-size:2em;color:var(--accent);">
+                            </h3>
                             <p class="date-display sub-font" id="diaryDateDisplay"></p>
                         </div>
                         <div class="notebook-card">
@@ -161,7 +183,8 @@
                             <input type="hidden" id="selectedDate">
                             <button id="saveDiaryBtn" onclick="submitDiaryEntry()">Save Entry 💾</button>
                         </div>
-                        <div style="text-align:center;"><button class="secondary-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">← Back to Calendar</button></div>
+                        <div style="text-align:center;"><button class="secondary-btn"
+                                onclick="navigateToDiaryPage('diaryCalendarPage')">← Back to Calendar</button></div>
                     </section>
                     <section id="diaryConfirmationPage" class="page">
                         <div class="confirmation-card">
@@ -170,25 +193,32 @@
                             <p class="sub-font">Your diary entry is safely tucked away 🌙</p>
                             <div class="confirm-actions">
                                 <button onclick="navigateToApp('homeScreen')">🏠 Home</button>
-                                <button class="secondary-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back to Diary</button>
+                                <button class="secondary-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">Back to
+                                    Diary</button>
                             </div>
                         </div>
                     </section>
                     <section id="diaryViewPage" class="page">
-                        <div class="diary-entry-header"><p class="date-display sub-font" id="viewDiaryDateDisplay"></p></div>
+                        <div class="diary-entry-header">
+                            <p class="date-display sub-font" id="viewDiaryDateDisplay"></p>
+                        </div>
                         <div class="notebook-card view-only">
                             <p id="viewDiaryThoughts" class="diary-text sub-font"></p>
                             <p id="diaryEntryAttribution" class="entry-attribution"></p>
                         </div>
                         <div id="diaryViewPageReplySection" class="reply-section"></div>
-                        <div style="text-align:center;"><button class="secondary-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">← Back to Calendar</button></div>
+                        <div style="text-align:center;"><button class="secondary-btn"
+                                onclick="navigateToDiaryPage('diaryCalendarPage')">← Back to Calendar</button></div>
                     </section>
                     <section id="allDiaryEntriesPage" class="page">
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:15px;">
                             <h3 style="color:var(--accent);">All Diary Entries</h3>
-                            <button class="secondary-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">← Calendar</button>
+                            <button class="secondary-btn" onclick="navigateToDiaryPage('diaryCalendarPage')">←
+                                Calendar</button>
                         </div>
-                        <div id="allDiaryEntriesList" class="entries-scroll-container"><p class="loading-text">Loading...</p></div>
+                        <div id="allDiaryEntriesList" class="entries-scroll-container">
+                            <p class="loading-text">Loading...</p>
+                        </div>
                     </section>
                 </main>
             </div>
@@ -202,10 +232,25 @@
                     <h2 class="display-font screen-title">Love Arcade 🕹️</h2>
                 </header>
                 <main class="options-grid compact-grid">
-                    <div class="option-card" onclick="navigateToApp('dareGameScreen')"><div class="card-icon">😈</div><div class="card-label">Couple's Dare</div></div>
-                    <div class="option-card" onclick="startMemoryGame()">  <div class="card-icon">🧠</div><div class="card-label">Memory Match</div><div class="card-score">Best: <span id="memHighScore">-</span></div></div>
-                    <div class="option-card" onclick="startCatchGame()">   <div class="card-icon">💖</div><div class="card-label">Catch the Heart</div><div class="card-score">Best: <span id="catchHighScore">0</span></div></div>
-                    <div class="option-card" onclick="startSlasherGame()"> <div class="card-icon">🍉</div><div class="card-label">Love Slasher</div><div class="card-score">Best: <span id="slashHighScore">0</span></div></div>
+                    <div class="option-card" onclick="navigateToApp('dareGameScreen')">
+                        <div class="card-icon">😈</div>
+                        <div class="card-label">Couple's Dare</div>
+                    </div>
+                    <div class="option-card" onclick="startMemoryGame()">
+                        <div class="card-icon">🧠</div>
+                        <div class="card-label">Memory Match</div>
+                        <div class="card-score">Best: <span id="memHighScore">-</span></div>
+                    </div>
+                    <div class="option-card" onclick="startCatchGame()">
+                        <div class="card-icon">💖</div>
+                        <div class="card-label">Catch the Heart</div>
+                        <div class="card-score">Best: <span id="catchHighScore">0</span></div>
+                    </div>
+                    <div class="option-card" onclick="startSlasherGame()">
+                        <div class="card-icon">🍉</div>
+                        <div class="card-label">Love Slasher</div>
+                        <div class="card-score">Best: <span id="slashHighScore">0</span></div>
+                    </div>
                 </main>
             </div>
         </section>
@@ -218,8 +263,11 @@
                     <h2 class="display-font screen-title">Couple's Dare 😈</h2>
                 </header>
                 <main>
-                    <div class="dare-card"><p id="dareText" class="dare-text sub-font">Ready for a dare? Press the button!</p></div>
-                    <div style="text-align:center;margin-top:25px;"><button class="dare-btn" onclick="generateDare()">Next Dare 🔥</button></div>
+                    <div class="dare-card">
+                        <p id="dareText" class="dare-text sub-font">Ready for a dare? Press the button!</p>
+                    </div>
+                    <div style="text-align:center;margin-top:25px;"><button class="dare-btn"
+                            onclick="generateDare()">Next Dare 🔥</button></div>
                 </main>
             </div>
         </section>
@@ -234,7 +282,8 @@
                 </header>
                 <main>
                     <div class="memory-grid" id="memoryGrid"></div>
-                    <div style="text-align:center;margin-top:15px;"><button onclick="startMemoryGame()">Restart 🔄</button></div>
+                    <div style="text-align:center;margin-top:15px;"><button onclick="startMemoryGame()">Restart
+                            🔄</button></div>
                 </main>
             </div>
         </section>
@@ -251,7 +300,8 @@
                     <div id="catchGameCanvasContainer" class="game-canvas-wrap">
                         <canvas id="catchGameCanvas"></canvas>
                         <div id="catchStartOverlay" class="game-overlay">
-                            <p>🧺 Drag basket to catch hearts!</p><p>Avoid 💔 broken hearts</p>
+                            <p>🧺 Drag basket to catch hearts!</p>
+                            <p>Avoid 💔 broken hearts</p>
                             <button onclick="initCatchGame()">Start Game</button>
                         </div>
                     </div>
@@ -271,7 +321,8 @@
                     <div id="slasherCanvasContainer" class="game-canvas-wrap">
                         <canvas id="slasherCanvas"></canvas>
                         <div id="slasherStartOverlay" class="game-overlay">
-                            <p>✋ Swipe over fruits to slash!</p><p>Avoid 💣 the bomb!</p>
+                            <p>✋ Swipe over fruits to slash!</p>
+                            <p>Avoid 💣 the bomb!</p>
                             <button onclick="initSlasherGame()">Start Game</button>
                         </div>
                     </div>
@@ -297,7 +348,8 @@
                     <div class="tracker-panel" id="cyclePhasePanel" style="display:none;">
                         <h3 class="panel-title">Where you are in your cycle</h3>
                         <div class="wheel-layout">
-                            <div class="wheel-wrap"><canvas id="cycleWheelCanvas" width="240" height="240"></canvas></div>
+                            <div class="wheel-wrap"><canvas id="cycleWheelCanvas" width="240" height="240"></canvas>
+                            </div>
                             <div class="wheel-info">
                                 <div class="phase-badges" id="phaseBadges"></div>
                                 <div class="phase-tip-box">
@@ -317,8 +369,11 @@
                             </div>
                         </div>
                         <div class="date-inputs">
-                            <div class="date-input-group"><label for="periodStartDate">Start Date</label><input type="date" id="periodStartDate"></div>
-                            <div class="date-input-group"><label for="periodEndDate">End Date <span style="opacity:.6">(optional)</span></label><input type="date" id="periodEndDate"></div>
+                            <div class="date-input-group"><label for="periodStartDate">Start Date</label><input
+                                    type="date" id="periodStartDate"></div>
+                            <div class="date-input-group"><label for="periodEndDate">End Date <span
+                                        style="opacity:.6">(optional)</span></label><input type="date"
+                                    id="periodEndDate"></div>
                         </div>
                         <div class="mood-selector">
                             <label class="section-label">How are you feeling?</label>
@@ -330,7 +385,8 @@
                                 <button class="mood-pill" onclick="selectMood('Tired',this)">😴 Tired</button>
                             </div>
                         </div>
-                        <div style="text-align:center;margin-top:15px;"><button class="add-period-btn" onclick="addPeriodEntry()">+ Log Period Entry</button></div>
+                        <div style="text-align:center;margin-top:15px;"><button class="add-period-btn"
+                                onclick="addPeriodEntry()">+ Log Period Entry</button></div>
                     </div>
                     <div class="tracker-panel">
                         <h3 class="panel-title">Period Calendar</h3>
@@ -349,9 +405,18 @@
                         </div>
                     </div>
                     <div class="period-stat-strip" id="periodStatStrip" style="display:none;">
-                        <div class="period-stat"><div class="period-stat-num display-font" id="statAvgCycle">—</div><div class="period-stat-label">avg. cycle</div></div>
-                        <div class="period-stat"><div class="period-stat-num display-font" id="statTotalLogs">0</div><div class="period-stat-label">periods logged</div></div>
-                        <div class="period-stat"><div class="period-stat-num display-font" id="statAvgDuration">—</div><div class="period-stat-label">avg. duration</div></div>
+                        <div class="period-stat">
+                            <div class="period-stat-num display-font" id="statAvgCycle">—</div>
+                            <div class="period-stat-label">avg. cycle</div>
+                        </div>
+                        <div class="period-stat">
+                            <div class="period-stat-num display-font" id="statTotalLogs">0</div>
+                            <div class="period-stat-label">periods logged</div>
+                        </div>
+                        <div class="period-stat">
+                            <div class="period-stat-num display-font" id="statAvgDuration">—</div>
+                            <div class="period-stat-label">avg. duration</div>
+                        </div>
                     </div>
                     <div class="tracker-panel" id="periodHistoryPanel" style="display:none;">
                         <h3 class="panel-title">Recent Logs</h3>
@@ -373,7 +438,7 @@
                     <div class="journey-bg" id="journeyBg"></div>
                     <div class="journey-slides" id="journeySlides"></div>
                     <div class="journey-overlay-ui">
-                        <button class="journey-arr left"  id="journeyPrev">‹</button>
+                        <button class="journey-arr left" id="journeyPrev">‹</button>
                         <button class="journey-arr right" id="journeyNext">›</button>
                         <div class="journey-dots-wrap" id="journeyDots"></div>
                         <div class="journey-count sub-font" id="journeyCount">1 / 1</div>
@@ -389,10 +454,13 @@
     <!-- MODALS -->
     <div id="anniversaryModal" class="modal-overlay" style="display:none;">
         <div class="modal-box" style="max-width:380px;text-align:center;">
-            <h3 class="display-font" style="font-size:2em;color:var(--accent);margin-bottom:8px;">Our Anniversary 💕</h3>
-            <p class="sub-font" style="color:var(--text-muted);font-size:.9em;margin-bottom:20px;">Update the date we started our journey</p>
+            <h3 class="display-font" style="font-size:2em;color:var(--accent);margin-bottom:8px;">Our Anniversary 💕
+            </h3>
+            <p class="sub-font" style="color:var(--text-muted);font-size:.9em;margin-bottom:20px;">Update the date we
+                started our journey</p>
             <div class="form-group"><label>Start date</label><input type="date" id="anniversaryDate"></div>
-            <div class="form-group"><label>Label <span style="opacity:.6">(optional)</span></label><input type="text" id="anniversaryLabel" placeholder="e.g. The day everything changed"></div>
+            <div class="form-group"><label>Label <span style="opacity:.6">(optional)</span></label><input type="text"
+                    id="anniversaryLabel" placeholder="e.g. The day everything changed"></div>
             <div class="modal-actions">
                 <button onclick="saveAnniversary()">Save 💾</button>
                 <button class="secondary-btn" onclick="closeAnniversaryModal()">Cancel</button>
@@ -401,8 +469,10 @@
     </div>
     <div id="loveNoteModal" class="modal-overlay" style="display:none;">
         <div class="modal-box" style="max-width:400px;">
-            <h3 class="display-font" style="font-size:2em;color:var(--accent);margin-bottom:16px;">Quick Love Note 💌</h3>
-            <div class="form-group"><textarea id="loveNoteText" placeholder="What's on your heart right now? ✨" rows="4"></textarea></div>
+            <h3 class="display-font" style="font-size:2em;color:var(--accent);margin-bottom:16px;">Quick Love Note 💌
+            </h3>
+            <div class="form-group"><textarea id="loveNoteText" placeholder="What's on your heart right now? ✨"
+                    rows="4"></textarea></div>
             <div class="modal-actions">
                 <button onclick="saveLoveNote()">Send it 💌</button>
                 <button class="secondary-btn" onclick="closeLoveNoteModal()">Cancel</button>
@@ -427,12 +497,16 @@
     </div>
     <div id="addMemoryModal" class="modal-overlay" style="display:none;">
         <div class="modal-box add-memory-box">
-            <h3 id="addModalTitle" class="display-font" style="font-size:1.8em;color:var(--accent);margin-bottom:15px;">Add Memory 📝</h3>
+            <h3 id="addModalTitle" class="display-font" style="font-size:1.8em;color:var(--accent);margin-bottom:15px;">
+                Add Memory 📝</h3>
             <input type="hidden" id="editIndex" value="-1">
-            <div class="form-group"><label>Title</label><input type="text" id="newMemTitle" placeholder="e.g. First Date"></div>
+            <div class="form-group"><label>Title</label><input type="text" id="newMemTitle"
+                    placeholder="e.g. First Date"></div>
             <div class="form-group"><label>Date</label><input type="date" id="newMemDate"></div>
-            <div class="form-group"><label>Image Number <span style="opacity:.6;font-size:.85em;">(e.g. 3 for Timeline/3.jpg)</span></label><input type="number" id="newMemImgNum" placeholder="1"></div>
-            <div class="form-group"><label>Description</label><textarea id="newMemDesc" placeholder="The story behind this moment..." rows="3"></textarea></div>
+            <div class="form-group"><label>Image Number <span style="opacity:.6;font-size:.85em;">(e.g. 3 for
+                        Timeline/3.jpg)</span></label><input type="number" id="newMemImgNum" placeholder="1"></div>
+            <div class="form-group"><label>Description</label><textarea id="newMemDesc"
+                    placeholder="The story behind this moment..." rows="3"></textarea></div>
             <div class="modal-actions">
                 <button onclick="saveNewMemory()">Save 💾</button>
                 <button class="secondary-btn" onclick="closeAddMemoryModal()">Cancel</button>
@@ -464,13 +538,16 @@
         </div>
         <div class="music-volume-row">
             <span>🔈</span>
-            <input type="range" id="musicVolSlider" min="0" max="1" step="0.05" value="0.8" style="flex:1;accent-color:var(--accent);">
+            <input type="range" id="musicVolSlider" min="0" max="1" step="0.05" value="0.8"
+                style="flex:1;accent-color:var(--accent);">
             <span>🔊</span>
         </div>
     </div>
-    <button class="music-toggle-pill" id="musicTogglePill" style="display:none;" onclick="toggleMusicPlayer()">🎵</button>
+    <button class="music-toggle-pill" id="musicTogglePill" style="display:none;"
+        onclick="toggleMusicPlayer()">🎵</button>
     <audio id="audioEl" preload="metadata"></audio>
 
     <script src="script.js"></script>
 </body>
+
 </html>
