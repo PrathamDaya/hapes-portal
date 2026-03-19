@@ -7,7 +7,7 @@
 const scriptURL = 'https://script.google.com/macros/s/AKfycbxMsH6HVLcv0yGQBKZCdOwdAUi9k_Jv4JeIOotqicQlef0mP_mIADlEVbUuzS8pPsZ27g/exec';
 
 // ── State ──────────────────────────────────────────────────────
-let currentUser       = '';
+let currentUser       = 'love';
 const SCRIPT_USER_KEY = 'hetuAppCurrentUser';
 let currentEmotion    = '';
 let calendarCurrentDate = new Date();
@@ -18,8 +18,8 @@ let usedDares         = [];
 let selectedMood      = null;
 let countdownInterval = null;
 
-// Default anniversary — April 21 2023
-const DEFAULT_ANNIVERSARY = '2023-04-21';
+// Default anniversary — April 21 2024
+const DEFAULT_ANNIVERSARY = '2024-04-21';
 const DEFAULT_ANNIVERSARY_LABEL = 'The day everything changed 💕';
 
 // ── Game State ─────────────────────────────────────────────────
@@ -107,7 +107,7 @@ function initCountdown() {
     let dateStr = saved?.date || DEFAULT_ANNIVERSARY;
     const label = saved?.label || DEFAULT_ANNIVERSARY_LABEL;
     let start = new Date(dateStr + 'T00:00:00');
-    if (isNaN(start.getTime())) start = new Date('2023-04-21T00:00:00');
+    if (isNaN(start.getTime())) start = new Date('2024-04-21T00:00:00');
 
     const sinceEl = document.getElementById('cdSince');
     if (sinceEl) {
@@ -230,31 +230,9 @@ function deleteLoveNote(index) {
 //  AUTH
 // ══════════════════════════════════════════════════════════════
 
-function login(userName) {
-    if (userName !== 'Chikoo' && userName !== 'Prath') return;
-    currentUser = userName;
-    localStorage.setItem(SCRIPT_USER_KEY, currentUser);
-    updateUserDisplay();
-    document.getElementById('loginContainer').style.display = 'none';
-    document.getElementById('appContainer').style.display   = 'block';
-    navigateToApp('homeScreen');
-    createFloatingEmojis();
-    showMusicPill();
-    setTimeout(()=>{ const h=document.querySelector('.main-title'); if(h) releaseButterflies(h); }, 400);
-}
+function login(userName) {}
 
-function logout() {
-    currentUser = '';
-    localStorage.removeItem(SCRIPT_USER_KEY);
-    if (countdownInterval) clearInterval(countdownInterval);
-    pauseAudio();
-    document.getElementById('appContainer').style.display   = 'none';
-    document.getElementById('loginContainer').style.display = 'flex';
-    document.getElementById('musicTogglePill').style.display = 'none';
-    document.getElementById('musicPlayer').style.display    = 'none';
-    document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-    document.getElementById('floatingBg').innerHTML = '';
-}
+function logout() {}
 
 function updateUserDisplay() {
     const avatarEl = document.getElementById('userAvatarEmoji');
@@ -274,19 +252,14 @@ function updateUserDisplay() {
 }
 
 function checkLoginStatus() {
-    const stored = localStorage.getItem(SCRIPT_USER_KEY);
-    if (stored) {
-        currentUser = stored;
-        updateUserDisplay();
-        document.getElementById('loginContainer').style.display = 'none';
-        document.getElementById('appContainer').style.display   = 'block';
-        navigateToApp('homeScreen');
-        showMusicPill();
-    }
+    currentUser = 'love';
+    updateUserDisplay();
+    // Default boot up logic
+    showMusicPill();
     const sc = localStorage.getItem('hetuApp_highscores');
     if (sc) { try { gameHighScores = JSON.parse(sc); } catch(e){} }
     updateHighScoreDisplays();
-    setTimeout(()=>{ if(currentUser){ initCountdown(); loadLoveNotes(); } }, 60);
+    setTimeout(()=>{ initCountdown(); loadLoveNotes(); }, 60);
 }
 
 
