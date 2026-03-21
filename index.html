@@ -579,36 +579,20 @@
     </div>
 
     <!-- MUSIC PLAYER -->
-    <div id="musicPlayer" class="music-player" style="display:none;">
-        <button class="music-close" onclick="toggleMusicPlayer()">✕</button>
-        <div class="music-top-row">
-            <div class="music-cover" id="musicCover">🎵</div>
-            <div class="music-info">
-                <div class="music-title sub-font" id="musicTitle">Loading songs…</div>
-                <div class="music-artist" id="musicArtist">♪</div>
-            </div>
-        </div>
-        <div class="music-progress-wrap">
-            <div class="music-time-label sub-font" id="musicTimeEl">0:00</div>
-            <div class="music-progress-bar" id="musicProgressBar">
-                <div class="music-progress-fill" id="musicProgressFill"></div>
-            </div>
-            <div class="music-time-label sub-font" id="musicDurEl">0:00</div>
-        </div>
-        <div class="music-controls">
-            <button class="mc-btn" onclick="musicPrev()">⏮</button>
-            <button class="mc-btn mc-play" id="musicPlay" onclick="musicToggle()">▶</button>
-            <button class="mc-btn" onclick="musicNext()">⏭</button>
-        </div>
-        <div class="music-volume-row">
-            <span>🔈</span>
-            <input type="range" id="musicVolSlider" min="0" max="1" step="0.05" value="0.8"
-                style="flex:1;accent-color:var(--accent);">
-            <span>🔊</span>
-        </div>
-    </div>
-    <button class="music-toggle-pill" id="musicTogglePill" style="display:none;" onclick="toggleMusicPlayer()">🎵</button>
-    <audio id="audioEl" preload="metadata"></audio>
+<div id="musicPlayer" class="music-player" style="display:none;">
+    <button class="music-close" onclick="toggleMusicPlayer()">✕</button>
+    <iframe
+        src="https://www.youtube.com/embed/videoseries?list=PLg0uQzBdgt9kA8APLHj-4DBmidDksJFGx&autoplay=0"
+        width="100%"
+        height="180"
+        frameborder="0"
+        allow="autoplay; encrypted-media"
+        allowfullscreen
+        style="border-radius:14px;margin-top:8px;">
+    </iframe>
+</div>
+<button class="music-toggle-pill" id="musicTogglePill" style="display:none;"
+    onclick="toggleMusicPlayer()">🎵</button>
 
     <script src="script.js"></script>
 </body>
