@@ -19,7 +19,7 @@ let selectedMood      = null;
 let countdownInterval = null;
 
 // Default anniversary — April 21 2024
-const DEFAULT_ANNIVERSARY = '2024-04-21';
+const DEFAULT_ANNIVERSARY = '2024-04-21T18:00:00';
 const DEFAULT_ANNIVERSARY_LABEL = 'The day everything changed 💕';
 
 // ── Game State ─────────────────────────────────────────────────
@@ -106,8 +106,8 @@ function initCountdown() {
 
     let dateStr = saved?.date || DEFAULT_ANNIVERSARY;
     const label = saved?.label || DEFAULT_ANNIVERSARY_LABEL;
-    let start = new Date(dateStr + 'T00:00:00');
-    if (isNaN(start.getTime())) start = new Date('2024-04-21T00:00:00');
+    let start = new Date(dateStr);
+    if (isNaN(start.getTime())) start = new Date('2024-04-21T18:00:00');
 
     const sinceEl = document.getElementById('cdSince');
     if (sinceEl) {
