@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════════════
 //  HAPES PORTAL  ·  script.js v3
-//  Fixed: countdown hardcoded to Apr 21 2023 · real audio player
+//  Fixed: countdown hardcoded to Apr 21 2024 · real audio player
 //  Clean journey page · all previous bugs resolved
 // ═══════════════════════════════════════════════════════════════
 
@@ -33,10 +33,10 @@ let gameHighScores = { memory: Infinity, catch: 0, slasher: 0 };
 let timelineData = JSON.parse(localStorage.getItem('hetuTimelineData')) || [];
 if (timelineData.length === 0) {
     timelineData = [
-        { date:'2023-04-21', title:'Where it all began',  img:'assets/Timeline/1.jpg', desc:'The very first day. The start of us.' },
-        { date:'2023-02-14', title:"Valentine's Day",     img:'assets/Timeline/2.jpg', desc:'Our first February together, full of roses and warmth.' },
-        { date:'2023-06-10', title:'Summer Memories',     img:'assets/Timeline/3.jpg', desc:'Sunlight, laughter, and nowhere else we\'d rather be.' },
-        { date:'2023-12-31', title:'New Year, Together',  img:'assets/Timeline/4.jpg', desc:'Counting down to midnight, hand in hand.' },
+        { date:'2024-04-21', title:'Where it all began',  img:'assets/Timeline/1.jpg', desc:'The very first day. The start of us.' },
+        { date:'2024-02-14', title:"Valentine's Day",     img:'assets/Timeline/2.jpg', desc:'Our first February together, full of roses and warmth.' },
+        { date:'2024-06-10', title:'Summer Memories',     img:'assets/Timeline/3.jpg', desc:'Sunlight, laughter, and nowhere else we\'d rather be.' },
+        { date:'2024-12-31', title:'New Year, Together',  img:'assets/Timeline/4.jpg', desc:'Counting down to midnight, hand in hand.' },
     ];
     localStorage.setItem('hetuTimelineData', JSON.stringify(timelineData));
 }
@@ -97,7 +97,7 @@ function fileToTitle(filename) {
 
 
 // ══════════════════════════════════════════════════════════════
-//  ANNIVERSARY COUNTDOWN  (hardcoded default: Apr 21 2023)
+//  ANNIVERSARY COUNTDOWN  (hardcoded default: Apr 21 2024)
 // ══════════════════════════════════════════════════════════════
 
 function initCountdown() {
