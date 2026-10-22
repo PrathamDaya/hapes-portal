@@ -875,7 +875,8 @@ canvas { width:100%; height:100%; display:block; }
 .typer-mode-btns { display:flex; gap:10px; justify-content:center; }
 .typer-mode-btn {
     padding: 10px 22px;
-    border-radius: 50px;    border: 2px solid var(--border);
+    border-radius: 50px;
+    border: 2px solid var(--border);
     background: transparent;
     color: var(--text);
     font-family: 'Raleway', sans-serif;

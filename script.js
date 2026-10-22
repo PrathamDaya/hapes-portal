@@ -338,7 +338,8 @@ function createFloatingEmojis() {
     const c = document.getElementById('floatingBg');
     c.innerHTML = '';
     const e = ['💖','💕','💗','🐰','🦋','🌸','🌼','✨','🌹','🐇','💝','🫶'];
-    for (let i=0;i<18;i++){        const el = document.createElement('div');
+    for (let i=0;i<18;i++){
+        const el = document.createElement('div');
         el.className = 'floating-emoji';
         el.textContent = e[Math.floor(Math.random()*e.length)];
         el.style.left            = Math.random()*100+'%';
@@ -604,7 +605,8 @@ async function fetchAndDisplayAllDiaryEntries() {
             list.innerHTML='';
             [...data.data].sort((a,b)=>new Date(b.date)-new Date(a.date)).forEach(entry=>{
                 const d=new Date(entry.date+'T00:00:00');
-                const div=document.createElement('div'); div.className='diary-entry-list-item';                div.innerHTML=`<h3>${d.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</h3><div class="entry-meta-info">Written by <strong>${esc(entry.submittedBy||'?')}</strong></div><p class="entry-content">${esc(entry.thoughts||'')}</p>`;
+                const div=document.createElement('div'); div.className='diary-entry-list-item';
+                div.innerHTML=`<h3>${d.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</h3><div class="entry-meta-info">Written by <strong>${esc(entry.submittedBy||'?')}</strong></div><p class="entry-content">${esc(entry.thoughts||'')}</p>`;
                 if(entry.repliedBy&&entry.replyMessage){
                     div.innerHTML+=`<div class="reply-display ${entry.repliedBy.toLowerCase()}-reply"><strong>${esc(entry.repliedBy)}:</strong> ${esc(entry.replyMessage)}</div>`;
                 } else {
@@ -825,7 +827,8 @@ function cyPeriodDays(st){
     const set=new Set();
     st.ps.forEach(p=>{ const s=pd(p.start), e=p.end?pd(p.end):addDays(s,st.plen-1); for(let d=new Date(s); d<=e; d=addDays(d,1)) set.add(localDateStr(d)); });
     return set;
-}function cyToday(){ const t=new Date(); t.setHours(0,0,0,0); return t; }
+}
+function cyToday(){ const t=new Date(); t.setHours(0,0,0,0); return t; }
 function cyState(){
     const st=cyStats(); if(!st.last) return {st,empty:true};
     const today=cyToday(), lastStart=pd(st.last.start);
@@ -1014,7 +1017,8 @@ function drawCycleWheel(s){
     } else { ctx.fillStyle='#e2447a'; ctx.font='30px Arial'; ctx.fillText('🌸',cx,cx); }
 }
 
-// ── home: daily check-in + cycle heads-up ─────────────────────const CI_MOODS=[['Happy','😊'],['Loving','🥰'],['Calm','😌'],['Sad','🥺'],['Angry','😤'],['Tired','😴']];
+// ── home: daily check-in + cycle heads-up ─────────────────────
+const CI_MOODS=[['Happy','😊'],['Loving','🥰'],['Calm','😌'],['Sad','🥺'],['Angry','😤'],['Tired','😴']];
 function ciStreak(){
     let n=0, d=cyToday();
     if (!cyItems['c:'+localDateStr(d)+':'+currentUser]||cyItems['c:'+localDateStr(d)+':'+currentUser].del) d=addDays(d,-1);
