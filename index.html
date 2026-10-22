@@ -4,24 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>For my Hetu 💖</title>
-    <meta name="theme-color" content="#e2447a">
+    <meta name="theme-color" content="#f6f5f2">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="manifest" href="manifest.webmanifest">
     <link rel="apple-touch-icon" href="assets/icon-192.png">
     <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Parisienne&family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
-    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="https://www.youtube.com/iframe_api" defer></script>
 </head>
 <body>
-    <div class="ambient-bg">
-        <div class="ambient-orb orb-1"></div>
-        <div class="ambient-orb orb-2"></div>
-        <div class="ambient-orb orb-3"></div>
-    </div>
-    <div class="floating-bg" id="floatingBg"></div>
     <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
 
     <!-- ═══════ LOGIN ═══════ -->
@@ -56,16 +47,24 @@
         <!-- HOME -->
         <section id="homeScreen" class="screen active">
             <header class="main-header">
-                <div class="header-deco">✨</div>
                 <h1 class="display-font main-title">For my Hetu</h1>
                 <p class="header-subtitle" id="homeGreeting">Welcome back, love 💕</p>
             </header>
+
+            <button class="journey-feature" type="button" onclick="navigateToApp('timelineScreen')">
+                <span class="journey-feature-icon" aria-hidden="true">⏳</span>
+                <span class="journey-feature-copy">
+                    <span class="journey-feature-title">Our Journey</span>
+                    <span class="journey-feature-description">Every chapter of our story</span>
+                </span>
+                <span class="journey-feature-action" aria-hidden="true">Explore memories <span>→</span></span>
+            </button>
 
             <div class="countdown-banner" id="countdownBanner">
                 <div class="cd-left">
                     <div class="cd-heart">💖</div>
                     <div>
-                        <div class="cd-since" id="cdSince">Together since April 21, 2024 at 6:00 PM</div>
+                        <div class="cd-since" id="cdSince">Together since April 21, 2023 at 6:00 PM</div>
                         <div class="cd-days display-font" id="cdDays">calculating…</div>
                         <div class="cd-tagline">days of loving you 🌸</div>
                     </div>
@@ -94,37 +93,32 @@
                 <div id="loveNotesList" class="love-notes-list"></div>
             </div>
 
-            <main class="options-grid">
-                <div class="option-card" onclick="navigateToApp('feelingsPortalScreen')">
-                    <div class="card-icon">💌</div>
-                    <div class="card-label">Feelings Portal</div>
-                    <div class="card-desc">Share what's on your heart</div>
-                </div>
-                <div class="option-card" onclick="navigateToApp('diaryScreen')">
-                    <div class="card-icon">📓</div>
-                    <div class="card-label">Our Diary</div>
-                    <div class="card-desc">Capture every little moment</div>
-                </div>
-                <div class="option-card" onclick="navigateToApp('gameHubScreen')">
-                    <div class="card-icon">🎮</div>
-                    <div class="card-label">Love Arcade</div>
-                    <div class="card-desc">Play together, laugh together</div>
-                </div>
-                <div class="option-card" onclick="navigateToApp('periodTrackerScreen')">
-                    <div class="card-icon">🌸</div>
-                    <div class="card-label">Cycle Tracker</div>
-                    <div class="card-desc">Stay in sync with your body</div>
-                </div>
-                <div class="option-card" onclick="navigateToApp('timelineScreen')">
-                    <div class="card-icon">⏳</div>
-                    <div class="card-label">Our Journey</div>
-                    <div class="card-desc">Every chapter of our story</div>
-                </div>
-                <div class="option-card bunny-card" onclick="showMissYouPopup()">
-                    <span class="bunny-emoji" id="bunnyEmoji">🐰</span>
-                    <div class="card-label">Miss You</div>
-                </div>
-            </main>
+            <nav class="options-grid" aria-label="Portal sections">
+                <button class="option-card" type="button" onclick="navigateToApp('feelingsPortalScreen')">
+                    <span class="card-icon" aria-hidden="true">💌</span>
+                    <span class="card-label">Feelings Portal</span>
+                    <span class="card-desc">Share what's on your heart</span>
+                </button>
+                <button class="option-card" type="button" onclick="navigateToApp('diaryScreen')">
+                    <span class="card-icon" aria-hidden="true">📓</span>
+                    <span class="card-label">Our Diary</span>
+                    <span class="card-desc">Capture every little moment</span>
+                </button>
+                <button class="option-card" type="button" onclick="navigateToApp('gameHubScreen')">
+                    <span class="card-icon" aria-hidden="true">🎮</span>
+                    <span class="card-label">Love Arcade</span>
+                    <span class="card-desc">Play together, laugh together</span>
+                </button>
+                <button class="option-card" type="button" onclick="navigateToApp('periodTrackerScreen')">
+                    <span class="card-icon" aria-hidden="true">🌸</span>
+                    <span class="card-label">Cycle Tracker</span>
+                    <span class="card-desc">Stay in sync with your body</span>
+                </button>
+                <button class="option-card bunny-card" type="button" onclick="showMissYouPopup()">
+                    <span class="bunny-emoji" id="bunnyEmoji" aria-hidden="true">🐰</span>
+                    <span class="card-label">Miss You</span>
+                </button>
+            </nav>
 
             <footer class="main-footer">
                 <p>Made with 💝 for Hetu · <span id="footerDate"></span></p>
@@ -229,8 +223,7 @@
                             <p id="diaryEntryAttribution" class="entry-attribution"></p>
                         </div>
                         <div id="diaryViewPageReplySection" class="reply-section"></div>
-                        <div class="center-action"><button class="btn-outline" onclick="navigateToDiaryPage('diaryCalendarPage')">← Back to Calendar</button></div>
-                    </section>
+                        <div class="center-action"><button class="btn-outline" onclick="navigateToDiaryPage('diaryCalendarPage')">← Back to Calendar</button></div>                    </section>
                     <section id="allDiaryEntriesPage" class="page">
                         <div class="list-header">
                             <h3 class="list-title">All Diary Entries</h3>
@@ -442,8 +435,7 @@
                                 <div class="typer-words" id="typerWords"></div>
                             </div>
                             <input id="typerInput" type="text"
-                                class="typer-input"
-                                autocomplete="off" autocorrect="off"
+                                class="typer-input"                                autocomplete="off" autocorrect="off"
                                 autocapitalize="off" spellcheck="false"
                                 placeholder="Start typing…" />
                         </div>
@@ -481,23 +473,23 @@
         <!-- OUR JOURNEY -->
         <section id="timelineScreen" class="screen">
             <div class="journey-shell">
-                <div class="journey-header">
-                    <button class="btn-back journey-back" onclick="navigateToApp('homeScreen')">← Home</button>
-                    <span class="display-font journey-title">Our Journey 💖</span>
-                    <button class="btn-sm btn-prath" onclick="openAddMemoryModal()">+ Memory</button>
-                </div>
-                <div class="journey-stage" id="journeyStage">
+                <header class="journey-header">
+                    <button class="btn-back journey-back" type="button" aria-label="Back to home" onclick="navigateToApp('homeScreen')">← <span>Home</span></button>
+                    <h1 class="journey-title">Our Journey</h1>
+                    <button class="btn-sm btn-prath journey-add" type="button" onclick="openAddMemoryModal()">+ <span>Memory</span></button>
+                </header>
+                <div class="journey-stage" id="journeyStage" role="region" aria-roledescription="carousel" aria-label="Our memories" tabindex="0">
                     <div class="journey-bg" id="journeyBg"></div>
                     <div class="journey-slides" id="journeySlides"></div>
                     <div class="journey-overlay-ui">
-                        <button class="journey-arr left" id="journeyPrev">‹</button>
-                        <button class="journey-arr right" id="journeyNext">›</button>
-                        <div class="journey-dots-wrap" id="journeyDots"></div>
-                        <div class="journey-count" id="journeyCount">1 / 1</div>
+                        <button class="journey-arr left" id="journeyPrev" type="button" aria-label="Previous memory">‹</button>
+                        <button class="journey-arr right" id="journeyNext" type="button" aria-label="Next memory">›</button>
+                        <div class="journey-dots-wrap" id="journeyDots" role="group" aria-label="Choose a memory"></div>
+                        <div class="journey-count" id="journeyCount" role="status" aria-live="polite">1 / 1</div>
                     </div>
                 </div>
-                <div class="filmstrip-label">All memories</div>
-                <div class="filmstrip" id="filmstrip"></div>
+                <h2 class="filmstrip-label">All memories</h2>
+                <div class="filmstrip" id="filmstrip" role="group" aria-label="All memories"></div>
             </div>
         </section>
 

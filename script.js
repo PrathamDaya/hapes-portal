@@ -18,8 +18,8 @@ let usedDares         = [];
 let selectedMood      = null;
 let countdownInterval = null;
 
-// Default anniversary — April 21 2024
-const DEFAULT_ANNIVERSARY = '2024-04-21T18:00:00';
+// Default anniversary — April 21 2023
+const DEFAULT_ANNIVERSARY = '2023-04-21T18:00:00';
 const DEFAULT_ANNIVERSARY_LABEL = 'The day everything changed 💕';
 
 // ── Game State ─────────────────────────────────────────────────
@@ -41,19 +41,27 @@ let typerLbFilter  = 'all';
 let typerScoreSubmitted = false;
 
 // ── Timeline ───────────────────────────────────────────────────
-let timelineData = JSON.parse(localStorage.getItem('hetuTimelineData')) || [];
+let timelineData = [];
+try { timelineData = JSON.parse(localStorage.getItem('hetuTimelineData')) || []; } catch(e) {}
 if (timelineData.length === 0) {
     timelineData = [
         { date:'2023-04-21', title:'Where it all began',  img:'assets/Timeline/1.jpg', desc:'The very first day. The start of us.' },
-        { date:'2023-02-14', title:"Valentine's Day",     img:'assets/Timeline/2.jpg', desc:'Our first February together, full of roses and warmth.' },
+        { date:'2024-02-14', title:"Valentine's Day",     img:'assets/Timeline/2.jpg', desc:'Our first February together, full of roses and warmth.' },
         { date:'2023-06-10', title:'Summer Memories',     img:'assets/Timeline/3.jpg', desc:'Sunlight, laughter, and nowhere else we\'d rather be.' },
         { date:'2023-12-31', title:'New Year, Together',  img:'assets/Timeline/4.jpg', desc:'Counting down to midnight, hand in hand.' },
     ];
     localStorage.setItem('hetuTimelineData', JSON.stringify(timelineData));
 }
 
+const firstFebruaryMemory = timelineData.find(item => item?.title === "Valentine's Day" && item.date === '2023-02-14' && item.desc === 'Our first February together, full of roses and warmth.');
+if (firstFebruaryMemory) {
+    firstFebruaryMemory.date = '2024-02-14';
+    localStorage.setItem('hetuTimelineData', JSON.stringify(timelineData));
+}
+
 // ── Journey slide state ────────────────────────────────────────
 let journeyCurrent = 0;
+let journeyExitTimer = null;
 
 // ── Music state ────────────────────────────────────────────────
 let musicPlayerOpen    = false;
@@ -117,7 +125,7 @@ function initCountdown() {
     let dateStr = saved?.date || DEFAULT_ANNIVERSARY;
     const label = saved?.label || DEFAULT_ANNIVERSARY_LABEL;
     let start = new Date(dateStr);
-    if (isNaN(start.getTime())) start = new Date('2024-04-21T18:00:00');
+    if (isNaN(start.getTime())) start = new Date(DEFAULT_ANNIVERSARY);
 
     const sinceEl = document.getElementById('cdSince');
     if (sinceEl) {
@@ -259,7 +267,6 @@ function login(userName) {
     const sc = localStorage.getItem('hetuApp_highscores');
     if (sc) { try { gameHighScores = JSON.parse(sc); } catch(e){} }
     updateHighScoreDisplays();
-    createFloatingEmojis();
     setTimeout(()=>{ initCountdown(); loadLoveNotes(); initCycle(); }, 60);
 }
 
@@ -331,8 +338,7 @@ function createFloatingEmojis() {
     const c = document.getElementById('floatingBg');
     c.innerHTML = '';
     const e = ['💖','💕','💗','🐰','🦋','🌸','🌼','✨','🌹','🐇','💝','🫶'];
-    for (let i=0;i<18;i++){
-        const el = document.createElement('div');
+    for (let i=0;i<18;i++){        const el = document.createElement('div');
         el.className = 'floating-emoji';
         el.textContent = e[Math.floor(Math.random()*e.length)];
         el.style.left            = Math.random()*100+'%';
@@ -598,8 +604,7 @@ async function fetchAndDisplayAllDiaryEntries() {
             list.innerHTML='';
             [...data.data].sort((a,b)=>new Date(b.date)-new Date(a.date)).forEach(entry=>{
                 const d=new Date(entry.date+'T00:00:00');
-                const div=document.createElement('div'); div.className='diary-entry-list-item';
-                div.innerHTML=`<h3>${d.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</h3><div class="entry-meta-info">Written by <strong>${esc(entry.submittedBy||'?')}</strong></div><p class="entry-content">${esc(entry.thoughts||'')}</p>`;
+                const div=document.createElement('div'); div.className='diary-entry-list-item';                div.innerHTML=`<h3>${d.toLocaleDateString('en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</h3><div class="entry-meta-info">Written by <strong>${esc(entry.submittedBy||'?')}</strong></div><p class="entry-content">${esc(entry.thoughts||'')}</p>`;
                 if(entry.repliedBy&&entry.replyMessage){
                     div.innerHTML+=`<div class="reply-display ${entry.repliedBy.toLowerCase()}-reply"><strong>${esc(entry.repliedBy)}:</strong> ${esc(entry.replyMessage)}</div>`;
                 } else {
@@ -820,8 +825,7 @@ function cyPeriodDays(st){
     const set=new Set();
     st.ps.forEach(p=>{ const s=pd(p.start), e=p.end?pd(p.end):addDays(s,st.plen-1); for(let d=new Date(s); d<=e; d=addDays(d,1)) set.add(localDateStr(d)); });
     return set;
-}
-function cyToday(){ const t=new Date(); t.setHours(0,0,0,0); return t; }
+}function cyToday(){ const t=new Date(); t.setHours(0,0,0,0); return t; }
 function cyState(){
     const st=cyStats(); if(!st.last) return {st,empty:true};
     const today=cyToday(), lastStart=pd(st.last.start);
@@ -1010,8 +1014,7 @@ function drawCycleWheel(s){
     } else { ctx.fillStyle='#e2447a'; ctx.font='30px Arial'; ctx.fillText('🌸',cx,cx); }
 }
 
-// ── home: daily check-in + cycle heads-up ─────────────────────
-const CI_MOODS=[['Happy','😊'],['Loving','🥰'],['Calm','😌'],['Sad','🥺'],['Angry','😤'],['Tired','😴']];
+// ── home: daily check-in + cycle heads-up ─────────────────────const CI_MOODS=[['Happy','😊'],['Loving','🥰'],['Calm','😌'],['Sad','🥺'],['Angry','😤'],['Tired','😴']];
 function ciStreak(){
     let n=0, d=cyToday();
     if (!cyItems['c:'+localDateStr(d)+':'+currentUser]||cyItems['c:'+localDateStr(d)+':'+currentUser].del) d=addDays(d,-1);
@@ -1044,12 +1047,12 @@ function renderCheckin(){
 // ══════════════════════════════════════════════════════════════
 
 const BG_GRADS=[
-    'radial-gradient(ellipse at 25% 45%, #3d1025 0%, #0a0408 68%)',
-    'radial-gradient(ellipse at 75% 40%, #0d2510 0%, #0a0408 68%)',
-    'radial-gradient(ellipse at 50% 60%, #2a2000 0%, #0a0408 68%)',
-    'radial-gradient(ellipse at 40% 30%, #0a1535 0%, #0a0408 68%)',
-    'radial-gradient(ellipse at 65% 55%, #1a0a30 0%, #0a0408 68%)',
-    'radial-gradient(ellipse at 20% 35%, #1a1500 0%, #0a0408 68%)',
+    'radial-gradient(ellipse at 16% 22%, rgba(223,207,194,.72) 0%, transparent 46%), radial-gradient(ellipse at 88% 82%, rgba(205,218,209,.76) 0%, transparent 43%), linear-gradient(135deg,#f4f1eb,#e9ece7)',
+    'radial-gradient(ellipse at 82% 24%, rgba(214,222,213,.76) 0%, transparent 44%), radial-gradient(ellipse at 16% 84%, rgba(222,208,194,.7) 0%, transparent 44%), linear-gradient(135deg,#f2f1eb,#e8ece7)',
+    'radial-gradient(ellipse at 48% 8%, rgba(224,213,196,.76) 0%, transparent 45%), radial-gradient(ellipse at 86% 92%, rgba(202,216,207,.72) 0%, transparent 44%), linear-gradient(135deg,#f4f0e8,#e8ece9)',
+    'radial-gradient(ellipse at 18% 18%, rgba(205,216,215,.74) 0%, transparent 46%), radial-gradient(ellipse at 86% 80%, rgba(223,208,194,.7) 0%, transparent 44%), linear-gradient(135deg,#edf0ee,#eeebe5)',
+    'radial-gradient(ellipse at 76% 18%, rgba(221,207,199,.74) 0%, transparent 46%), radial-gradient(ellipse at 18% 84%, rgba(202,216,207,.74) 0%, transparent 44%), linear-gradient(135deg,#f3eeeb,#e8ece8)',
+    'radial-gradient(ellipse at 16% 22%, rgba(222,213,194,.76) 0%, transparent 45%), radial-gradient(ellipse at 88% 78%, rgba(204,218,214,.72) 0%, transparent 43%), linear-gradient(135deg,#f1f0ea,#e8ece8)',
 ];
 const CHAPTERS=['Chapter One','A Beautiful Day','Golden Moments','Our Journey','Forever Together','Love & Laughter','Sweet Memories','New Adventures','Just the Two of Us'];
 const ROTATIONS=[-2,1.5,-1,2,-1.5,1,-2.5,2.5,-.8];
@@ -1064,8 +1067,9 @@ function renderJourney() {
 
     // Clear everything
     slidesEl.innerHTML=''; filmstrip.innerHTML=''; if(dotsEl) dotsEl.innerHTML='';
+    if (journeyExitTimer) clearTimeout(journeyExitTimer);
 
-    const sorted=[...timelineData].sort((a,b)=>new Date(b.date)-new Date(a.date));
+    const sorted=[...timelineData].sort((a,b)=>new Date(a.date)-new Date(b.date));
 
     if(sorted.length===0){
         slidesEl.innerHTML='<div class="journey-empty">No memories yet — add your first one! 📸</div>';
@@ -1082,23 +1086,30 @@ function renderJourney() {
         const ch=CHAPTERS[idx%CHAPTERS.length];
 
         // ── SLIDE ──
-        const slide=document.createElement('div');
+        const slide=document.createElement('article');
         slide.className='j-slide'+(idx===0?' j-active':'');
+        slide.setAttribute('role','group');
+        slide.setAttribute('aria-roledescription','slide');
+        slide.setAttribute('aria-label',`${idx+1} of ${sorted.length}: ${item.title}`);
+        slide.setAttribute('aria-hidden',idx===0?'false':'true');
 
         // Polaroid
-        const pol=document.createElement('div');
+        const pol=document.createElement('button');
         pol.className='j-polaroid'; pol.style.setProperty('--rot',rot+'deg');
+        pol.type='button';
+        pol.setAttribute('aria-label',`View memory: ${item.title}`);
         pol.onclick=()=>openMemoryModal(item,origIdx);
 
         const img=document.createElement('img');
         img.className='j-photo'; img.src=item.img; img.alt=item.title;
+        img.loading=idx===0?'eager':'lazy'; img.decoding='async';
         img.onerror=()=>{
             const fb=document.createElement('div'); fb.className='j-photo-placeholder'; fb.textContent='📷';
             img.replaceWith(fb);
         };
 
         const cap=document.createElement('div'); cap.className='j-caption';
-        cap.innerHTML=`<span class="j-date display-font">${dateStr}</span><span class="j-title-cap">${esc(item.title)}</span>`;
+        cap.innerHTML=`<span class="j-date">${esc(dateStr)}</span><span class="j-title-cap">${esc(item.title)}</span>`;
         pol.appendChild(img); pol.appendChild(cap);
 
         // Text block
@@ -1109,12 +1120,16 @@ function renderJourney() {
         slidesEl.appendChild(slide);
 
         // ── FILMSTRIP THUMB ──
-        const thumb=document.createElement('div');
+        const thumb=document.createElement('button');
         thumb.className='thumb-card'+(idx===0?' active':'');
+        thumb.type='button';
+        thumb.setAttribute('aria-label',`Show memory: ${item.title}`);
+        thumb.setAttribute('aria-pressed',idx===0?'true':'false');
         thumb.onclick=()=>goToSlide(idx);
 
         const ti=document.createElement('img');
         ti.className='thumb-img'; ti.src=item.img; ti.alt=item.title;
+        ti.loading='lazy'; ti.decoding='async';
         ti.onerror=()=>{ const fb=document.createElement('div'); fb.className='thumb-img-placeholder'; fb.textContent='📷'; ti.replaceWith(fb); };
 
         const tt=document.createElement('div'); tt.className='thumb-title'; tt.textContent=item.title;
@@ -1122,7 +1137,7 @@ function renderJourney() {
         filmstrip.appendChild(thumb);
 
         // ── DOT ──
-        if(dotsEl){ const dot=document.createElement('button'); dot.className='j-dot'+(idx===0?' on':''); dot.onclick=()=>goToSlide(idx); dotsEl.appendChild(dot); }
+        if(dotsEl){ const dot=document.createElement('button'); dot.type='button'; dot.className='j-dot'+(idx===0?' on':''); dot.setAttribute('aria-label',`Show memory ${idx+1}: ${item.title}`); dot.setAttribute('aria-current',idx===0?'true':'false'); dot.onclick=()=>goToSlide(idx); dotsEl.appendChild(dot); }
     });
 
     if(countEl) countEl.textContent=`1 / ${sorted.length}`;
@@ -1134,21 +1149,28 @@ function renderJourney() {
     if(pBtn) pBtn.onclick=()=>goToSlide(journeyCurrent-1);
     if(nBtn) nBtn.onclick=()=>goToSlide(journeyCurrent+1);
 
-    // Swipe
     const stage=document.getElementById('journeyStage');
-    let sx=0;
-    const onTouchStart=e=>{ sx=e.touches[0].clientX; };
-    const onTouchEnd=e=>{ const dx=sx-e.changedTouches[0].clientX; if(Math.abs(dx)>45) goToSlide(journeyCurrent+(dx>0?1:-1)); };
-    const onMDown=e=>{ sx=e.clientX; };
-    const onMUp=e=>{ const dx=sx-e.clientX; if(Math.abs(dx)>45) goToSlide(journeyCurrent+(dx>0?1:-1)); };
-    stage.removeEventListener('touchstart',onTouchStart);
-    stage.removeEventListener('touchend',onTouchEnd);
-    stage.removeEventListener('mousedown',onMDown);
-    stage.removeEventListener('mouseup',onMUp);
-    stage.addEventListener('touchstart',onTouchStart,{passive:true});
-    stage.addEventListener('touchend',onTouchEnd,{passive:true});
-    stage.addEventListener('mousedown',onMDown);
-    stage.addEventListener('mouseup',onMUp);
+    if (stage && stage.dataset.controlsBound !== 'true') {
+        let pointerStart = null;
+        stage.addEventListener('pointerdown',event=>{
+            if (event.button !== undefined && event.button !== 0) return;
+            pointerStart={x:event.clientX,y:event.clientY};
+        },{passive:true});
+        stage.addEventListener('pointerup',event=>{
+            if (!pointerStart) return;
+            const dx=pointerStart.x-event.clientX;
+            const dy=pointerStart.y-event.clientY;
+            pointerStart=null;
+            if (Math.abs(dx)>45 && Math.abs(dx)>Math.abs(dy)) goToSlide(journeyCurrent+(dx>0?1:-1));
+        },{passive:true});
+        stage.addEventListener('pointercancel',()=>{ pointerStart=null; });
+        stage.addEventListener('keydown',event=>{
+            if (event.target !== stage) return;
+            if (event.key === 'ArrowLeft') { event.preventDefault(); goToSlide(journeyCurrent-1); }
+            if (event.key === 'ArrowRight') { event.preventDefault(); goToSlide(journeyCurrent+1); }
+        });
+        stage.dataset.controlsBound='true';
+    }
 }
 
 function goToSlide(n) {
@@ -1160,25 +1182,40 @@ function goToSlide(n) {
     const total=slides.length; if(!total) return;
 
     n=(n+total)%total;
+    if (n===journeyCurrent) return;
 
-    // Exit current
-    slides[journeyCurrent].classList.remove('j-active');
-    slides[journeyCurrent].classList.add('j-exit');
     const exitIdx=journeyCurrent;
-    setTimeout(()=>{ if(slides[exitIdx]) slides[exitIdx].classList.remove('j-exit'); }, 700);
+    slides[exitIdx]?.classList.remove('j-active');
+    slides[exitIdx]?.classList.add('j-exit');
     thumbs[journeyCurrent]?.classList.remove('active');
+    thumbs[journeyCurrent]?.setAttribute('aria-pressed','false');
     dots[journeyCurrent]?.classList.remove('on');
+    dots[journeyCurrent]?.setAttribute('aria-current','false');
 
     journeyCurrent=n;
 
-    // Activate new
+    slides[journeyCurrent]?.classList.remove('j-exit');
     slides[journeyCurrent].classList.add('j-active');
+    slides.forEach((slide,index)=>slide.setAttribute('aria-hidden',index===journeyCurrent?'false':'true'));
     thumbs[journeyCurrent]?.classList.add('active');
+    thumbs[journeyCurrent]?.setAttribute('aria-pressed','true');
     dots[journeyCurrent]?.classList.add('on');
-    thumbs[journeyCurrent]?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+    dots[journeyCurrent]?.setAttribute('aria-current','true');
+
+    const filmstrip=document.getElementById('filmstrip');
+    const activeThumb=thumbs[journeyCurrent];
+    if (filmstrip && activeThumb) {
+        const left=activeThumb.offsetLeft-filmstrip.offsetLeft-(filmstrip.clientWidth-activeThumb.clientWidth)/2;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) filmstrip.scrollLeft=left;
+        else filmstrip.scrollTo({left,behavior:'smooth'});
+    }
 
     if(bg) bg.style.background=BG_GRADS[journeyCurrent%BG_GRADS.length];
     if(count) count.textContent=`${journeyCurrent+1} / ${total}`;
+    if (journeyExitTimer) clearTimeout(journeyExitTimer);
+    journeyExitTimer=setTimeout(()=>{
+        if (exitIdx!==journeyCurrent) slides[exitIdx]?.classList.remove('j-exit');
+    },720);
 }
 
 // ── Memory modal ───────────────────────────────────────────────
@@ -1272,8 +1309,7 @@ function startMemoryGame(){
     memMoves=0; document.getElementById('memoryMoves').textContent=0;
     memLock=false; memHasFlippedCard=false;
     const items=usePhotoAssets?['assets/mem1.jpg','assets/mem2.jpg','assets/mem3.jpg','assets/mem4.jpg','assets/mem5.jpg','assets/mem6.jpg']:['🧸','🐰','💖','🍓','💋','🌹'];
-    const deck=[...items,...items].sort(()=>Math.random()-.5);
-    deck.forEach(item=>{ const card=document.createElement('div'); card.className='memory-card'; card.dataset.framework=item; const front=document.createElement('div'); front.className='front-face'; if(usePhotoAssets){ const img=document.createElement('img'); img.src=item; img.alt='Memory'; img.onerror=()=>{front.textContent='📷';}; front.appendChild(img); } else front.textContent=item; const back=document.createElement('div'); back.className='back-face'; back.textContent='?'; card.appendChild(front); card.appendChild(back); card.addEventListener('click',flipCard); grid.appendChild(card); });
+    const deck=[...items,...items].sort(()=>Math.random()-.5);    deck.forEach(item=>{ const card=document.createElement('div'); card.className='memory-card'; card.dataset.framework=item; const front=document.createElement('div'); front.className='front-face'; if(usePhotoAssets){ const img=document.createElement('img'); img.src=item; img.alt='Memory'; img.onerror=()=>{front.textContent='📷';}; front.appendChild(img); } else front.textContent=item; const back=document.createElement('div'); back.className='back-face'; back.textContent='?'; card.appendChild(front); card.appendChild(back); card.addEventListener('click',flipCard); grid.appendChild(card); });
 }
 function flipCard(){ if(memLock||this===memFirstCard) return; this.classList.add('flip'); if(!memHasFlippedCard){ memHasFlippedCard=true; memFirstCard=this; return; } memSecondCard=this; memMoves++; document.getElementById('memoryMoves').textContent=memMoves; if(memFirstCard.dataset.framework===memSecondCard.dataset.framework){ memFirstCard.removeEventListener('click',flipCard); memSecondCard.removeEventListener('click',flipCard); [memHasFlippedCard,memLock]=[false,false]; [memFirstCard,memSecondCard]=[null,null]; if(document.querySelectorAll('.memory-card.flip').length===12) setTimeout(()=>{ if(memMoves<gameHighScores.memory){ gameHighScores.memory=memMoves; saveHighScores(); showCustomPopup('New Record! 🏆','You won in just '+memMoves+' moves!'); } else showCustomPopup('You Won! 🎉','Finished in '+memMoves+' moves.'); },400); } else { memLock=true; setTimeout(()=>{ memFirstCard.classList.remove('flip'); memSecondCard.classList.remove('flip'); [memHasFlippedCard,memLock]=[false,false]; [memFirstCard,memSecondCard]=[null,null]; },1000); } }
 
@@ -1469,7 +1505,6 @@ function endTyperGame() {
     const wpm=Math.round(typerCorrect/elapsed);
     const total=typerCorrect+typerWrong;
     const acc=total>0?Math.round(typerCorrect/total*100):100;
-
     document.getElementById('typerResultWPM').textContent=wpm;
     document.getElementById('typerResultStats').innerHTML=
         `<div class="typer-stat-chip">⌨️ ${typerDuration}s mode</div>`+
@@ -1799,7 +1834,6 @@ function highlightPlaylistItem() {
 document.addEventListener('DOMContentLoaded', ()=>{
     loadTheme();
     checkLoginStatus();
-    createFloatingEmojis();
 
     // Diary calendar nav
     const pb=document.getElementById('prevMonthBtn');
@@ -1820,4 +1854,3 @@ document.addEventListener('DOMContentLoaded', ()=>{
         if (dur > 0) ytPlayer.seekTo(pct * dur, true);
     });
 });
-
