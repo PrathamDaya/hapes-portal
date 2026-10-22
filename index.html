@@ -52,12 +52,16 @@
             </header>
 
             <button class="journey-feature" type="button" onclick="navigateToApp('timelineScreen')">
-                <span class="journey-feature-icon" aria-hidden="true">⏳</span>
+                <span class="journey-feature-art" aria-hidden="true">
+                    <img src="assets/Timeline/1.jpg" alt="" loading="eager" decoding="async">
+                    <span class="journey-feature-art-mark">A story in moments</span>
+                </span>
                 <span class="journey-feature-copy">
+                    <span class="journey-feature-kicker">A LITTLE TIME CAPSULE</span>
                     <span class="journey-feature-title">Our Journey</span>
                     <span class="journey-feature-description">Every chapter of our story</span>
                 </span>
-                <span class="journey-feature-action" aria-hidden="true">Explore memories <span>→</span></span>
+                <span class="journey-feature-action">Explore memories <span aria-hidden="true">↗</span></span>
             </button>
 
             <div class="countdown-banner" id="countdownBanner">
@@ -530,7 +534,7 @@
         </div>
     </div>
 
-    <div id="memoryModal" class="modal-overlay" onclick="closeMemoryModal()">
+    <div id="memoryModal" class="modal-overlay" style="display:none;" onclick="closeMemoryModal()">
         <div class="modal-box memory-modal-box" onclick="event.stopPropagation()">
             <h3 id="modalTitle" class="display-font modal-title"></h3>
             <div class="modal-img-wrap"><img id="modalImg" src="" alt="Memory"></div>
@@ -590,7 +594,10 @@
 
         <!-- Disc + song info -->
         <div class="music-top-row">
-            <div class="music-cover" id="musicCover">🎵</div>
+            <div class="music-cover" id="musicCover">
+                <img class="music-cover-art" id="musicCoverArt" alt="" hidden>
+                <span id="musicCoverFallback" aria-hidden="true">🎵</span>
+            </div>
             <div class="music-info">
                 <div class="music-title" id="musicTitle">Loading…</div>
                 <div class="music-artist" id="musicArtist">♪ Your Playlist</div>
@@ -627,6 +634,11 @@
                 <span class="playlist-title">Playlist</span>
                 <span class="playlist-count" id="playlistCount">— tracks</span>
             </div>
+            <label class="playlist-search-wrap">
+                <span aria-hidden="true">⌕</span>
+                <input id="playlistSearch" type="search" placeholder="Search loaded songs" autocomplete="off" aria-label="Search loaded songs">
+            </label>
+            <p class="playlist-notice" id="playlistNotice" hidden></p>
             <div class="playlist-scroll" id="playlistScroll">
                 <div class="playlist-loading">Loading tracks…</div>
             </div>
