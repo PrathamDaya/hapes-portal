@@ -5,6 +5,8 @@
 // ═══════════════════════════════════════════════════════════════
 
 const scriptURL = 'https://script.google.com/macros/s/AKfycbxMsH6HVLcv0yGQBKZCdOwdAUi9k_Jv4JeIOotqicQlef0mP_mIADlEVbUuzS8pPsZ27g/exec';
+window.HETU_SCRIPT_URL=scriptURL;
+window.HETU_CURRENT_USER=()=>currentUser;
 
 // ── State ──────────────────────────────────────────────────────
 let currentUser       = 'love';
@@ -14,7 +16,6 @@ let calendarCurrentDate = new Date();
 let periodCalendarDate  = new Date();
 let diaryEntries      = {};
 let periodData        = [];
-let usedDares         = [];
 let selectedMood      = null;
 let countdownInterval = null;
 
@@ -23,11 +24,7 @@ const DEFAULT_ANNIVERSARY = '2023-04-21T18:00:00';
 const DEFAULT_ANNIVERSARY_LABEL = 'The day everything changed 💕';
 
 // ── Game State ─────────────────────────────────────────────────
-const usePhotoAssets = true;
-let memMoves=0, memLock=false, memHasFlippedCard=false, memFirstCard, memSecondCard;
-let catchGameRunning=false, catchScore=0, catchLoopId;
-let slasherGameRunning=false, slasherScore=0, slasherLoopId;
-let gameHighScores = { memory: Infinity, catch: 0, slasher: 0, typer: 0 };
+let gameHighScores = { typer: 0 };
 let typerDuration  = 30;
 let typerRunning   = false;
 let typerInterval  = null;
@@ -127,6 +124,7 @@ function relTime(date) {
 // ══════════════════════════════════════════════════════════════
 
 function initCountdown() {
+    updateHomeHighlights();
     let saved = null;
     try { saved = JSON.parse(localStorage.getItem('hetuAnniversary')); } catch(e) {}
 
@@ -175,10 +173,41 @@ function initCountdown() {
     countdownInterval = setInterval(tick, 1000);
 }
 
+function updateHomeHighlights(){
+    const quotes=['Every ordinary day is a little more special with you.','My favourite place is right beside you.','You make the small moments feel like our best ones.','The best part of the day is knowing it ends with us.','A little more laughter, a little more love — always us.','The story I want to keep choosing is ours.'];
+    const quote=document.getElementById('homeDailyQuote');
+    if(quote)quote.textContent=quotes[Math.floor(Date.now()/86400000)%quotes.length];
+    const dayEl=document.getElementById('homeMilestoneDays'),labelEl=document.getElementById('homeMilestoneLabel');
+    if(!dayEl||!labelEl)return;
+    let saved=null;try{saved=JSON.parse(localStorage.getItem('hetuAnniversary'));}catch(e){}
+    const start=new Date(saved?.date||DEFAULT_ANNIVERSARY),today=new Date();today.setHours(0,0,0,0);start.setHours(0,0,0,0);
+    const days=Math.max(0,Math.floor((today-start)/86400000)),milestones=[100,200,365,1000],next=milestones.find(value=>value>days);
+    if(milestones.includes(days))celebrateHomeMilestone(days);
+    if(!next){dayEl.textContent='∞';labelEl.textContent='A thousand days, and our story keeps growing.';return;}
+    const left=next-days;dayEl.textContent=left===0?'Today':left+' days';
+    labelEl.textContent=left===0?'We’re celebrating '+next+' days together.':'until '+next+' days together';
+}
+function celebrateHomeMilestone(day){
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+    const host=document.getElementById('milestoneConfetti');if(!host)return;
+    const key='hetuMilestoneCelebrated_'+day;
+    try{if(sessionStorage.getItem(key))return;sessionStorage.setItem(key,'1');}catch(error){}
+    const colors=['#d99aab','#c7b5d3','#e9c7a8','#a76478'];
+    for(let index=0;index<18;index++){
+        const piece=document.createElement('span');piece.className='confetti-piece';
+        piece.style.setProperty('--x',Math.random()*100+'%');
+        piece.style.setProperty('--delay',Math.random()*240+'ms');
+        piece.style.setProperty('--drift',(Math.random()*120-60)+'px');
+        piece.style.setProperty('--confetti',colors[index%colors.length]);
+        host.appendChild(piece);
+    }
+    setTimeout(()=>host.replaceChildren(),1700);
+}
+
 function openAnniversaryModal() {
     let saved = null;
     try { saved = JSON.parse(localStorage.getItem('hetuAnniversary')); } catch(e) {}
-    document.getElementById('anniversaryDate').value  = saved?.date  || DEFAULT_ANNIVERSARY;
+    document.getElementById('anniversaryDate').value = saved?.date || DEFAULT_ANNIVERSARY;
     document.getElementById('anniversaryLabel').value = saved?.label || DEFAULT_ANNIVERSARY_LABEL;
     document.getElementById('anniversaryModal').style.display = 'flex';
 }
@@ -324,17 +353,17 @@ function checkLoginStatus() {
 // ══════════════════════════════════════════════════════════════
 
 function toggleTheme() {
-    const cur  = document.documentElement.getAttribute('data-theme');
-    const next = cur==='dark'?'light':'dark';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('theme', next);
-    document.getElementById('themeToggle').textContent = next==='dark'?'☀️':'🌙';
+    const next=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+    document.documentElement.setAttribute('data-theme',next);
+    localStorage.setItem('theme',next);
+    document.getElementById('themeToggle').textContent=next==='dark'?'☀️':'🌙';
 }
 function loadTheme() {
-    const s = localStorage.getItem('theme') || 'light';
-    document.documentElement.setAttribute('data-theme', s);
-    const btn = document.getElementById('themeToggle');
-    if (btn) btn.textContent = s==='dark'?'☀️':'🌙';
+    const saved=localStorage.getItem('theme');
+    const theme=saved||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');
+    document.documentElement.setAttribute('data-theme',theme);
+    const btn=document.getElementById('themeToggle');
+    if(btn) btn.textContent=theme==='dark'?'☀️':'🌙';
 }
 
 
@@ -436,9 +465,6 @@ function navigateToApp(screenId) {
             navigateToFeelingsPage('feelingsPage1'); break;
         case 'diaryScreen':
             fetchDiaryEntries().then(()=>{ renderCalendar(calendarCurrentDate); navigateToDiaryPage('diaryCalendarPage'); }); break;
-        case 'dareGameScreen':
-            if (usedDares.length>=coupleDares.length) usedDares=[];
-            document.getElementById('dareText').textContent='Ready for a dare? Press the button!'; break;
         case 'periodTrackerScreen':
             loadPeriodTracker(); break;
         case 'gameHubScreen':
@@ -446,14 +472,14 @@ function navigateToApp(screenId) {
         case 'loveTyperScreen':
             resetTyper(); fetchTyperLeaderboard(); break;
         case 'timelineScreen':
-            renderJourney(); break;
+            renderJourney(); loadSharedMemories(); break;
     }
     window.scrollTo({top:0, behavior:'smooth'});
 }
 
 function quitGame(nav=true) {
-    catchGameRunning=false; slasherGameRunning=false; typerRunning=false;
-    cancelAnimationFrame(catchLoopId); cancelAnimationFrame(slasherLoopId);
+    if(window.stopArcadeGame) window.stopArcadeGame();
+    typerRunning=false;
     if(typerInterval){ clearInterval(typerInterval); typerInterval=null; }
     if (nav) navigateToApp('gameHubScreen');
 }
@@ -492,7 +518,7 @@ function submitFeelingsEntry() {
 async function fetchAndDisplayFeelingsEntries() {
     if (!currentUser) return;
     const list=document.getElementById('feelingsEntriesList');
-    list.innerHTML='<p class="loading-text">Loading entries…</p>';
+    list.innerHTML='<div class="skeleton-stack" role="status" aria-label="Loading entries"><span class="skeleton skeleton-row"></span><span class="skeleton skeleton-row"></span><span class="skeleton skeleton-row"></span></div>';
     try {
         const res=await fetch(`${scriptURL}?action=getFeelingsEntries`,{mode:'cors'});
         const data=await res.json();
@@ -605,7 +631,7 @@ function submitDiaryEntry() {
 async function fetchAndDisplayAllDiaryEntries() {
     if (!currentUser) return;
     const list=document.getElementById('allDiaryEntriesList');
-    list.innerHTML='<p class="loading-text">Loading…</p>';
+    list.innerHTML='<div class="skeleton-stack" role="status" aria-label="Loading scores"><span class="skeleton skeleton-row"></span><span class="skeleton skeleton-row"></span><span class="skeleton skeleton-row"></span></div>';
     try {
         const res=await fetch(`${scriptURL}?action=getDiaryEntries`,{mode:'cors'});
         const data=await res.json();
@@ -688,17 +714,7 @@ const coupleDares = [
     "Describe your partner in exactly 10 words — make them count.",
     "Hold hands and take turns sharing a favourite memory.",
 ];
-
-function generateDare() {
-    if (!currentUser) return;
-    if (usedDares.length>=coupleDares.length) { usedDares=[]; showCustomPopup('All Dares Done! 🎉','Starting over…'); }
-    const available=coupleDares.filter(d=>!usedDares.includes(d));
-    const dare=available[Math.floor(Math.random()*available.length)];
-    usedDares.push(dare);
-    const el=document.getElementById('dareText');
-    el.style.opacity='0';
-    setTimeout(()=>{ el.textContent=dare; el.style.transition='opacity .4s'; el.style.opacity='1'; }, 150);
-}
+window.HETU_DARE_CARDS=coupleDares;
 
 
 // ══════════════════════════════════════════════════════════════
@@ -711,7 +727,7 @@ function generateDare() {
 // Sync uses your existing Apps Script (Code.gs v2 adds getCycleDoc + JSON POST).
 const CYCLE_SYNC_URL = scriptURL;   // same Apps Script as the rest of the portal
 
-const CY_KEY = 'hetuCycleDoc', CY_PENDING = 'hetuCyPending', CY_POLL_MS = 20000;
+const CY_KEY = 'hetuCycleDoc', CY_PENDING = 'hetuCyPending', CY_REMOTE_MIGRATION = 'hetuCyRemoteMigrationV1', CY_POLL_MS = 5000;
 const DAY_MS = 86400000;
 let cyItems = {}, cySyncing = false, cyResync = false, cyPollId = null, cyReady = false, cyStatus = 'local';
 let cySheet = null;
@@ -744,6 +760,10 @@ const WHEEL_BORDERS = ['#e57373','#66bb6a','#fdd835','#ab47bc'];
 
 // ── date helpers (all local-time, "YYYY-MM-DD" strings) ───────
 function pd(s){ const [y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
+function cyValidDate(value){
+    if(typeof value!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+    return localDateStr(pd(value))===value;
+}
 function addDays(d,n){ const x=new Date(d); x.setDate(x.getDate()+n); return x; }
 function diffDays(a,b){ return Math.round((a-b)/DAY_MS); }
 function fmtShort(d){ return d.toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
@@ -751,20 +771,28 @@ function partnerName(){ return currentUser==='Prath'?'Chikoo':'Prath'; }
 
 // ── store ─────────────────────────────────────────────────────
 function cyLoad(){
-    try { cyItems = JSON.parse(localStorage.getItem(CY_KEY)||'{}') || {}; } catch(e){ cyItems = {}; }
-    // one-time import of the old localStorage-only data
+    try {
+        const cached=JSON.parse(localStorage.getItem(CY_KEY)||'{}');
+        cyItems=cached&&typeof cached==='object'&&!Array.isArray(cached)?cached:{};
+    } catch(e){ cyItems={}; }
     if (!localStorage.getItem('hetuCyMigrated')) {
+        let imported=false;
         try {
-            const old = JSON.parse(localStorage.getItem('periodData')||'[]');
+            const old=JSON.parse(localStorage.getItem('periodData')||'[]');
             old.forEach(e=>{
-                if (!e.startDate) return;
+                if (!cyValidDate(e?.startDate)) return;
+                const end=cyValidDate(e.endDate)&&e.endDate>=e.startDate&&e.endDate!==e.startDate?e.endDate:'';
                 const k='p:'+e.startDate;
-                if (!cyItems[k]) cyItems[k]={start:e.startDate,end:(e.endDate&&e.endDate!==e.startDate)?e.endDate:'',by:e.loggedBy||'',u:Date.parse(e.timestamp)||Date.now()};
+                if (!cyItems[k]) { cyItems[k]={start:e.startDate,end,by:e.loggedBy||'',u:Date.parse(e.timestamp)||Date.now()}; imported=true; }
             });
-            const cl = parseInt(localStorage.getItem('periodCycleLength')||'');
-            if (cl && !cyItems.cfg) cyItems.cfg={cycleLen:cl,periodLen:5,u:Date.now()};
-            if (old.length) localStorage.setItem(CY_PENDING,'1');
+            const cycleLen=parseInt(localStorage.getItem('periodCycleLength')||'',10);
+            const periodLen=parseInt(localStorage.getItem('periodLength')||'',10);
+            if (!cyItems.cfg&&(cycleLen||periodLen)) {
+                cyItems.cfg={cycleLen:cycleLen||28,periodLen:periodLen||5,u:Date.now()};
+                imported=true;
+            }
         } catch(e){}
+        if(imported) localStorage.setItem(CY_PENDING,'1');
         localStorage.setItem('hetuCyMigrated','1');
         cySave();
     }
@@ -780,27 +808,47 @@ function cyCfg(){ const c=cyItems.cfg||{}; return {cycleLen:c.cycleLen||28, peri
 function cySetStatus(s){
     cyStatus=s;
     const el=document.getElementById('cySyncPill'); if(!el) return;
-    const map={local:['📱 This phone only','warn'],syncing:['⟳ Syncing…','busy'],ok:['✓ Synced with '+partnerName(),'ok'],offline:['⚠ Offline — will sync','warn']};
-    el.textContent=map[s][0]; el.className='sync-pill '+map[s][1];
+    const map={local:['Local only','warn'],syncing:['Syncing…','busy'],ok:['Synced 💕','ok'],offline:['Offline — queued','warn']};
+    el.textContent=map[s][0]; el.className='sync-pill '+map[s][1]; el.setAttribute('aria-label','Period tracker: '+map[s][0]);
 }
 async function cySync(manual){
-    if (!CYCLE_SYNC_URL) { cySetStatus('local'); if(manual===true) showCustomPopup('Set up sync 🔗','Update your Apps Script with the new Code.gs and redeploy it (Deploy → Manage deployments → New version). Steps are in README-SETUP.md.'); return; }
+    if (!CYCLE_SYNC_URL) { cySetStatus('local'); if(manual===true) showCustomPopup('Set up sync 🔗','Update your Apps Script with the new Code.gs and redeploy it (Deploy → Manage deployments → New version). Steps are in README.md.'); return; }
     if (cySyncing) { cyResync=true; return; }
     cySyncing=true; cySetStatus('syncing');
+    const pending=localStorage.getItem(CY_PENDING)==='1';
+    const migrationPending=localStorage.getItem(CY_REMOTE_MIGRATION)!=='1';
+    const before=JSON.stringify(cyItems);
     try {
-        const pending = localStorage.getItem(CY_PENDING)==='1';
-        const res = pending
-            ? await fetch(CYCLE_SYNC_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({items:cyItems})})
-            : await fetch(CYCLE_SYNC_URL+'?action=getCycleDoc&t='+Date.now());
-        const j = await res.json();
-        if (!j || j.status==='error' || !j.items) throw new Error('bad response');
-        const before = JSON.stringify(cyItems);
-        cyItems = cyMerge(cyItems,j.items);
-        if (pending && !cyResync) localStorage.removeItem(CY_PENDING);
+        let result;
+        let needsWrite=pending&&Object.keys(cyItems).length>0;
+        if(migrationPending){
+            const remoteResponse=await fetch(CYCLE_SYNC_URL+'?action=getCycleDoc&t='+Date.now(),{cache:'no-store'});
+            const remote=await remoteResponse.json();
+            if(!remoteResponse.ok||!remote?.items||typeof remote.items!=='object'||Array.isArray(remote.items))throw new Error('bad cycle document');
+            const localSnapshot={...cyItems},remoteItems=remote.items;
+            needsWrite=needsWrite||Object.entries(localSnapshot).some(([key,value])=>!remoteItems[key]||(value.u||0)>(remoteItems[key]?.u||0));
+            cyItems=cyMerge(remoteItems,localSnapshot);
+            cySave();
+            if(needsWrite&&Object.keys(cyItems).length){
+                const writeResponse=await fetch(CYCLE_SYNC_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({items:cyItems}),cache:'no-store'});
+                result=await writeResponse.json();
+                if(!writeResponse.ok||!result||result.status==='error'||!result.items||typeof result.items!=='object'||Array.isArray(result.items))throw new Error('bad write response');
+                cyItems=cyMerge(cyItems,result.items);
+            }else result=remote;
+            localStorage.setItem(CY_REMOTE_MIGRATION,'1');
+        }else{
+            const response=needsWrite
+                ? await fetch(CYCLE_SYNC_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({items:cyItems}),cache:'no-store'})
+                : await fetch(CYCLE_SYNC_URL+'?action=getCycleDoc&t='+Date.now(),{cache:'no-store'});
+            result=await response.json();
+            if(!response.ok||!result||result.status==='error'||!result.items||typeof result.items!=='object'||Array.isArray(result.items))throw new Error('bad response');
+            cyItems=cyMerge(cyItems,result.items);
+        }
+        if(pending&&!cyResync)localStorage.removeItem(CY_PENDING);
         cySave(); cySetStatus('ok');
-        if (before!==JSON.stringify(cyItems)) cyRender();
-    } catch(e) { cySetStatus('offline'); }
-    finally { cySyncing=false; if (cyResync) { cyResync=false; cySync(); } }
+        if(before!==JSON.stringify(cyItems))cyRender();
+    }catch(e){cySetStatus('offline');}
+    finally{cySyncing=false;if(cyResync){cyResync=false;cySync();}}
 }
 function initCycle(){
     if (cyReady) return; cyReady=true;
@@ -847,7 +895,10 @@ function cyState(){
 }
 
 // ── actions ───────────────────────────────────────────────────
-function cyStartPeriod(ds){ cySet('p:'+ds,{start:ds,end:'',by:currentUser}); }
+function cyStartPeriod(ds){
+    if(!cyValidDate(ds)||ds>todayStr()){ showCustomPopup('Choose a valid date','A period start cannot be in the future.'); return false; }
+    cySet('p:'+ds,{start:ds,end:'',by:currentUser}); return true;
+}
 function cyEndPeriod(ds){
     const ps=cyPeriods().filter(p=>p.start<=ds); const p=ps[ps.length-1];
     if (!p) { showCustomPopup('No start yet','Log when the period started first 🌸'); return false; }
@@ -860,8 +911,8 @@ function cyQuickAction(){
 }
 function cyAddManual(){
     const v=document.getElementById('cyFirstDate').value;
-    if (!v) { showCustomPopup('Pick a date','Choose the first day of a period.'); return; }
-    cyStartPeriod(v); document.getElementById('cyFirstDate').value='';
+    if (!cyValidDate(v)||v>todayStr()) { showCustomPopup('Pick a valid date','Choose a real period start date that is not in the future.'); return; }
+    if(cyStartPeriod(v)) document.getElementById('cyFirstDate').value='';
 }
 function cySaveCfg(){
     const c=parseInt(document.getElementById('cycleLengthInput').value), p=parseInt(document.getElementById('periodLengthInput').value);
@@ -1233,23 +1284,97 @@ function goToSlide(n) {
     },720);
 }
 
-// ── Memory modal ───────────────────────────────────────────────
+// ── Shared memory gallery ─────────────────────────────────────
+let hetuMediaReady=false;
+let resumeMemoryAfterUnlock=false;
+function openMemoryAccess(resumeUpload=false){
+    resumeMemoryAfterUnlock=resumeUpload;
+    const modal=document.getElementById('memoryAccessModal');
+    const error=document.getElementById('memoryAccessError');
+    if(error) error.textContent='';
+    if(modal) modal.style.display='flex';
+    document.getElementById('memorySpaceCode')?.focus();
+}
+function closeMemoryAccess(){ const modal=document.getElementById('memoryAccessModal'); if(modal) modal.style.display='none'; }
+async function unlockSharedMemories(){
+    const input=document.getElementById('memorySpaceCode');
+    const error=document.getElementById('memoryAccessError');
+    const code=input?.value.trim()||'';
+    if(!code){ if(error) error.textContent='Enter the shared space code to continue.'; return; }
+    if(error) error.textContent='Unlocking…';
+    try{
+        const response=await fetch('/api/media-session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code})});
+        const result=await response.json();
+        if(!response.ok) throw new Error(result.error||'Could not unlock shared memories.');
+        hetuMediaReady=true;
+        if(input) input.value='';
+        closeMemoryAccess();
+        await loadSharedMemories();
+        if(resumeMemoryAfterUnlock) openAddMemoryModal(true);
+        resumeMemoryAfterUnlock=false;
+    }catch(e){ if(error) error.textContent=e.message; }
+}
+async function loadSharedMemories(){
+    const status=document.getElementById('memorySyncStatus');
+    const unlock=document.getElementById('memoryUnlockButton');
+    try{
+        const response=await fetch('/api/memories',{cache:'no-store'});
+        if(response.status===401){
+            hetuMediaReady=false;
+            if(status) status.textContent='Shared photos are private on this device';
+            if(unlock) unlock.hidden=false;
+            return;
+        }
+        if(!response.ok) throw new Error('Shared memories could not be loaded.');
+        const result=await response.json();
+        const shared=(result.memories||[]).map(item=>({...item,shared:true}));
+        timelineData=[...timelineData.filter(item=>!item.shared),...shared];
+        localStorage.setItem('hetuTimelineData',JSON.stringify(timelineData));
+        hetuMediaReady=true;
+        if(status) status.textContent='Shared and up to date';
+        if(unlock) unlock.hidden=true;
+        renderJourney();
+    }catch(e){
+        if(status) status.textContent='Showing memories saved on this device';
+        if(unlock) unlock.hidden=false;
+    }
+}
+async function memoryImagePayload(file){
+    if(file.size>15*1024*1024) throw new Error('Choose a photo smaller than 15 MB.');
+    const image=await createImageBitmap(file);
+    const scale=Math.min(1,1600/Math.max(image.width,image.height));
+    const canvas=document.createElement('canvas');
+    canvas.width=Math.max(1,Math.round(image.width*scale));
+    canvas.height=Math.max(1,Math.round(image.height*scale));
+    canvas.getContext('2d',{alpha:false}).drawImage(image,0,0,canvas.width,canvas.height);
+    image.close?.();
+    const blob=await new Promise((resolve,reject)=>canvas.toBlob(value=>value?resolve(value):reject(new Error('Could not prepare that photo.')),'image/webp',0.82));
+    if(blob.size>3*1024*1024) throw new Error('That photo is still too large after resizing. Choose a smaller image.');
+    const bytes=new Uint8Array(await blob.arrayBuffer());
+    let binary='';
+    for(let i=0;i<bytes.length;i+=32768) binary+=String.fromCharCode(...bytes.subarray(i,i+32768));
+    return {imageData:btoa(binary),mimeType:blob.type||'image/webp'};
+}
 function openMemoryModal(item,index) {
     document.getElementById('modalTitle').textContent=item.title;
     document.getElementById('modalImg').src=item.img;
     document.getElementById('modalDesc').textContent=item.desc||'No description.';
-    document.getElementById('modalActions').innerHTML=`<button class="edit-btn" onclick="prepareEditMemory(${index})">Edit ✏️</button><button class="delete-btn" onclick="deleteMemory(${index})">Delete 🗑️</button>`;
+    document.getElementById('modalActions').innerHTML='<button class="edit-btn" onclick="prepareEditMemory('+index+')">Edit ✏️</button><button class="delete-btn" onclick="deleteMemory('+index+')">Delete 🗑️</button>';
     document.getElementById('memoryModal').style.display='flex';
 }
 function closeMemoryModal(){ document.getElementById('memoryModal').style.display='none'; }
-
-function openAddMemoryModal(isEdit=false) {
+async function openAddMemoryModal(isEdit=false) {
+    if(!hetuMediaReady){ openMemoryAccess(true); return; }
     document.getElementById('addModalTitle').textContent=isEdit?'Edit Memory ✏️':'Add New Memory 📝';
-    if(!isEdit){ document.getElementById('editIndex').value='-1'; ['newMemTitle','newMemDate','newMemImgNum','newMemDesc'].forEach(id=>{ document.getElementById(id).value=''; }); }
+    if(!isEdit){
+        document.getElementById('editIndex').value='-1';
+        ['newMemTitle','newMemDate','newMemImgNum','newMemDesc'].forEach(id=>{ document.getElementById(id).value=''; });
+        const file=document.getElementById('newMemImage'); if(file) file.value='';
+        const preview=document.getElementById('newMemPreview'); if(preview){ preview.hidden=true; preview.removeAttribute('src'); }
+    }
     document.getElementById('addMemoryModal').style.display='flex';
 }
 function closeAddMemoryModal(){ document.getElementById('addMemoryModal').style.display='none'; }
-
 function prepareEditMemory(index) {
     closeMemoryModal();
     const item=timelineData[index]; if(!item) return;
@@ -1257,31 +1382,54 @@ function prepareEditMemory(index) {
     document.getElementById('newMemTitle').value=item.title;
     document.getElementById('newMemDate').value=item.date;
     document.getElementById('newMemImgNum').value=imgNum;
-    document.getElementById('newMemDesc').value=item.desc;
+    document.getElementById('newMemDesc').value=item.desc||'';
     document.getElementById('editIndex').value=index;
+    const file=document.getElementById('newMemImage'); if(file) file.value='';
+    const preview=document.getElementById('newMemPreview'); if(preview){ preview.hidden=true; preview.removeAttribute('src'); }
     openAddMemoryModal(true);
 }
-
 function deleteMemory(index) {
-    showCustomPopup('Delete Memory?','This cannot be undone.',null,confirmed=>{ if(!confirmed) return; timelineData.splice(index,1); localStorage.setItem('hetuTimelineData',JSON.stringify(timelineData)); closeMemoryModal(); renderJourney(); showCustomPopup('Deleted','Memory removed.'); });
+    showCustomPopup('Delete Memory?','This cannot be undone.',null,async confirmed=>{
+        if(!confirmed) return;
+        const item=timelineData[index];
+        try{
+            if(item?.shared&&item.id){
+                const response=await fetch('/api/memories',{method:'DELETE',headers:{'Content-Type':'application/json'},body:JSON.stringify({id:item.id})});
+                if(!response.ok) throw new Error('Could not delete this shared memory.');
+            }
+            timelineData.splice(index,1);
+            localStorage.setItem('hetuTimelineData',JSON.stringify(timelineData));
+            closeMemoryModal(); renderJourney();
+        }catch(e){ showCustomPopup('Could not delete',e.message); }
+    });
 }
-
-function saveNewMemory() {
+async function saveNewMemory() {
     const title=document.getElementById('newMemTitle').value.trim();
     const date=document.getElementById('newMemDate').value;
     const imgNum=document.getElementById('newMemImgNum').value.trim();
     const desc=document.getElementById('newMemDesc').value.trim();
-    const editIdx=parseInt(document.getElementById('editIndex').value);
-    if(!title||!date||!imgNum){ showCustomPopup('Missing info','Please fill in Title, Date, and Image Number.'); return; }
-    const entry={ title, date, img:`assets/Timeline/${imgNum}.jpg`, desc };
-    if(isNaN(editIdx)||editIdx===-1){ timelineData.push(entry); showCustomPopup('Saved! 🌸','New memory added.'); }
-    else { timelineData[editIdx]=entry; showCustomPopup('Updated! ✨','Memory edited.'); }
-    localStorage.setItem('hetuTimelineData',JSON.stringify(timelineData));
-    renderJourney();
-    closeAddMemoryModal();
+    const editIdx=parseInt(document.getElementById('editIndex').value,10);
+    const oldItem=Number.isInteger(editIdx)&&editIdx>=0?timelineData[editIdx]:null;
+    const selectedFile=document.getElementById('newMemImage')?.files?.[0]||null;
+    if(!title||!date){ showCustomPopup('Missing info','Please fill in Title and Date.'); return; }
+    if(!selectedFile&&!oldItem?.img&&!(/^\d+$/.test(imgNum)&&Number(imgNum)>=1&&Number(imgNum)<=4)){ showCustomPopup('Add a photo','Choose a photo or select an original timeline image.'); return; }
+    if(!hetuMediaReady){ openMemoryAccess(true); return; }
+    const button=document.querySelector('#addMemoryModal .btn-primary');
+    if(button){ button.disabled=true; button.textContent='Saving…'; }
+    try{
+        const image=selectedFile?await memoryImagePayload(selectedFile):null;
+        const payload={id:oldItem?.id||'',title,date,desc,img:imgNum?'assets/Timeline/'+imgNum+'.jpg':(oldItem?.img||''),by:currentUser,...(image||{})};
+        const response=await fetch('/api/memories',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+        const result=await response.json();
+        if(!response.ok) throw new Error(result.error||'Could not save this memory.');
+        const entry={...result.memory,shared:true};
+        if(Number.isInteger(editIdx)&&editIdx>=0) timelineData[editIdx]=entry; else timelineData.push(entry);
+        localStorage.setItem('hetuTimelineData',JSON.stringify(timelineData));
+        renderJourney(); closeAddMemoryModal();
+        showCustomPopup(oldItem?'Updated! ✨':'Saved! 🌸',oldItem?'Memory updated on both devices.':'Memory added to your shared journey.');
+    }catch(e){ showCustomPopup('Could not save',e.message); }
+    finally{ if(button){ button.disabled=false; button.textContent='Save 💾'; } }
 }
-
-
 // ══════════════════════════════════════════════════════════════
 //  MISS YOU
 // ══════════════════════════════════════════════════════════════
@@ -1289,21 +1437,17 @@ function saveNewMemory() {
 function showMissYouPopup() {
     const bunny=document.getElementById('bunnyEmoji');
     if(bunny) bunny.classList.add('spinning');
-    setTimeout(()=>{
-        if(bunny) bunny.classList.remove('spinning');
-        const h=new Date().getHours();
-        let msg;
-        if(h>=5&&h<12) msg='Good morning, sunshine! ☀️\nHope your day is as lovely as you are.';
-        else if(h>=22||h<5) msg='Sweet dreams, my love 🌙\nRest well — I\'ll be here when you wake up.';
-        else {
-            const msgs=['You\'re my favourite notification 📱','I love you, my chikoo! 🥰','Sending you the warmest virtual hug 🤗','Thinking of you, always ✨','You make every day better 💖','Just wanted to say — you\'re wonderful 🌸','Missing you extra today 🐰'];
-            msg=msgs[Math.floor(Math.random()*msgs.length)];
-        }
-        document.getElementById('missYouMessage').textContent=msg;
-        document.getElementById('missYouPopup').style.display='flex';
-    },1800);
+    const hour=new Date().getHours();
+    const message=hour>=5&&hour<12
+        ? 'Good morning, sunshine. Hope your day feels as lovely as you are.'
+        : hour>=22||hour<5
+            ? 'Sweet dreams, my love. I’ll be here when you wake up.'
+            : ['You’re my favourite notification.','Sending the warmest virtual hug.','Thinking of you, always.','You make every day better.','Missing you extra today.'][Math.floor(Math.random()*5)];
+    const moment=document.getElementById('homeLoveMoment');
+    if(moment){ moment.textContent=message; moment.hidden=false; }
+    setTimeout(()=>{ if(bunny) bunny.classList.remove('spinning'); },700);
 }
-function closeMissYouPopup(){ document.getElementById('missYouPopup').style.display='none'; }
+function closeMissYouPopup(){ const moment=document.getElementById('homeLoveMoment'); if(moment) moment.hidden=true; }
 
 
 // ══════════════════════════════════════════════════════════════
@@ -1311,62 +1455,13 @@ function closeMissYouPopup(){ document.getElementById('missYouPopup').style.disp
 // ══════════════════════════════════════════════════════════════
 
 function updateHighScoreDisplays(){
-    const m=document.getElementById('memHighScore'); if(m) m.textContent=gameHighScores.memory===Infinity?'—':gameHighScores.memory+' moves';
-    const c=document.getElementById('catchHighScore'); if(c) c.textContent=gameHighScores.catch||'0';
-    const s=document.getElementById('slashHighScore'); if(s) s.textContent=gameHighScores.slasher||'0';
-    const t=document.getElementById('typerHighScore'); if(t) t.textContent=gameHighScores.typer||'—';
+    const typer=document.getElementById('typerHighScore');
+    if(typer) typer.textContent=gameHighScores.typer||'—';
 }
-function saveHighScores(){ localStorage.setItem('hetuApp_highscores',JSON.stringify(gameHighScores)); updateHighScoreDisplays(); }
-
-function startMemoryGame(){
-    navigateToApp('memoryGameScreen');
-    const grid=document.getElementById('memoryGrid'); grid.innerHTML='';
-    memMoves=0; document.getElementById('memoryMoves').textContent=0;
-    memLock=false; memHasFlippedCard=false;
-    const items=usePhotoAssets?['assets/mem1.jpg','assets/mem2.jpg','assets/mem3.jpg','assets/mem4.jpg','assets/mem5.jpg','assets/mem6.jpg']:['🧸','🐰','💖','🍓','💋','🌹'];
-    const deck=[...items,...items].sort(()=>Math.random()-.5);    deck.forEach(item=>{ const card=document.createElement('div'); card.className='memory-card'; card.dataset.framework=item; const front=document.createElement('div'); front.className='front-face'; if(usePhotoAssets){ const img=document.createElement('img'); img.src=item; img.alt='Memory'; img.onerror=()=>{front.textContent='📷';}; front.appendChild(img); } else front.textContent=item; const back=document.createElement('div'); back.className='back-face'; back.textContent='?'; card.appendChild(front); card.appendChild(back); card.addEventListener('click',flipCard); grid.appendChild(card); });
+function saveHighScores(){
+    try{localStorage.setItem('hetuApp_highscores',JSON.stringify(gameHighScores));}catch(error){}
+    updateHighScoreDisplays();
 }
-function flipCard(){ if(memLock||this===memFirstCard) return; this.classList.add('flip'); if(!memHasFlippedCard){ memHasFlippedCard=true; memFirstCard=this; return; } memSecondCard=this; memMoves++; document.getElementById('memoryMoves').textContent=memMoves; if(memFirstCard.dataset.framework===memSecondCard.dataset.framework){ memFirstCard.removeEventListener('click',flipCard); memSecondCard.removeEventListener('click',flipCard); [memHasFlippedCard,memLock]=[false,false]; [memFirstCard,memSecondCard]=[null,null]; if(document.querySelectorAll('.memory-card.flip').length===12) setTimeout(()=>{ if(memMoves<gameHighScores.memory){ gameHighScores.memory=memMoves; saveHighScores(); showCustomPopup('New Record! 🏆','You won in just '+memMoves+' moves!'); } else showCustomPopup('You Won! 🎉','Finished in '+memMoves+' moves.'); },400); } else { memLock=true; setTimeout(()=>{ memFirstCard.classList.remove('flip'); memSecondCard.classList.remove('flip'); [memHasFlippedCard,memLock]=[false,false]; [memFirstCard,memSecondCard]=[null,null]; },1000); } }
-
-function startCatchGame(){
-    navigateToApp('catchGameScreen');
-    const canvas=document.getElementById('catchGameCanvas'), cont=document.getElementById('catchGameCanvasContainer');
-    setTimeout(()=>{ canvas.width=cont.clientWidth; canvas.height=cont.clientHeight; document.getElementById('catchStartOverlay').style.display='flex'; },100);
-}
-function initCatchGame(){
-    document.getElementById('catchStartOverlay').style.display='none';
-    const canvas=document.getElementById('catchGameCanvas'), cont=document.getElementById('catchGameCanvasContainer');
-    canvas.width=cont.clientWidth; canvas.height=cont.clientHeight;
-    catchScore=0; document.getElementById('catchScore').textContent=0; catchGameRunning=true;
-    const basket={x:canvas.width/2-25,y:canvas.height-55,width:60,height:36}; let items=[],frame=0;
-    const nc=canvas.cloneNode(true); canvas.parentNode.replaceChild(nc,canvas); const ctx=nc.getContext('2d');
-    function mb(e){ if(!catchGameRunning) return; e.preventDefault(); const r=nc.getBoundingClientRect(); const cx=e.touches?e.touches[0].clientX:e.clientX; basket.x=Math.max(0,Math.min(cx-r.left-basket.width/2,nc.width-basket.width)); }
-    nc.addEventListener('mousemove',mb); nc.addEventListener('touchmove',mb,{passive:false});
-    function loop(){ if(!catchGameRunning) return; ctx.clearRect(0,0,nc.width,nc.height); ctx.font='36px Arial'; ctx.fillText('🧺',basket.x+12,basket.y+32); if(frame%42===0){ const bad=Math.random()<.28; items.push({x:Math.random()*(nc.width-36),y:-36,type:bad?'💔':'💖',speed:2+Math.random()*2.5}); } for(let i=items.length-1;i>=0;i--){ const it=items[i]; it.y+=it.speed; ctx.font='30px Arial'; ctx.fillText(it.type,it.x,it.y); if(it.y>basket.y&&it.y<basket.y+basket.height&&it.x+30>basket.x&&it.x<basket.x+basket.width){ if(it.type==='💔'){endCatchGame();return;} catchScore++; document.getElementById('catchScore').textContent=catchScore; items.splice(i,1); } else if(it.y>nc.height) items.splice(i,1); } frame++; catchLoopId=requestAnimationFrame(loop); }
-    loop();
-}
-function endCatchGame(){ catchGameRunning=false; if(catchScore>gameHighScores.catch){gameHighScores.catch=catchScore;saveHighScores();showCustomPopup('Game Over 💔','New High Score: '+catchScore+'! 🏆');}else showCustomPopup('Game Over','Score: '+catchScore); document.getElementById('catchStartOverlay').style.display='flex'; }
-
-function startSlasherGame(){
-    navigateToApp('slasherGameScreen');
-    const canvas=document.getElementById('slasherCanvas'), cont=document.getElementById('slasherCanvasContainer');
-    setTimeout(()=>{ canvas.width=cont.clientWidth; canvas.height=cont.clientHeight; document.getElementById('slasherStartOverlay').style.display='flex'; },100);
-}
-function initSlasherGame(){
-    document.getElementById('slasherStartOverlay').style.display='none';
-    const canvas=document.getElementById('slasherCanvas'), cont=document.getElementById('slasherCanvasContainer');
-    canvas.width=cont.clientWidth; canvas.height=cont.clientHeight;
-    slasherScore=0; document.getElementById('slasherScore').textContent=0; slasherGameRunning=true;
-    let fruits=[],particles=[],trail=[],frame=0;
-    const nc=canvas.cloneNode(true); canvas.parentNode.replaceChild(nc,canvas); const ctx=nc.getContext('2d');
-    function onInput(e){ if(!slasherGameRunning) return; e.preventDefault(); const r=nc.getBoundingClientRect(); const cx=e.touches?e.touches[0].clientX:e.clientX; const cy2=e.touches?e.touches[0].clientY:e.clientY; const x=cx-r.left,y=cy2-r.top; trail.push({x,y,life:10}); for(let i=fruits.length-1;i>=0;i--){ const f=fruits[i]; if(Math.hypot(x-f.x,y-f.y)<f.size){ if(f.type==='💣'){endSlasherGame();return;} slasherScore++; document.getElementById('slasherScore').textContent=slasherScore; for(let j=0;j<5;j++) particles.push({x:f.x,y:f.y,vx:(Math.random()-.5)*10,vy:(Math.random()-.5)*10,life:18,color:f.color}); fruits.splice(i,1); } } }
-    nc.addEventListener('mousemove',onInput); nc.addEventListener('touchmove',onInput,{passive:false});
-    const types=[{emoji:'🍓',color:'#e74c3c'},{emoji:'🍉',color:'#27ae60'},{emoji:'🍊',color:'#e67e22'},{emoji:'💣',color:'#2c3e50'}];
-    function loop(){ if(!slasherGameRunning) return; ctx.clearRect(0,0,nc.width,nc.height); ctx.strokeStyle='rgba(255,255,255,.8)'; ctx.lineWidth=3; ctx.beginPath(); trail.forEach((p,i)=>{ i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y); p.life--; }); ctx.stroke(); trail=trail.filter(p=>p.life>0); if(frame%50===0){ const t=types[Math.floor(Math.random()*types.length)]; fruits.push({x:Math.random()*(nc.width-60)+30,y:nc.height,vx:(Math.random()-.5)*4,vy:-(Math.random()*5+8),type:t.emoji,color:t.color,size:30}); } fruits.forEach((f,i)=>{ f.x+=f.vx; f.y+=f.vy; f.vy+=.15; ctx.font='38px Arial'; ctx.fillText(f.type,f.x-16,f.y+16); if(f.y>nc.height+50) fruits.splice(i,1); }); particles.forEach((p,i)=>{ p.x+=p.vx; p.y+=p.vy; p.life--; ctx.fillStyle=p.color; ctx.beginPath(); ctx.arc(p.x,p.y,3,0,Math.PI*2); ctx.fill(); if(p.life<=0) particles.splice(i,1); }); frame++; slasherLoopId=requestAnimationFrame(loop); }
-    loop();
-}
-function endSlasherGame(){ slasherGameRunning=false; if(slasherScore>gameHighScores.slasher){gameHighScores.slasher=slasherScore;saveHighScores();showCustomPopup('Game Over 💔','New High Score: '+slasherScore+'! 🏆');}else showCustomPopup('Game Over','Score: '+slasherScore); document.getElementById('slasherStartOverlay').style.display='flex'; }
-
 
 // ══════════════════════════════════════════════════════════════
 //  LOVE TYPER — Dialed.gg-style typing speed game
@@ -1883,6 +1978,11 @@ function buildPlaylistUI() {
 
     const total=ytPlaylistTracks.length;
     if(countEl) countEl.textContent=ytPlaylistMode==='data-api'&&ytPlaylistTotal>total ? `${total} of ${ytPlaylistTotal}` : `${total} tracks`;
+    const loadAll=document.getElementById('playlistLoadAll');
+    if(loadAll){
+        loadAll.hidden=ytPlaylistMode!=='data-api'||!ytPlaylistNextPage;
+        if(ytPlaylistNextPage) loadAll.textContent='Load all '+(ytPlaylistTotal||'remaining')+' songs';
+    }
     if(notice){
         notice.hidden=ytPlaylistMode!=='embedded'||total<200;
         if(!notice.hidden) notice.textContent=total>=200
@@ -1912,7 +2012,18 @@ function buildPlaylistUI() {
         thumb.alt='';
         thumb.loading=idx<8?'eager':'lazy';
         thumb.decoding='async';
-        thumb.onerror=()=>{ thumb.hidden=true; };
+        thumb.onerror=()=>{
+            if(!thumb.dataset.fallbackTried){
+                thumb.dataset.fallbackTried='1';
+                thumb.src='https://i.ytimg.com/vi/'+encodeURIComponent(track.id)+'/hqdefault.jpg';
+            } else if(!thumb.dataset.finalTried){
+                thumb.dataset.finalTried='1';
+                thumb.src='https://i.ytimg.com/vi/'+encodeURIComponent(track.id)+'/mqdefault.jpg';
+            } else {
+                thumb.hidden=true;
+                thumbWrap.classList.add('pi-thumb-missing');
+            }
+        };
         thumbWrap.appendChild(thumb);
         const index=document.createElement('span');
         index.className='pi-index';
@@ -1991,6 +2102,26 @@ function filterPlaylist() {
     document.querySelectorAll('.playlist-item').forEach(item=>{
         item.hidden=Boolean(query)&&!item.dataset.search.includes(query);
     });
+    if(query&&ytPlaylistMode==='data-api'&&ytPlaylistNextPage) searchRemainingPlaylist(query);
+}
+let playlistSearchLoading=false;
+async function searchRemainingPlaylist(query){
+    if(playlistSearchLoading) return;
+    playlistSearchLoading=true;
+    try {
+        while(ytPlaylistNextPage&&!ytPlaylistLoading){
+            if(ytPlaylistTracks.some(track=>(track.title+' '+track.author).toLowerCase().includes(query))) break;
+            await loadNextPlaylistPage();
+            if((document.getElementById('playlistSearch')?.value||'').trim().toLowerCase()!==query) break;
+        }
+    } finally { playlistSearchLoading=false; }
+}
+async function loadAllPlaylistPages(){
+    const button=document.getElementById('playlistLoadAll');
+    if(!ytPlaylistNextPage||ytPlaylistLoading) return;
+    if(button){ button.disabled=true; button.textContent='Loading remaining songs…'; }
+    try { while(ytPlaylistNextPage&&!ytPlaylistLoading) await loadNextPlaylistPage(); }
+    finally { if(button){ button.disabled=false; button.textContent='All songs loaded'; } buildPlaylistUI(); }
 }
 
 function playPlaylistIndex(idx) {
@@ -2053,6 +2184,12 @@ document.addEventListener('DOMContentLoaded', ()=>{
     if(nb) nb.onclick=()=>{ calendarCurrentDate.setMonth(calendarCurrentDate.getMonth()+1); fetchDiaryEntries().then(()=>renderCalendar(calendarCurrentDate)); };
 
     document.getElementById('themeToggle').onclick=toggleTheme;
+    const memoryFile=document.getElementById('newMemImage');
+    if(memoryFile) memoryFile.addEventListener('change',()=>{
+        const file=memoryFile.files?.[0], preview=document.getElementById('newMemPreview');
+        if(!file||!preview) return;
+        preview.src=URL.createObjectURL(file); preview.hidden=false;
+    });
 
 
     // Progress bar click-to-seek
@@ -2065,3 +2202,4 @@ document.addEventListener('DOMContentLoaded', ()=>{
         if (dur > 0) ytPlayer.seekTo(pct * dur, true);
     });
 });
+
