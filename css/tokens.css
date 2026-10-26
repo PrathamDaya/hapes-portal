@@ -253,3 +253,47 @@ button { touch-action: manipulation; }
 .confetti-piece { position:absolute; top:-1rem; left:var(--x); width:9px; height:13px; border-radius:3px; background:var(--confetti); opacity:.84; animation:milestone-fall 1450ms var(--ease-smooth) var(--delay) both; }
 @keyframes milestone-fall { to { transform:translate3d(var(--drift),100vh,0) rotate(540deg); opacity:0; } }
 
+:where(.option-card,.journey-feature) { min-width:0; white-space:normal; }
+.option-card .card-label,.option-card .card-desc,.journey-feature-action { max-width:100%; white-space:normal; overflow-wrap:anywhere; }
+.option-card { transition:transform 260ms var(--ease-soft),box-shadow 260ms var(--ease-smooth),border-color 260ms var(--ease-smooth); }
+.option-card:active,.journey-feature:active { transform:scale(.985); transition-duration:120ms; }
+.logout-btn,.mp-icon-btn { min-width:44px; min-height:44px; }
+.mp-icon-btn { width:44px; height:44px; }
+.note-del { width:44px; height:44px; min-width:44px !important; min-height:44px; padding:0 !important; }
+.playlist-search-wrap { min-height:44px; }
+
+@media (hover:none) {
+    .option-card:hover,.journey-feature:hover { transform:none; box-shadow:var(--shadow-card); }
+    .journey-feature:hover .journey-feature-art img { transform:none; }
+}
+@media (max-width:768px) {
+    .journey-feature,.checkin-card,.countdown-banner,.option-card,.insight-card,.love-notes-panel,.tracker-panel,.cy-hero { backdrop-filter:none; -webkit-backdrop-filter:none; }
+    .ambient-orb { filter:blur(64px); animation-duration:32s; }
+    .floating-bg { display:none; }
+}
+@media (max-width:680px) {
+    #appContainer { padding:max(12px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(96px,calc(84px + env(safe-area-inset-bottom))) max(16px,env(safe-area-inset-left)); }
+    .app-topbar { padding-right:4.5rem; }
+    .theme-toggle { top:max(12px,env(safe-area-inset-top)); right:max(12px,env(safe-area-inset-right)); width:44px; height:44px; }
+    .main-header { margin:0 0 1rem; padding:clamp(1.5rem,6vh,2.5rem) .75rem 1rem; }
+    .main-title { font-size:clamp(2.4rem,10.5vw,3rem); }
+    .journey-feature { grid-template-rows:clamp(10.5rem,48vw,15rem) auto auto; }
+    .journey-feature-art,.journey-feature-art img { height:100%; min-height:0; }
+    .journey-feature-copy { min-width:0; }
+    .countdown-banner { padding:1.1rem; gap:.75rem; }
+    .cd-clock { width:100%; justify-content:space-between; }
+    .cd-unit-box { min-width:0; min-height:54px; flex:1; display:grid; align-content:center; }
+    .music-toggle-pill { right:max(16px,env(safe-area-inset-right)); bottom:max(16px,env(safe-area-inset-bottom)); width:48px; height:48px; }
+    .music-player { left:max(12px,env(safe-area-inset-left)); right:max(12px,env(safe-area-inset-right)); bottom:max(12px,env(safe-area-inset-bottom)); width:auto; max-height:calc(100dvh - 2rem - env(safe-area-inset-top) - env(safe-area-inset-bottom)); overflow-y:auto; }
+    .playlist-panel.open { max-height:min(48vh,470px); }
+    .playlist-scroll { max-height:min(31vh,300px); }
+}
+@media (max-width:380px) {
+    #appContainer { padding-left:max(12px,env(safe-area-inset-left)); padding-right:max(12px,env(safe-area-inset-right)); }
+    .options-grid { gap:8px; }
+    .option-card { padding:1rem .65rem; }
+}
+@media (prefers-reduced-transparency:reduce) {
+    .journey-feature,.checkin-card,.countdown-banner,.option-card,.insight-card,.love-notes-panel,.tracker-panel,.cy-hero,.app-topbar,.music-player { backdrop-filter:none; -webkit-backdrop-filter:none; }
+}
+
