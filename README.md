@@ -20,7 +20,9 @@ Connect the private Blob store, set these variables in Vercel, then push the fil
 
 ## Cycle tracker sync
 
-The tracker reuses the existing Google Apps Script endpoint from `script.js`, already used by the portal. It syncs period starts/ends, daily flow/mood/symptoms/notes and cycle settings in the shared cycle document. The client keeps a localStorage cache (`hetuCycleDoc`), queues changes in `hetuCyPending` while offline, merges by each item's update timestamp, retries on reconnect, and polls every five seconds while visible. The endpoint must implement `GET ?action=getCycleDoc` and accept JSON `POST {"items": {...}}`. No service-role or admin key is shipped to the browser.
+Cycle, diary and feelings requests now pass through the same-origin `/api/gas` Vercel function. It requires the existing HttpOnly `hetu_media_session` cookie and forwards only allow-listed actions to Google Apps Script. The Apps Script deployment also requires a server-side secret; its URL and secret are not present in browser code. The client keeps the existing `hetuCycleDoc`, `hetuCyPending`, `hetuCyMigrated` and `hetuCyRemoteMigrationV1` localStorage data for offline and one-time migration.
+
+The API route requires `GAS_URL` (the Apps Script `/exec` URL) and `GAS_SECRET` (the same value as Apps Script Script Property `HETU_SECRET`). Unlock the shared portal first on each device so the HttpOnly cookie is available.
 
 Legacy `periodData`, `periodCycleLength` and `periodLength` values migrate once if present. On first backend contact the client reads the shared document before uploading cached rows, and only sends local records that are newer or absent remotely. An empty local cache is never posted over a non-empty remote document.
 
@@ -55,3 +57,13 @@ The arcade includes Catch the Heart, Love Slasher, Memory Match (using Journey p
 - Play each arcade mode on desktop and mobile; test keyboard/swipes, pause/resume, mute, game-over and the shared tally.
 - Check light/dark appearance, keyboard focus and reduced-motion preference.
 
+
+
+### Deploying Code.gs
+
+1. In Apps Script, open **Project Settings → Script Properties** and add `HETU_SECRET` with a long random value. Do not put it in Code.gs or the repository.
+2. Replace the existing Apps Script source with `apps-script/Code.gs`, save it, then choose **Deploy → Manage deployments → Edit → New version → Deploy**. Keep the web app executable by anyone; the secret and cookie gate protect it.
+3. In Vercel Project Settings → Environment Variables, set `GAS_URL` to the Apps Script `/exec` URL and `GAS_SECRET` to the exact same value as `HETU_SECRET` for Production and Preview.
+4. Redeploy Vercel. Copy those values into `.env.local` only for local `vercel dev`; never commit it.
+
+The client must first unlock shared memories to receive the HttpOnly session cookie before cycle, diary, feelings or leaderboard data can be loaded. The person picker alone is not authentication.

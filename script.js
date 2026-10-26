@@ -4,8 +4,21 @@
 //  Clean journey page · all previous bugs resolved
 // ═══════════════════════════════════════════════════════════════
 
-const scriptURL = 'https://script.google.com/macros/s/AKfycbxMsH6HVLcv0yGQBKZCdOwdAUi9k_Jv4JeIOotqicQlef0mP_mIADlEVbUuzS8pPsZ27g/exec';
-window.HETU_SCRIPT_URL=scriptURL;
+const GAS_API='/api/gas';
+window.HETU_CURRENT_USER=()=>currentUser;
+
+function gasFetch(url, options={}) {
+    const target=new URL(url,window.location.origin);
+    const init={...options,credentials:'same-origin',cache:'no-store'};
+    if (init.body instanceof FormData) {
+        const form=new URLSearchParams();
+        for (const [key,value] of init.body.entries()) if (typeof value==='string') form.append(key,value);
+        init.body=form;
+    } else if (typeof init.body==='string' && /^\s*\{/.test(init.body)) {
+        init.headers={...init.headers,'Content-Type':'application/json'};
+    }
+    return fetch(GAS_API+target.search,init);
+}
 window.HETU_CURRENT_USER=()=>currentUser;
 
 // ── State ──────────────────────────────────────────────────────
@@ -279,7 +292,7 @@ function saveLoveNote() {
     fd.append('text',text);
     fd.append('author',currentUser);
     fd.append('ts',note.ts);
-    fetch(scriptURL,{method:'POST',body:fd,mode:'cors'}).catch(()=>{});
+    gasFetch(GAS_API,{method:'POST',body:fd,mode:'cors'}).catch(()=>{});
 }
 function deleteLoveNote(index) {
     const notes = JSON.parse(localStorage.getItem('hetuLoveNotes') || '[]');
@@ -509,7 +522,7 @@ function submitFeelingsEntry() {
     const fd=new FormData();
     fd.append('formType','feelingsEntry'); fd.append('emotion',currentEmotion);
     fd.append('message',msg); fd.append('submittedBy',currentUser);
-    fetch(scriptURL,{method:'POST',body:fd,mode:'cors'})
+    gasFetch(GAS_API,{method:'POST',body:fd,mode:'cors'})
         .then(r=>r.json()).then(d=>{ if(d.status==='success'){ document.getElementById('feelingsMessage').value=''; navigateToFeelingsPage('feelingsPage3'); } else throw new Error(d.message); })
         .catch(e=>showCustomPopup('Error','Could not submit: '+e.message))
         .finally(()=>{ btn.disabled=false; btn.textContent='Send it 💌'; });
@@ -520,7 +533,7 @@ async function fetchAndDisplayFeelingsEntries() {
     const list=document.getElementById('feelingsEntriesList');
     list.innerHTML='<div class="skeleton-stack" role="status" aria-label="Loading entries"><span class="skeleton skeleton-row"></span><span class="skeleton skeleton-row"></span><span class="skeleton skeleton-row"></span></div>';
     try {
-        const res=await fetch(`${scriptURL}?action=getFeelingsEntries`,{mode:'cors'});
+        const res=await fetch(`${GAS_API}?action=getFeelingsEntries`,{mode:'cors'});
         const data=await res.json();
         if (data.status==='success' && data.data?.length>0) {
             list.innerHTML='';
@@ -559,7 +572,7 @@ function navigateToDiaryPage(pageId) {
 async function fetchDiaryEntries() {
     if (!currentUser) return;
     try {
-        const r=await fetch(`${scriptURL}?action=getDiaryEntries`,{mode:'cors'});
+        const r=await fetch(`${GAS_API}?action=getDiaryEntries`,{mode:'cors'});
         const d=await r.json(); diaryEntries={};
         if(d.status==='success'&&d.data) d.data.forEach(e=>{ diaryEntries[e.date]=e; });
     } catch(e) { console.warn('Diary fetch failed:',e.message); }
@@ -622,7 +635,7 @@ function submitDiaryEntry() {
     releaseButterflies(btn); btn.disabled=true; btn.textContent='Saving…';
     const fd=new FormData();
     fd.append('formType','diaryEntry'); fd.append('date',date); fd.append('thoughts',thoughts); fd.append('submittedBy',currentUser);
-    fetch(scriptURL,{method:'POST',body:fd,mode:'cors'}).then(r=>r.json())
+    gasFetch(GAS_API,{method:'POST',body:fd,mode:'cors'}).then(r=>r.json())
         .then(d=>{ if(d.status==='success') return fetchDiaryEntries().then(()=>{ renderCalendar(calendarCurrentDate); navigateToDiaryPage('diaryConfirmationPage'); }); else throw new Error(d.message); })
         .catch(e=>showCustomPopup('Error','Could not save: '+e.message))
         .finally(()=>{ btn.disabled=false; btn.textContent='Save Entry 💾'; });
@@ -633,7 +646,7 @@ async function fetchAndDisplayAllDiaryEntries() {
     const list=document.getElementById('allDiaryEntriesList');
     list.innerHTML='<div class="skeleton-stack" role="status" aria-label="Loading scores"><span class="skeleton skeleton-row"></span><span class="skeleton skeleton-row"></span><span class="skeleton skeleton-row"></span></div>';
     try {
-        const res=await fetch(`${scriptURL}?action=getDiaryEntries`,{mode:'cors'});
+        const res=await fetch(`${GAS_API}?action=getDiaryEntries`,{mode:'cors'});
         const data=await res.json();
         if(data.status==='success'&&data.data?.length>0){
             list.innerHTML='';
@@ -662,7 +675,7 @@ async function submitReply(type, id, msg, btn) {
     fd.append('formType','replyEntry'); fd.append('entryType',type); fd.append('entryIdentifier',id);
     fd.append('replyMessage',msg.trim()); fd.append('repliedBy',currentUser);
     try {
-        const res=await fetch(scriptURL,{method:'POST',body:fd,mode:'cors'});
+        const res=await gasFetch(GAS_API,{method:'POST',body:fd,mode:'cors'});
         const data=await res.json();
         if(data.status==='success'){
             showCustomPopup('Sent! 📮','Reply delivered.');
@@ -725,7 +738,7 @@ window.HETU_DARE_CARDS=coupleDares;
 // ══════════════════════════════════════════════════════════════
 
 // Sync uses your existing Apps Script (Code.gs v2 adds getCycleDoc + JSON POST).
-const CYCLE_SYNC_URL = scriptURL;   // same Apps Script as the rest of the portal
+const CYCLE_SYNC_URL = GAS_API;   // same Apps Script as the rest of the portal
 
 const CY_KEY = 'hetuCycleDoc', CY_PENDING = 'hetuCyPending', CY_REMOTE_MIGRATION = 'hetuCyRemoteMigrationV1', CY_POLL_MS = 5000;
 const DAY_MS = 86400000;
@@ -822,7 +835,7 @@ async function cySync(manual){
         let result;
         let needsWrite=pending&&Object.keys(cyItems).length>0;
         if(migrationPending){
-            const remoteResponse=await fetch(CYCLE_SYNC_URL+'?action=getCycleDoc&t='+Date.now(),{cache:'no-store'});
+            const remoteResponse=await gasFetch(CYCLE_SYNC_URL+'?action=getCycleDoc&t='+Date.now(),{cache:'no-store'});
             const remote=await remoteResponse.json();
             if(!remoteResponse.ok||!remote?.items||typeof remote.items!=='object'||Array.isArray(remote.items))throw new Error('bad cycle document');
             const localSnapshot={...cyItems},remoteItems=remote.items;
@@ -830,7 +843,7 @@ async function cySync(manual){
             cyItems=cyMerge(remoteItems,localSnapshot);
             cySave();
             if(needsWrite&&Object.keys(cyItems).length){
-                const writeResponse=await fetch(CYCLE_SYNC_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({items:cyItems}),cache:'no-store'});
+                const writeResponse=await gasFetch(CYCLE_SYNC_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({items:cyItems}),cache:'no-store'});
                 result=await writeResponse.json();
                 if(!writeResponse.ok||!result||result.status==='error'||!result.items||typeof result.items!=='object'||Array.isArray(result.items))throw new Error('bad write response');
                 cyItems=cyMerge(cyItems,result.items);
@@ -838,8 +851,8 @@ async function cySync(manual){
             localStorage.setItem(CY_REMOTE_MIGRATION,'1');
         }else{
             const response=needsWrite
-                ? await fetch(CYCLE_SYNC_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({items:cyItems}),cache:'no-store'})
-                : await fetch(CYCLE_SYNC_URL+'?action=getCycleDoc&t='+Date.now(),{cache:'no-store'});
+                ? await gasFetch(CYCLE_SYNC_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({items:cyItems}),cache:'no-store'})
+                : await gasFetch(CYCLE_SYNC_URL+'?action=getCycleDoc&t='+Date.now(),{cache:'no-store'});
             result=await response.json();
             if(!response.ok||!result||result.status==='error'||!result.items||typeof result.items!=='object'||Array.isArray(result.items))throw new Error('bad response');
             cyItems=cyMerge(cyItems,result.items);
@@ -1646,7 +1659,7 @@ async function submitTyperScore() {
         fd.append('score',s.wpm);
         fd.append('player',currentUser);
         fd.append('accuracy',s.acc);
-        const res=await fetch(scriptURL,{method:'POST',body:fd,mode:'cors'});
+        const res=await gasFetch(GAS_API,{method:'POST',body:fd,mode:'cors'});
         const data=await res.json();
         if(data.status==='success'){
             btn.textContent='Saved! ✅';
@@ -1664,7 +1677,7 @@ async function fetchTyperLeaderboard() {
     if(!list) return;
     list.innerHTML='<p class="loading-text">Loading…</p>';
     try {
-        const res=await fetch(`${scriptURL}?action=getLeaderboard&game=LoveTyper`);
+        const res=await fetch(`${GAS_API}?action=getLeaderboard&game=LoveTyper`);
         const data=await res.json();
         if(data.status==='success'&&data.data.length>0){
             const all=data.data;
